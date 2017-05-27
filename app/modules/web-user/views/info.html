@@ -1,0 +1,63 @@
+<div ng-controller="UserController as userCtrl">
+    <h3><i class="fa fa-pencil-square" aria-hidden="true"></i> Cập nhật thông tin</h3>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <form action="#" name="InfoForm" id="InfoForm">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="email">Họ tên</label>
+                        <input class="form-control" type="text" name="name" ng-model="userCtrl.accountInfo.name" required placeholder="Họ tên" />
+                        <div ng-if="!InfoForm.name.$pristine" error-message="InfoForm.name.$error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input disabled class="form-control" type="email" name="email" ng-model="userCtrl.accountInfo.email" required placeholder="Email" />
+                        <div ng-if="!InfoForm.email.$pristine" error-message="InfoForm.email.$error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="appId">ID ứng dụng</label>
+                        <input class="form-control" type="text" name="appId" ng-model="userCtrl.accountInfo.appId" required placeholder="Id ứng dụng" />
+                        <div ng-if="!InfoForm.appId.$pristine" error-message="InfoForm.appId.$error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="appSecret">Khóa bí mật</label>
+                        <input class="form-control" type="password" name="appSecret" ng-model="userCtrl.accountInfo.appSecret" required placeholder="Khóa bí mật" />
+                        <div ng-if="!InfoForm.appSecret.$pristine" error-message="InfoForm.appSecret.$error"></div>
+                    </div>
+                    <div class="form-group">
+                        <a href="javascript:void(0)">Làm sao để lấy ID ứng dụng và khóa bí mật?</a>
+                    </div>
+                    <button ng-disabled="InfoForm.$pristine || InfoForm.$invalid" class="btn btn-primary" type="button" ng-click="userCtrl.update(InfoForm.$valid)"><i class="fa fa-pencil-square" aria-hidden="true"></i> Cập nhật</button>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary" ng-click="userCtrl.getAccessToken();">
+                        <i class="fa fa-facebook-official" aria-hidden="true"></i> Kết nối Facebook để lấy mã truy cập
+                    </button>
+                    </div>
+                    <div class="form-group" ng-if="userCtrl.accountInfo.appId && userCtrl.accountInfo.appSecret">
+                        <label for="accessToken">Mã truy cập ứng dụng</label>
+                        <!--<p><a class="label label-success" href="javascript:void(0)" ng-click="userCtrl.getAccessToken();">Lấy mã truy cập</a></p>-->
+                        <input disabled class="form-control" type="text" name="accessToken" ng-model="userCtrl.accountInfo.accessToken" required placeholder="Mã truy cập" />
+                        <div ng-if="!InfoForm.accessToken.$pristine" error-message="InfoForm.accessToken.$error"></div>
+                    </div>
+                    <div class="form-group" ng-if="userCtrl.accountInfo.appId && userCtrl.accountInfo.appSecret">
+                        <label for="tokenExpire">Hết hạn</label>
+                        <input disabled class="form-control" type="text" name="tokenExpire" value="{[userCtrl.accountInfo.tokenExpire | date:'dd/MM/yyyy hh:mm:ss a']}" placeholder="Hết hạn" />
+                    </div>
+                    <!--<div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <input class="form-control" type="password" name="password" ng-model="userCtrl.accountInfo.password" required placeholder="Mật khẩu" />
+                    <div ng-if="!InfoForm.AAAAA.$pristine" error-message="InfoForm.password.$error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="rePassword">Xác nhận mật khẩu</label>
+                    <input class="form-control" type="password" name="rePassword" ng-model="userCtrl.accountInfo.rePassword" required placeholder="Xác nhận mật khẩu" />
+                    <div ng-if="!InfoForm.AAAAA.$pristine" error-message="InfoForm.rePassword.$error" type-content="userCtrl.accountInfo.rePassword" match-target="userCtrl.accountInfo.password"></div>
+                </div>-->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

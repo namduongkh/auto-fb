@@ -1,0 +1,31 @@
+<div ng-controller="UserController as userCtrl">
+    <h3><i class="fa fa-user-plus" aria-hidden="true"></i> Đăng ký</h3>
+    <hr>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form action="#" name="RegisterForm" id="RegisterForm">
+                <div class="form-group">
+                    <label for="email">Họ tên</label>
+                    <input class="form-control" type="text" name="name" ng-model="userCtrl.form.name" required placeholder="Họ tên" />
+                    <div ng-if="!RegisterForm.name.$pristine" error-message="RegisterForm.name.$error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input class="form-control" type="email" name="email" ng-model="userCtrl.form.email" required placeholder="Email" />
+                    <div ng-if="!RegisterForm.email.$pristine" error-message="RegisterForm.email.$error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <input class="form-control" type="password" name="password" ng-model="userCtrl.form.password" required placeholder="Mật khẩu" />
+                    <div ng-if="!RegisterForm.password.$pristine" error-message="RegisterForm.password.$error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="rePassword">Xác nhận mật khẩu</label>
+                    <input class="form-control" type="password" name="rePassword" ng-model="userCtrl.form.rePassword" required placeholder="Xác nhận mật khẩu" />
+                    <div ng-if="!RegisterForm.rePassword.$pristine" error-message="RegisterForm.rePassword.$error" type-content="userCtrl.form.rePassword" match-target="userCtrl.form.password"></div>
+                </div>
+                <button ng-disabled="RegisterForm.$invalid" class="btn btn-primary" type="button" ng-click="userCtrl.register(RegisterForm.$valid)"><i class="fa fa-user-plus" aria-hidden="true"></i> Đăng ký</button>
+            </form>
+        </div>
+    </div>
+</div>

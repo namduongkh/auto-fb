@@ -1,0 +1,36 @@
+<div ng-controller="UserController as userCtrl">
+    <div class="row">
+        <div class="col-md-12">
+            <h3><span class="glyphicon glyphicon-cog"></span> Quản lý các nhóm</h3>
+            <hr>
+            <form action="#" role="form" name="GroupForm">
+                <div class="form-group">
+                    <!--<label for="groupUrl">Url nhóm</label>-->
+                    <input class="form-control" type="text" name="groupUrl" ng-model="userCtrl.groupUrl" required placeholder="Nhập url của nhóm" />
+                    <div ng-if="!GroupForm.groupUrl.$pristine" error-message="GroupForm.groupUrl.$error"></div>
+                </div>
+                <button ng-disabled="GroupForm.$invalid" class="btn btn-primary" type="button" ng-click="userCtrl.getGroupInfo(userCtrl.groupUrl)"><span class="glyphicon glyphicon-download-alt"></span> Lấy thông tin</button>
+            </form>
+        </div>
+        <div class="col-md-12">
+            <h3><span class="glyphicon glyphicon-th-list"></span> Danh sách các nhóm đã lưu</h3>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped">
+                    <tr>
+                        <th>ID nhóm</th>
+                        <th>Tên nhóm</th>
+                        <th>Hành động</th>
+                    </tr>
+                    <tr ng-repeat="group in userCtrl.accountInfo.groups track by $index">
+                        <td ng-bind="group.id"></td>
+                        <td ng-bind="group.name"></td>
+                        <td>
+                            <a href="javascript:void(0);" class="btn btn-xs btn-danger" ng-click="userCtrl.removeGroup($index)"><span class="glyphicon glyphicon-trash"></span> Xóa</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{{meta.description}}}">
+    <meta name="author" content="Phong Nguyễn">
+    <title>{{{meta.title}}} - My Website</title>
+    <!--Setting-->
+    <script>
+        var settings = {{{json settings}}};
+        var appId = '{{{appId}}}';
+    </script>
+    <!--Css-->
+    {{#each assets.css}}
+    <link rel="stylesheet" href="{{{versionResource this}}}" />
+    <!--css-->
+    {{/each}}
+</head>
+
+<body ng-app="HapiApp" ng-controller="UserController as userCtrl">
+    <div id="wrapper">
+	    <!--Navigation-->
+	    {{> navigation}}
+
+	    <!-- Main Content -->
+	    <div id="page-wrapper">
+	        <div class="container-fluid">
+	        	{{{content}}}
+	        </div>
+	    </div>
+
+	    {{#if appId}}
+	    <div id="fb-root"></div>
+	    {{/if}}
+	    <!-- Footer -->
+	    {{> footer}}
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,796 @@
+(function() {
+    'use strict';
+
+    angular.module('Album', [])
+        .config(["$interpolateProvider", function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+})();
+(function() {
+    'use strict';
+
+    AlbumController.$inject = ["UserService", "AlbumService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http", "Upload"];
+    angular.module("Album")
+        .controller("AlbumController", AlbumController);
+
+    function AlbumController(UserService, AlbumService, $cookies, $rootScope, toastr, $timeout, $facebook, $http, Upload) {
+        var albumCtrl = this;
+        albumCtrl.accountInfo = {};
+
+        albumCtrl.getAccount = function() {
+            UserService.account().then(function(resp) {
+                if (resp.status == 200) {
+                    albumCtrl.accountInfo = resp.data;
+                    if (new Date(albumCtrl.accountInfo.tokenExpire) < new Date()) {
+                        albumCtrl.accountInfo.accessToken = "";
+                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
+                    }
+                }
+            });
+        };
+
+        albumCtrl.init = function() {
+            albumCtrl.getAccount();
+            AlbumService.getAlbums()
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        albumCtrl.listAlbums = resp.data;
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function() {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        albumCtrl.saveAlbum = function(valid) {
+            if (!valid) {
+                toastr.error("Kiểm tra lại dữ liệu và thử lại.", "Lỗi!");
+                return;
+            }
+            if (!albumCtrl.album.photos) {
+                albumCtrl.album.photos = [];
+            }
+            if (albumCtrl.tmpPhotoNames) {
+                albumCtrl.album.photos = albumCtrl.album.photos.concat(albumCtrl.tmpPhotoNames);
+            }
+            AlbumService.saveAlbum(albumCtrl.album)
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        var parallel = [];
+                        console.log("image", albumCtrl.tmpPhotos, albumCtrl.tmpPhotoNames);
+                        albumCtrl.tmpPhotos.map(function(file, key) {
+                            var filename = albumCtrl.tmpPhotoNames[key];
+                            parallel.push(function(cb) {
+                                Upload.upload({
+                                        url: apiPath + "/api/upload/image",
+                                        data: {
+                                            file: file,
+                                            filename: filename.replace(/.[^.]+$/g, ""),
+                                            type: "albums/" + resp.data._id
+                                        }
+                                    })
+                                    .then(function(response) {
+                                        console.log("success", response);
+                                        cb(null);
+                                    }, function(response) {
+                                        console.log("err", response);
+                                        cb(true)
+                                    }, function(evt) {
+                                        // file.progress = Math.min(100, parseInt(100.0 *
+                                        //     evt.loaded / evt.total));
+                                    });
+                            });
+                        });
+
+                        async.parallel(parallel, function(err, results) {
+                            albumCtrl.defaultPhotos();
+                            if (!albumCtrl.album._id) {
+                                if (!albumCtrl.listAlbums) {
+                                    albumCtrl.listAlbums = [];
+                                }
+                                albumCtrl.listAlbums.unshift(resp.data);
+                            } else {
+                                for (var i in albumCtrl.listAlbums) {
+                                    if (albumCtrl.listAlbums[i]._id == albumCtrl.album._id) {
+                                        albumCtrl.listAlbums[i] = resp.data;
+                                        break;
+                                    }
+                                }
+                            }
+                            albumCtrl.album = resp.data;
+                            toastr.success("Lưu bài đăng thành công.", "Thành công!");
+                        });
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function(err) {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        albumCtrl.removeAlbum = function(albumId, index) {
+            if (confirm("Bạn có chắc chắn muốn xóa?")) {
+                AlbumService.removeAlbum(albumId)
+                    .then(function(resp) {
+                        if (resp.status == 200 && resp.data) {
+                            toastr.success("Xóa bài đăng thành công.", "Thành công!");
+                            albumCtrl.listAlbums.splice(index, 1);
+                            albumCtrl.resetAlbum();
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function(err) {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    });
+            }
+        };
+
+        albumCtrl.selectAlbum = function(album) {
+            albumCtrl.album = album;
+            albumCtrl.defaultPhotos();
+            Common.scrollTo("#album-top", 'fast');
+        };
+
+        albumCtrl.resetAlbum = function() {
+            albumCtrl.album = {};
+            albumCtrl.defaultPhotos();
+        };
+
+        albumCtrl.defaultPhotos = function() {
+            albumCtrl.tmpPhotos = [];
+            albumCtrl.tmpPhotoNames = [];
+        };
+
+        albumCtrl.defaultPhotos();
+
+        albumCtrl.uploadFiles = function(files, invalidFiles) {
+            console.log(files, invalidFiles);
+            for (var i in files) {
+                var file = files[i];
+                albumCtrl.tmpPhotoNames.push(new Date().getTime() + "-" + file.name);
+                albumCtrl.tmpPhotos.push(file);
+            }
+        };
+
+        albumCtrl.removePhoto = function(index) {
+            albumCtrl.tmpPhotos.splice(index, 1);
+            albumCtrl.tmpPhotoNames.splice(index, 1);
+        };
+
+        albumCtrl.removeSavedPhoto = function(index) {
+            albumCtrl.album.photos.splice(index, 1);
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    AlbumService.$inject = ["$http"];
+    angular.module("Album")
+        .service("AlbumService", AlbumService);
+
+    function AlbumService($http) {
+        return {
+            getAlbums: function() {
+                return $http.get(apiPath + "/api/album/getAlbums");
+            },
+            saveAlbum: function(data) {
+                return $http.post(apiPath + "/api/album/saveAlbum", data);
+            },
+            removeAlbum: function(id) {
+                return $http.post(apiPath + "/api/album/removeAlbum", { albumId: id });
+            }
+        }
+    }
+})();
+var Common = (function() {
+    'use strict';
+    return {
+        scrollTo: function(element, speed) {
+            element = element || 'html,body';
+            speed = speed || 'slow';
+            $('html,body').animate({
+                    scrollTop: $(element).offset().top
+                },
+                speed);
+        }
+    };
+})();
+(function() {
+    'use strict';
+
+    angular.module('Core', [])
+        .config(["$interpolateProvider", function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+})();
+var sideMenu = (function() {
+    return {
+        open: function() {
+
+        },
+        close: function() {
+
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('Core')
+        .directive("errorMessage", errorMessage);
+
+    function errorMessage() {
+        return {
+            restrict: "AE",
+            templateUrl: "modules/web-core/views/js/template/error-message.html",
+            replace: true,
+            scope: {
+                errorMessage: "=",
+                matchTarget: "=",
+                typeContent: "="
+            },
+            link: function(scope, elem, attr) {
+                function setMatchError() {
+                    if (scope.typeContent != scope.matchTarget) {
+                        scope.errorMessage.match = true;
+                    } else {
+                        scope.errorMessage.match = false;
+                    }
+                }
+                scope.$watch("typeContent", function(value) {
+                    setMatchError();
+                });
+                scope.$watch("matchTarget", function(value) {
+                    setMatchError();
+                });
+            }
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('Feed', [])
+        .config(["$interpolateProvider", function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+})();
+(function() {
+    'use strict';
+
+    FeedController.$inject = ["UserService", "FeedService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http"];
+    angular.module("Feed")
+        .controller("FeedController", FeedController);
+
+    function FeedController(UserService, FeedService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
+        var feedCtrl = this;
+        feedCtrl.accountInfo = {};
+
+        feedCtrl.getAccount = function() {
+            UserService.account().then(function(resp) {
+                if (resp.status == 200) {
+                    feedCtrl.accountInfo = resp.data;
+                    if (new Date(feedCtrl.accountInfo.tokenExpire) < new Date()) {
+                        feedCtrl.accountInfo.accessToken = "";
+                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
+                    }
+                }
+            });
+        };
+
+        feedCtrl.init = function() {
+            feedCtrl.getAccount();
+            FeedService.getFeeds()
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        feedCtrl.listFeeds = resp.data;
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function() {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        feedCtrl.saveFeed = function(valid) {
+            if (!valid) {
+                toastr.error("Kiểm tra lại dữ liệu và thử lại.", "Lỗi!");
+                return;
+            }
+            FeedService.saveFeed(feedCtrl.feed)
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        if (!feedCtrl.feed._id) {
+                            if (!feedCtrl.listFeeds) {
+                                feedCtrl.listFeeds = [];
+                            }
+                            feedCtrl.listFeeds.unshift(resp.data);
+                        } else {
+                            for (var i in feedCtrl.listFeeds) {
+                                if (feedCtrl.listFeeds[i]._id == feedCtrl.feed._id) {
+                                    feedCtrl.listFeeds[i] = resp.data;
+                                    break;
+                                }
+                            }
+                        }
+                        feedCtrl.feed = resp.data;
+                        toastr.success("Lưu bài đăng thành công.", "Thành công!");
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function(err) {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        feedCtrl.removeFeed = function(feedId, index) {
+            if (confirm("Bạn có chắc chắn muốn xóa?")) {
+                FeedService.removeFeed(feedId)
+                    .then(function(resp) {
+                        if (resp.status == 200 && resp.data) {
+                            toastr.success("Xóa bài đăng thành công.", "Thành công!");
+                            feedCtrl.listFeeds.splice(index, 1);
+                            feedCtrl.resetFeed();
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function(err) {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    });
+            }
+        };
+
+        feedCtrl.selectFeed = function(feed) {
+            feedCtrl.feed = feed;
+            Common.scrollTo("#feed-top", 'fast');
+        };
+
+        feedCtrl.resetFeed = function() {
+            feedCtrl.feed = {};
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    FeedService.$inject = ["$http"];
+    angular.module("Feed")
+        .service("FeedService", FeedService);
+
+    function FeedService($http) {
+        return {
+            getFeeds: function() {
+                return $http.get(apiPath + "/api/feed/getFeeds");
+            },
+            saveFeed: function(data) {
+                return $http.post(apiPath + "/api/feed/saveFeed", data);
+            },
+            removeFeed: function(id) {
+                return $http.post(apiPath + "/api/feed/removeFeed", { feedId: id });
+            }
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('Graph', [])
+        .config(["$interpolateProvider", function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+})();
+(function() {
+    'use strict';
+
+    GraphController.$inject = ["UserService", "FeedService", "GraphService", "AlbumService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http", "$window"];
+    angular.module("Graph")
+        .controller("GraphController", GraphController);
+
+    function GraphController(UserService, FeedService, GraphService, AlbumService, $cookies, $rootScope, toastr, $timeout, $facebook, $http, $window) {
+        var graphCtrl = this;
+        graphCtrl.accountInfo = {};
+
+        graphCtrl.getAccount = function() {
+            UserService.account().then(function(resp) {
+                if (resp.status == 200) {
+                    graphCtrl.accountInfo = resp.data;
+                    if (new Date(graphCtrl.accountInfo.tokenExpire) < new Date()) {
+                        graphCtrl.accountInfo.accessToken = "";
+                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
+                    }
+                }
+            });
+        };
+
+        graphCtrl.init = function() {
+            graphCtrl.getAccount();
+            FeedService.getFeeds()
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        graphCtrl.listFeeds = resp.data;
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function() {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+            AlbumService.getAlbums()
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        graphCtrl.listAlbums = resp.data;
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function() {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        graphCtrl.postPhotoToAlbum = function() {
+            var parallel = [];
+            graphCtrl.albumId.photos.map(function(photo) {
+                parallel.push(function(cb) {
+                    console.log("ss", $window.settings.services.webUrl + "/files/albums/" + graphCtrl.albumId._id + "/" + photo);
+                    GraphService.graphApi(graphCtrl.accountInfo.accessToken, "post", `/${graphCtrl.createdAlbumId}/photos`, {
+                            // "url": $window.settings.services.webUrl + "/files/albums/" + graphCtrl.albumId._id + "/" + photo
+                            "url": "https://www.w3schools.com/css/img_fjords.jpg"
+                        })
+                        .then(function(resp) {
+                            if (resp.status == 200) {
+                                cb(null, resp.data);
+                            } else {
+                                cb(true);
+                            }
+                        })
+                        .catch(function() {
+                            cb(true);
+                        });
+                });
+            });
+            async.parallel(parallel, function(err, results) {
+                if (err) {
+                    console.log("POST PHOTO", err);
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                } else {
+                    toastr.success("Đăng hình ảnh lên album thành công.", "Thành công!");
+                }
+            });
+        };
+
+        graphCtrl.postGroup = function(valid) {
+            if (!valid) {
+                toastr.error("Kiểm tra lại dữ liệu và thử lại sau.", "Lỗi!");
+                return;
+            }
+            // console.log("post", graphCtrl.feedId, graphCtrl.groupId);
+            var promise;
+            if (graphCtrl.postType == 0) {
+                promise = GraphService.graphApi(graphCtrl.accountInfo.accessToken, "post", `/${graphCtrl.groupId}/feed`, {
+                    "message": graphCtrl.feedId.message
+                });
+            } else if (graphCtrl.postType == 1) {
+                promise = GraphService.graphApi(graphCtrl.accountInfo.accessToken, "post", `/${graphCtrl.groupId}/albums`, {
+                    "name": graphCtrl.albumId.name,
+                    "message": graphCtrl.albumId.message,
+                });
+            }
+            promise.then(function(resp) {
+                    if (resp.status == 200) {
+                        console.log("Post group data:", resp.data);
+                        toastr.success("Đã đăng lên nhóm thành công.", "Thành công!");
+
+                        if (graphCtrl.postType == 1) {
+                            graphCtrl.createdAlbumId = resp.data.id;
+                            if (graphCtrl.createdAlbumId) {
+                                graphCtrl.postPhotoToAlbum();
+                            }
+                        }
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function(err) {
+                    console.log("Err", err);
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    GraphService.$inject = ["$http"];
+    angular.module("Graph")
+        .service("GraphService", GraphService);
+
+    function GraphService($http) {
+        return {
+            graphApi: function(accessToken, method, apiUrl, payload) {
+                method = method ? method.toLowerCase() : "get";
+                method = method == 'get' ? method : "post";
+                // if (apiUrl.indexOf("?") == -1) {
+                //     apiUrl += "?access_token=" + accessToken;
+                // } else {
+                //     apiUrl += "&access_token=" + accessToken;
+                // }
+                if (!payload) {
+                    payload = {};
+                }
+                payload.accessToken = accessToken;
+                payload.apiUrl = apiUrl;
+                payload.method = method;
+                return $http.post(apiPath + "/api/user/graphApi", payload);
+            }
+        }
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module('User', [])
+        .config(["$interpolateProvider", function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+})();
+(function() {
+    'use strict';
+
+    UserController.$inject = ["UserService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http"];
+    angular.module("User")
+        .controller("UserController", UserController);
+
+    function UserController(UserService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
+        var userCtrl = this;
+        userCtrl.accountInfo = {};
+
+        userCtrl.getAccount = function() {
+            UserService.account().then(function(resp) {
+                if (resp.status == 200) {
+                    userCtrl.accountInfo = resp.data;
+                    if (new Date(userCtrl.accountInfo.tokenExpire) < new Date()) {
+                        userCtrl.accountInfo.accessToken = "";
+                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
+                    }
+                }
+            });
+        };
+
+        userCtrl.getAccount();
+
+        userCtrl.login = function(valid) {
+            if (!valid) {
+                toastr.error("Kiểm tra lại dữ liệu và thử lại.", "Lỗi!");
+                return;
+            }
+            UserService.login({
+                    email: userCtrl.form.email,
+                    password: userCtrl.form.password,
+                })
+                .then(function(resp) {
+                    console.log("Resp", resp);
+                    $cookies.put('token', resp.data.token, {
+                        path: "/"
+                    });
+                    $cookies.put('appId', resp.data.appId, {
+                        path: "/"
+                    });
+                    window.location.reload();
+                });
+        };
+
+        userCtrl.logout = function() {
+            UserService.logout()
+                .then(function(res) {
+                    $cookies.remove('token');
+                    window.location.reload();
+                }).catch(function(res) {
+                    $cookies.remove('token');
+                    window.location.reload();
+                });
+        };
+
+        userCtrl.register = function(valid) {
+            if (!valid) {
+                toastr.error("Kiểm tra lại thông tin đã nhập.", "Lỗi!");
+                return;
+            }
+            UserService.register({
+                    email: userCtrl.form.email,
+                    password: userCtrl.form.password,
+                    name: userCtrl.form.name,
+                })
+                .then(function(resp) {
+                    console.log("Resp", resp);
+                    // window.location.reload();
+                    toastr.success("Đăng ký tài khoản thành công!", "Thông báo!");
+                    $timeout(userCtrl.login, 2000);
+                })
+                .catch(function(resp) {
+                    var error = resp.data;
+                    toastr.error(error.message || error, "Thông báo!");
+                });
+        };
+
+        function updateProfile(data, reload, message) {
+            UserService.update(data)
+                .then(function(resp) {
+                    console.log("Resp", resp);
+                    // window.location.reload();
+                    message = message || "Cập nhật tài khoản thành công.";
+                    if (reload) {
+                        message += " Đang làm mới trang.";
+                    }
+                    toastr.success("Cập nhật tài khoản thành công!", "Thông báo!");
+                    if (resp.data.appId) {
+                        $cookies.put('appId', resp.data.appId, {
+                            path: "/"
+                        });
+                    }
+                    if (reload) {
+                        $timeout(function() { window.location.reload(); }, 2000);
+                    }
+                })
+                .catch(function(resp) {
+                    var error = resp.data;
+                    toastr.error(error.message || error, "Thông báo!");
+                });
+        }
+
+        userCtrl.update = function(valid) {
+            if (!valid) {
+                toastr.error("Kiểm tra lại thông tin đã nhập.", "Lỗi!");
+                return;
+            }
+            updateProfile({
+                name: userCtrl.accountInfo.name,
+                appId: userCtrl.accountInfo.appId,
+                accessToken: userCtrl.accountInfo.accessToken,
+                appSecret: userCtrl.accountInfo.appSecret,
+                tokenExpire: userCtrl.accountInfo.tokenExpire,
+            }, true);
+        };
+
+        userCtrl.getAccessToken = function() {
+            $facebook.login().then(function(resp) {
+                console.log("getAccessToken", resp);
+                if (resp.authResponse && resp.authResponse.accessToken) {
+                    // userCtrl.accountInfo.accessToken = resp.authResponse.accessToken;
+                    userCtrl.extendToken(resp.authResponse.accessToken);
+                }
+            });
+        };
+
+        userCtrl.extendToken = function(token) {
+            // $facebook.api(`/oauth/access_token?grant_type=fb_exchange_token&client_id=${userCtrl.accountInfo.appId}&client_secret=${userCtrl.accountInfo.appSecret}&fb_exchange_token=${userCtrl.accountInfo.accessToken}`)
+            //     .then(function(resp) {
+            //         console.log("extendToken", resp);
+            //     });
+            UserService.extendAccessToken({
+                    accessToken: token,
+                    appId: userCtrl.accountInfo.appId,
+                    appSecret: userCtrl.accountInfo.appSecret,
+                })
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        userCtrl.accountInfo.accessToken = resp.data.access_token;
+                        userCtrl.accountInfo.tokenExpire = new Date(new Date().getTime() + resp.data.expires_in * 1000);
+                        userCtrl.update(true);
+                    }
+                });
+        };
+
+        userCtrl.getGroupInfo = function(groupUrl) {
+            if (!groupUrl) {
+                return;
+            }
+            var groupName = groupUrl.match(/\/groups\/(.*)\//g)[0].replace(/\/groups\/(.*)\//g, "$1");
+            if (groupName) {
+                $facebook.api(`/search?q=${groupName}&type=group&access_token=${userCtrl.accountInfo.accessToken}`)
+                    .then(function(resp) {
+                        // console.log("resp", resp);
+                        if (resp.data) {
+                            for (var i in resp.data) {
+                                var fetchData = resp.data[i];
+                                var exist = false;
+                                for (var j in userCtrl.accountInfo.groups) {
+                                    var groupData = userCtrl.accountInfo.groups[j];
+                                    if (fetchData.id == groupData.id) {
+                                        exist = true;
+                                        break;
+                                    }
+                                }
+                                if (!exist) {
+                                    userCtrl.accountInfo.groups.unshift(fetchData);
+                                }
+                            }
+                            updateProfile({
+                                groups: userCtrl.accountInfo.groups
+                            }, false, "Đã cập nhật danh sách nhóm thành công.");
+                        }
+                    }, function(err) {
+                        console.log("group info", err);
+                    });
+            }
+        };
+
+        userCtrl.removeGroup = function(index) {
+            if (confirm("Bạn có chắc chắn muốn xóa?")) {
+                userCtrl.accountInfo.groups.splice(index, 1);
+                updateProfile({
+                    groups: userCtrl.accountInfo.groups
+                }, false, "Đã cập nhật danh sách nhóm thành công.");
+            }
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    UserService.$inject = ["$http"];
+    angular.module("User")
+        .service("UserService", UserService);
+
+    function UserService($http) {
+        var account;
+        return {
+            login: function(data) {
+                return $http({
+                    method: "POST",
+                    url: apiPath + "/api/user/login",
+                    data: data
+                });
+            },
+            logout: function(data) {
+                return $http({
+                    method: "GET",
+                    url: apiPath + "/api/user/logout",
+                });
+            },
+            account: function(data) {
+                if (!account) {
+                    account = $http({
+                        method: "GET",
+                        url: apiPath + "/api/user/account",
+                    });
+                }
+                return account;
+            },
+            register: function(data) {
+                return $http({
+                    method: "POST",
+                    url: apiPath + "/api/user/register",
+                    data: data
+                });
+            },
+            update: function(data) {
+                return $http({
+                    method: "POST",
+                    url: apiPath + "/api/user/update",
+                    data: data
+                });
+            },
+            extendAccessToken: function(data) {
+                return $http({
+                    method: "POST",
+                    url: apiPath + "/api/user/extendAccessToken",
+                    data: data
+                });
+            },
+        }
+    }
+})();

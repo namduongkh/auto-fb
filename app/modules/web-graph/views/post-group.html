@@ -1,0 +1,35 @@
+<div ng-controller="GraphController as graphCtrl" ng-init="graphCtrl.init();">
+    <h3><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Đăng lên dòng thời gian của nhóm</h3>
+    <hr>
+    <form action="#" name="PostForm">
+        <div class="form-group">
+            <label for="group">Nhóm</label>
+            <select name="groupId" required placeholder="Chọn 1 nhóm" ng-model="graphCtrl.groupId" class="form-control" ng-options="group.id as group.name for group in graphCtrl.accountInfo.groups">
+                <option value="">-- Chọn 1 nhóm</option>
+            </select>
+            <div error-message="PostForm.groupId.$error" ng-if="!PostForm.groupId.$pristine"></div>
+        </div>
+        <div class="form-group">
+            <label for="postType">Loại</label>
+            <select class="form-control" name="postType" id="postType" ng-model="graphCtrl.postType">
+                <option value="0">Bài đăng</option>
+                <option value="1">Album</option>
+            </select>
+        </div>
+        <div class="form-group" ng-if="graphCtrl.postType==0">
+            <label for="group">Bài đăng</label>
+            <select name="feedId" required placeholder="Chọn 1 nhóm" ng-model="graphCtrl.feedId" class="form-control" ng-options="feed as feed.title for feed in graphCtrl.listFeeds">
+                <option value="">-- Chọn 1 bài đăng</option>
+            </select>
+            <div error-message="PostForm.feedId.$error" ng-if="!PostForm.feedId.$pristine"></div>
+        </div>
+        <div class="form-group" ng-if="graphCtrl.postType==1">
+            <label for="group">Album</label>
+            <select name="albumId" required placeholder="Chọn 1 nhóm" ng-model="graphCtrl.albumId" class="form-control" ng-options="album as album.name for album in graphCtrl.listAlbums">
+                <option value="">-- Chọn 1 album</option>
+            </select>
+            <div error-message="PostForm.albumId.$error" ng-if="!PostForm.albumId.$pristine"></div>
+        </div>
+        <button ng-disabled="!PostForm.$valid" class="btn btn-primary" type="button" ng-click="graphCtrl.postGroup(PostForm.$valid)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Đăng lên</button>
+    </form>
+</div>

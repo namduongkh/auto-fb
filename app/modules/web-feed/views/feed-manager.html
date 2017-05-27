@@ -1,0 +1,59 @@
+<div ng-controller="FeedController as feedCtrl" ng-init="feedCtrl.init()">
+    <div class="row">
+        <div class="col-md-12" id="feed-top">
+            <h3><span class="glyphicon glyphicon-cog"></span> Quản lý bài đăng</h3>
+            <hr>
+            <form action="#" role="form" name="FeedForm">
+                <div class="form-group">
+                    <label for="_id">ID</label>
+                    <input disabled class="form-control" type="text" name="_id" ng-model="feedCtrl.feed._id" placeholder="ID" />
+                    <div ng-if="!FeedForm._id.$pristine" error-message="FeedForm._id.$error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="title">Tiêu đề</label>
+                    <input class="form-control" type="text" name="title" ng-model="feedCtrl.feed.title" required placeholder="Tiêu đề" />
+                    <div ng-if="!FeedForm.title.$pristine" error-message="FeedForm.title.$error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="message">Thông điệp</label>
+                    <textarea class="form-control" rows="5" name="message" ng-model="feedCtrl.feed.message" required></textarea>
+                    <div ng-if="!FeedForm.message.$pristine" error-message="FeedForm.message.$error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="url">Liên kết</label>
+                    <input class="form-control" type="text" name="url" ng-model="feedCtrl.feed.url" placeholder="Liên kết" />
+                    <div ng-if="!FeedForm.url.$pristine" error-message="FeedForm.url.$error"></div>
+                </div>
+                <button ng-disabled="FeedForm.$invalid" class="btn btn-primary" type="button" ng-click="feedCtrl.saveFeed(FeedForm.$valid)">
+                    <span class="glyphicon glyphicon-floppy-saved"></span> Lưu bài đăng
+                </button>
+                <button class="btn btn-info" type="button" ng-click="feedCtrl.resetFeed()">
+                    <span class="glyphicon glyphicon-refresh"></span> Làm mới
+                </button>
+            </form>
+        </div>
+        <div class="col-md-12">
+            <h3><span class="glyphicon glyphicon-th-list"></span> Danh sách các bài đăng đã lưu</h3>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped">
+                    <tr>
+                        <th>Tiêu đề</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
+                    </tr>
+                    <tr ng-repeat="feed in feedCtrl.listFeeds track by $index">
+                        <td>
+                            <strong ng-bind="feed.title"></strong>
+                        </td>
+                        <td ng-bind="feed.created | date:'dd/MM/yyyy hh:mm a'"></td>
+                        <td>
+                            <a href="javascript:void(0);" class="btn btn-xs btn-info" ng-click="feedCtrl.selectFeed(feed)"><span class="glyphicon glyphicon-edit"></span> Xem</a>
+                            <a href="javascript:void(0);" class="btn btn-xs btn-danger" ng-click="feedCtrl.removeFeed(feed._id, $index)"><span class="glyphicon glyphicon-trash"></span> Xóa</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

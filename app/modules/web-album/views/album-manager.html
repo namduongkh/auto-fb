@@ -1,0 +1,81 @@
+<div ng-controller="AlbumController as albumCtrl" ng-init="albumCtrl.init()">
+    <div class="row">
+        <div class="col-md-12" id="album-top">
+            <h3><span class="glyphicon glyphicon-cog"></span> Quản lý album</h3>
+            <hr>
+            <form action="#" role="form" name="AlbumForm">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="_id">ID</label>
+                        <input disabled class="form-control" type="text" name="_id" ng-model="albumCtrl.album._id" placeholder="ID" />
+                        <div ng-if="!AlbumForm._id.$pristine" error-message="AlbumForm._id.$error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Tên</label>
+                        <input class="form-control" type="text" name="name" ng-model="albumCtrl.album.name" required placeholder="Tiêu đề" />
+                        <div ng-if="!AlbumForm.name.$pristine" error-message="AlbumForm.name.$error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Thông điệp</label>
+                        <textarea class="form-control" rows="5" name="message" ng-model="albumCtrl.album.message" required></textarea>
+                        <div ng-if="!AlbumForm.message.$pristine" error-message="AlbumForm.message.$error"></div>
+                    </div>
+                    <button ng-disabled="AlbumForm.$invalid" class="btn btn-primary" type="button" ng-click="albumCtrl.saveAlbum(AlbumForm.$valid)">
+                        <span class="glyphicon glyphicon-floppy-saved"></span> Lưu album
+                    </button>
+                    <button class="btn btn-info" type="button" ng-click="albumCtrl.resetAlbum()">
+                        <span class="glyphicon glyphicon-refresh"></span> Làm mới
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="photos">Hình ảnh</label>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-sm btn-default" ngf-select="albumCtrl.uploadFiles($files, $invalidFiles)" multiple accept="image/*" ngf-max-height="1000" ngf-max-size="1MB">
+                            <i class="fa fa-photo"></i> Chọn hình ảnh
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <div class="preview-photo" ng-repeat="image in albumCtrl.tmpPhotos track by $index">
+                            <img class="img-responsive img-thumbnail" ngf-src="image" alt="Hình ảnh" />
+                            <p class="text-center" ng-click="albumCtrl.removePhoto($index)">
+                                <button type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Xóa</button>
+                            </p>
+                        </div>
+                        <div ng-if="albumCtrl.album.photos && albumCtrl.album.photos.length" class="preview-photo" ng-repeat="image in albumCtrl.album.photos track by $index">
+                            <img class="img-responsive img-thumbnail" ng-src="/files/albums/{[albumCtrl.album._id]}/{[image]}" alt="Hình ảnh" />
+                            <p class="text-center" ng-click="albumCtrl.removeSavedPhoto($index)">
+                                <button type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Xóa</button>
+                            </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-12">
+            <h3><span class="glyphicon glyphicon-th-list"></span> Danh sách các album đã lưu</h3>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped">
+                    <tr>
+                        <th>Tên</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
+                    </tr>
+                    <tr ng-repeat="album in albumCtrl.listAlbums track by $index">
+                        <td>
+                            <strong ng-bind="album.name"></strong>
+                        </td>
+                        <td ng-bind="album.created | date:'dd/MM/yyyy hh:mm a'"></td>
+                        <td>
+                            <a href="javascript:void(0);" class="btn btn-xs btn-info" ng-click="albumCtrl.selectAlbum(album)"><span class="glyphicon glyphicon-edit"></span> Xem</a>
+                            <a href="javascript:void(0);" class="btn btn-xs btn-danger" ng-click="albumCtrl.removeAlbum(album._id, $index)"><span class="glyphicon glyphicon-trash"></span> Xóa</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
