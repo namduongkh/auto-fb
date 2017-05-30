@@ -4,8 +4,8 @@ module.exports = {
     web: {
         settings: {
             services: {
-                apiUrl: 'http://localhost:3100',
-                webUrl: 'http://localhost:3000',
+                apiUrl: 'http://fbauto.tk',
+                webUrl: 'http://fbauto.tk',
             },
         },
         assets: {
