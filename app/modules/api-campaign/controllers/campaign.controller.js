@@ -133,7 +133,7 @@ exports.runCampaign = {
         let { runCampaign } = request.server.plugins['api-campaign'];
         runCampaign(campaignId, {
             checkBan: true,
-            debug: true
+            // debug: true
         }, function(err, result) {
             if (err) {
                 return reply(Boom.badRequest(err.msg));
