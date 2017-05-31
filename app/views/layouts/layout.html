@@ -21,7 +21,7 @@
 </head>
 
 <body ng-app="HapiApp" ng-controller="UserController as userCtrl">
-    <div id="wrapper">
+    <div id="wrapper" class="is-loading" show-loading="userCtrl.showLoading">
 	    <!--Navigation-->
 	    {{> navigation}}
 

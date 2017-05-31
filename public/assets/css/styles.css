@@ -1793,3 +1793,6 @@ ul.alert-dropdown {
 
 #page-wrapper {
   min-height: 768px; }
+
+.is-loading {
+  display: none; }

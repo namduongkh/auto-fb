@@ -2,7 +2,8 @@
     'use strict';
 
     angular.module('Core')
-        .directive("errorMessage", errorMessage);
+        .directive("errorMessage", errorMessage)
+        .directive("showLoading", showLoading);
 
     function errorMessage() {
         return {
@@ -30,5 +31,21 @@
                 });
             }
         }
+    }
+
+    function showLoading() {
+        return {
+            restrict: "A",
+            scope: {
+                showLoading: "="
+            },
+            link: function(scope, elem, attr) {
+                scope.$watch('showLoading', function(value) {
+                    if (value) {
+                        $(elem).fadeIn();
+                    }
+                });
+            }
+        };
     }
 })();

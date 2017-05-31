@@ -1,6 +1,185 @@
 (function() {
     'use strict';
 
+    angular.module('Campaign', [])
+        .config(["$interpolateProvider", function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+})();
+(function() {
+    'use strict';
+
+    CampaignController.$inject = ["UserService", "CampaignService", "FeedService", "AlbumService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http"];
+    angular.module("Campaign")
+        .controller("CampaignController", CampaignController);
+
+    function CampaignController(UserService, CampaignService, FeedService, AlbumService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
+        var campaignCtrl = this;
+        campaignCtrl.accountInfo = {};
+
+        campaignCtrl.getAccount = function() {
+            UserService.account().then(function(resp) {
+                if (resp.status == 200) {
+                    campaignCtrl.accountInfo = resp.data;
+                    if (new Date(campaignCtrl.accountInfo.tokenExpire) < new Date()) {
+                        campaignCtrl.accountInfo.accessToken = "";
+                    }
+                }
+            });
+        };
+
+        campaignCtrl.init = function() {
+            campaignCtrl.getAccount();
+            CampaignService.getCampaigns()
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        campaignCtrl.listCampaigns = resp.data;
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function() {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        campaignCtrl.saveCampaign = function(valid) {
+            if (!valid) {
+                toastr.error("Kiểm tra lại dữ liệu và thử lại.", "Lỗi!");
+                return;
+            }
+            CampaignService.saveCampaign(campaignCtrl.campaign)
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        if (!campaignCtrl.campaign._id) {
+                            if (!campaignCtrl.listCampaigns) {
+                                campaignCtrl.listCampaigns = [];
+                            }
+                            campaignCtrl.listCampaigns.unshift(resp.data);
+                        } else {
+                            for (var i in campaignCtrl.listCampaigns) {
+                                if (campaignCtrl.listCampaigns[i]._id == campaignCtrl.campaign._id) {
+                                    campaignCtrl.listCampaigns[i] = resp.data;
+                                    break;
+                                }
+                            }
+                        }
+                        campaignCtrl.campaign = resp.data;
+                        toastr.success("Lưu bài đăng thành công.", "Thành công!");
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function(err) {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        campaignCtrl.removeCampaign = function(campaignId, index) {
+            if (confirm("Bạn có chắc chắn muốn xóa?")) {
+                CampaignService.removeCampaign(campaignId)
+                    .then(function(resp) {
+                        if (resp.status == 200 && resp.data) {
+                            toastr.success("Xóa bài đăng thành công.", "Thành công!");
+                            campaignCtrl.listCampaigns.splice(index, 1);
+                            campaignCtrl.resetCampaign();
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function(err) {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    });
+            }
+        };
+
+        campaignCtrl.runCampaign = function(campaignId) {
+            if (confirm("Bạn chắc chắn muốn chạy chiến dịch này?")) {
+                CampaignService.runCampaign(campaignId)
+                    .then(function(resp) {
+                        if (resp.status == 200 && resp.data) {
+                            toastr.success(resp.data.msg, "Thành công!");
+                            // campaignCtrl.resetCampaign();
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function(err) {
+                        toastr.error(err.data.message, "Lỗi!");
+                    });
+            }
+        };
+
+        campaignCtrl.selectCampaign = function(campaign) {
+            campaignCtrl.campaign = campaign;
+            Common.scrollTo("#campaign-top", 'fast');
+            campaignCtrl.postTypeChange();
+        };
+
+        campaignCtrl.resetCampaign = function() {
+            campaignCtrl.campaign = {};
+        };
+
+        campaignCtrl.postTypeChange = function() {
+            if (campaignCtrl.campaign.postType == "feed") {
+                FeedService.getFeeds()
+                    .then(function(resp) {
+                        if (resp.status == 200) {
+                            campaignCtrl.listFeeds = resp.data;
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function() {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    });
+            } else {
+                AlbumService.getAlbums()
+                    .then(function(resp) {
+                        if (resp.status == 200) {
+                            campaignCtrl.listAlbums = resp.data;
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function() {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    });
+            }
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    CampaignService.$inject = ["$http"];
+    angular.module("Campaign")
+        .service("CampaignService", CampaignService);
+
+    function CampaignService($http) {
+        return {
+            getCampaigns: function() {
+                return $http.get(apiPath + "/api/campaign/getCampaigns");
+            },
+            saveCampaign: function(data) {
+                return $http.post(apiPath + "/api/campaign/saveCampaign", data);
+            },
+            removeCampaign: function(id) {
+                return $http.post(apiPath + "/api/campaign/removeCampaign", { campaignId: id });
+            },
+            runCampaign: function(id) {
+                return $http.post(apiPath + "/api/campaign/runCampaign", { campaignId: id });
+            },
+            stopCampaign: function(id) {
+                return $http.post(apiPath + "/api/campaign/stopCampaign", { campaignId: id });
+            },
+        }
+    }
+})();
+(function() {
+    'use strict';
+
     angular.module('Album', [])
         .config(["$interpolateProvider", function($interpolateProvider) {
             $interpolateProvider.startSymbol('{[');
@@ -187,185 +366,6 @@
         }
     }
 })();
-(function() {
-    'use strict';
-
-    angular.module('Campaign', [])
-        .config(["$interpolateProvider", function($interpolateProvider) {
-            $interpolateProvider.startSymbol('{[');
-            $interpolateProvider.endSymbol(']}');
-        }]);
-})();
-(function() {
-    'use strict';
-
-    CampaignController.$inject = ["UserService", "CampaignService", "FeedService", "AlbumService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http"];
-    angular.module("Campaign")
-        .controller("CampaignController", CampaignController);
-
-    function CampaignController(UserService, CampaignService, FeedService, AlbumService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
-        var campaignCtrl = this;
-        campaignCtrl.accountInfo = {};
-
-        campaignCtrl.getAccount = function() {
-            UserService.account().then(function(resp) {
-                if (resp.status == 200) {
-                    campaignCtrl.accountInfo = resp.data;
-                    if (new Date(campaignCtrl.accountInfo.tokenExpire) < new Date()) {
-                        campaignCtrl.accountInfo.accessToken = "";
-                    }
-                }
-            });
-        };
-
-        campaignCtrl.init = function() {
-            campaignCtrl.getAccount();
-            CampaignService.getCampaigns()
-                .then(function(resp) {
-                    if (resp.status == 200) {
-                        campaignCtrl.listCampaigns = resp.data;
-                    } else {
-                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                    }
-                })
-                .catch(function() {
-                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                });
-        };
-
-        campaignCtrl.saveCampaign = function(valid) {
-            if (!valid) {
-                toastr.error("Kiểm tra lại dữ liệu và thử lại.", "Lỗi!");
-                return;
-            }
-            CampaignService.saveCampaign(campaignCtrl.campaign)
-                .then(function(resp) {
-                    if (resp.status == 200) {
-                        if (!campaignCtrl.campaign._id) {
-                            if (!campaignCtrl.listCampaigns) {
-                                campaignCtrl.listCampaigns = [];
-                            }
-                            campaignCtrl.listCampaigns.unshift(resp.data);
-                        } else {
-                            for (var i in campaignCtrl.listCampaigns) {
-                                if (campaignCtrl.listCampaigns[i]._id == campaignCtrl.campaign._id) {
-                                    campaignCtrl.listCampaigns[i] = resp.data;
-                                    break;
-                                }
-                            }
-                        }
-                        campaignCtrl.campaign = resp.data;
-                        toastr.success("Lưu bài đăng thành công.", "Thành công!");
-                    } else {
-                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                    }
-                })
-                .catch(function(err) {
-                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                });
-        };
-
-        campaignCtrl.removeCampaign = function(campaignId, index) {
-            if (confirm("Bạn có chắc chắn muốn xóa?")) {
-                CampaignService.removeCampaign(campaignId)
-                    .then(function(resp) {
-                        if (resp.status == 200 && resp.data) {
-                            toastr.success("Xóa bài đăng thành công.", "Thành công!");
-                            campaignCtrl.listCampaigns.splice(index, 1);
-                            campaignCtrl.resetCampaign();
-                        } else {
-                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                        }
-                    })
-                    .catch(function(err) {
-                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                    });
-            }
-        };
-
-        campaignCtrl.runCampaign = function(campaignId) {
-            if (confirm("Bạn chắc chắn muốn chạy chiến dịch này?")) {
-                CampaignService.runCampaign(campaignId)
-                    .then(function(resp) {
-                        if (resp.status == 200 && resp.data) {
-                            toastr.success(resp.data.msg, "Thành công!");
-                            // campaignCtrl.resetCampaign();
-                        } else {
-                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                        }
-                    })
-                    .catch(function(err) {
-                        toastr.error(err.data.message, "Lỗi!");
-                    });
-            }
-        };
-
-        campaignCtrl.selectCampaign = function(campaign) {
-            campaignCtrl.campaign = campaign;
-            Common.scrollTo("#campaign-top", 'fast');
-            campaignCtrl.postTypeChange();
-        };
-
-        campaignCtrl.resetCampaign = function() {
-            campaignCtrl.campaign = {};
-        };
-
-        campaignCtrl.postTypeChange = function() {
-            if (campaignCtrl.campaign.postType == "feed") {
-                FeedService.getFeeds()
-                    .then(function(resp) {
-                        if (resp.status == 200) {
-                            campaignCtrl.listFeeds = resp.data;
-                        } else {
-                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                        }
-                    })
-                    .catch(function() {
-                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                    });
-            } else {
-                AlbumService.getAlbums()
-                    .then(function(resp) {
-                        if (resp.status == 200) {
-                            campaignCtrl.listAlbums = resp.data;
-                        } else {
-                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                        }
-                    })
-                    .catch(function() {
-                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                    });
-            }
-        };
-    }
-})();
-(function() {
-    'use strict';
-
-    CampaignService.$inject = ["$http"];
-    angular.module("Campaign")
-        .service("CampaignService", CampaignService);
-
-    function CampaignService($http) {
-        return {
-            getCampaigns: function() {
-                return $http.get(apiPath + "/api/campaign/getCampaigns");
-            },
-            saveCampaign: function(data) {
-                return $http.post(apiPath + "/api/campaign/saveCampaign", data);
-            },
-            removeCampaign: function(id) {
-                return $http.post(apiPath + "/api/campaign/removeCampaign", { campaignId: id });
-            },
-            runCampaign: function(id) {
-                return $http.post(apiPath + "/api/campaign/runCampaign", { campaignId: id });
-            },
-            stopCampaign: function(id) {
-                return $http.post(apiPath + "/api/campaign/stopCampaign", { campaignId: id });
-            },
-        }
-    }
-})();
 var Common = (function() {
     'use strict';
     return {
@@ -392,7 +392,8 @@ var Common = (function() {
     'use strict';
 
     angular.module('Core')
-        .directive("errorMessage", errorMessage);
+        .directive("errorMessage", errorMessage)
+        .directive("showLoading", showLoading);
 
     function errorMessage() {
         return {
@@ -420,6 +421,22 @@ var Common = (function() {
                 });
             }
         }
+    }
+
+    function showLoading() {
+        return {
+            restrict: "A",
+            scope: {
+                showLoading: "="
+            },
+            link: function(scope, elem, attr) {
+                scope.$watch('showLoading', function(value) {
+                    if (value) {
+                        $(elem).fadeIn();
+                    }
+                });
+            }
+        };
     }
 })();
 (function() {
@@ -759,6 +776,7 @@ var Common = (function() {
     function UserController(UserService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
         var userCtrl = this;
         userCtrl.accountInfo = {};
+        userCtrl.showLoading = false;
 
         userCtrl.showApiError = function(message) {
             if (window.location.href.search("trang-ca-nhan") == -1) {
@@ -788,6 +806,7 @@ var Common = (function() {
                     if (new Date(userCtrl.accountInfo.tokenExpire) < new Date()) {
                         userCtrl.accountInfo.accessToken = "";
                     }
+                    userCtrl.showLoading = true;
                 }
             });
         };

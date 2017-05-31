@@ -7,6 +7,7 @@
     function UserController(UserService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
         var userCtrl = this;
         userCtrl.accountInfo = {};
+        userCtrl.showLoading = false;
 
         userCtrl.showApiError = function(message) {
             if (window.location.href.search("trang-ca-nhan") == -1) {
@@ -36,6 +37,7 @@
                     if (new Date(userCtrl.accountInfo.tokenExpire) < new Date()) {
                         userCtrl.accountInfo.accessToken = "";
                     }
+                    userCtrl.showLoading = true;
                 }
             });
         };
