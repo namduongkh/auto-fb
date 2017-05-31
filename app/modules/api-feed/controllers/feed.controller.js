@@ -17,7 +17,7 @@ exports.getFeeds = {
             Feed.find({
                     created_by: id
                 })
-                .sort("-created")
+                .sort("-modified")
                 .lean()
                 .then(function(feeds) {
                     return reply(feeds);
@@ -58,9 +58,9 @@ exports.saveFeed = {
                 })
                 .then(function(feed) {
                     if (feed) {
-                        feed.title = title;
-                        feed.message = message;
-                        feed.link = link;
+                        feed.title = title || feed.title;
+                        feed.message = message || feed.message;
+                        feed.link = link || feed.link;
                         feed.modified = new Date()
                         save(feed);
                     } else {

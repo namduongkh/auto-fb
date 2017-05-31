@@ -6,8 +6,8 @@ if (window.location.port) {
 (function() {
     'use strict';
 
-    const dependencyModules = ["User", "Core", "Feed", "Graph", "Album", "Campaign",
-        "ngCookies", "ngAnimate", "toastr", "angular-loading-bar", "ngMessages", "ngFacebook", "ngFileUpload"
+    const dependencyModules = ["User", "Core", "Feed", "Graph", "Album", "Campaign", "Schedule",
+        "ngCookies", "ngAnimate", "toastr", "angular-loading-bar", "ngMessages", "ngFacebook", "ngFileUpload", "ae-datetimepicker"
     ];
 
     angular

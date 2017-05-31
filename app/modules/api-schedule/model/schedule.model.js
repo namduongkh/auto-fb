@@ -4,14 +4,39 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ScheduleSchema = new Schema({
-    title: {
+    name: {
         type: String
     },
-    message: {
-        type: String
+    scheduleType: {
+        type: String,
+        enum: ['count', 'time']
     },
-    url: {
-        type: String
+    campaignId: {
+        type: Object,
+        ref: 'Campaign'
+    },
+    running: {
+        type: Boolean,
+        default: false
+    },
+    cycleMinutes: {
+        type: Number,
+        default: 30
+    },
+    lastRun: {
+        type: Date,
+        default: Date.now
+    },
+    runCounts: {
+        type: Number,
+        default: 0
+    },
+    runTimes: {
+        type: Number,
+        default: 0
+    },
+    endTime: {
+        type: Date,
     },
     created: {
         type: Date,

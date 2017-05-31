@@ -17,7 +17,7 @@ exports.getAlbums = {
             Album.find({
                     created_by: id
                 })
-                .sort("-created")
+                .sort("-modified")
                 .lean()
                 .then(function(albums) {
                     return reply(albums);

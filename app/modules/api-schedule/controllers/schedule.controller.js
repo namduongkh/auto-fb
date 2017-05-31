@@ -1,26 +1,26 @@
 'use strict';
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
-const Feed = mongoose.model('Feed');
+const Schedule = mongoose.model('Schedule');
 const Boom = require('boom');
 const JWT = require('jsonwebtoken');
 const ErrorHandler = require("../../../utils/error.js");
 const graph = require('fbgraph');
 
-// Get list feed
-exports.getFeeds = {
+// Get list schedule
+exports.getSchedules = {
     auth: 'jwt',
     handler: function(request, reply) {
         let { credentials } = request.auth;
         if (credentials && credentials.id) {
             let id = credentials.id;
-            Feed.find({
+            Schedule.find({
                     created_by: id
                 })
-                .sort("-created")
+                .sort("-modified")
                 .lean()
-                .then(function(feeds) {
-                    return reply(feeds);
+                .then(function(schedules) {
+                    return reply(schedules);
                 })
                 .catch(function(err) {
                     console.log("GET FEEDS", err);
@@ -32,18 +32,26 @@ exports.getFeeds = {
     }
 };
 
-// Save feed
-exports.saveFeed = {
+// Save schedule
+exports.saveSchedule = {
     auth: 'jwt',
     handler: function(request, reply) {
-        let { _id, title, message, url } = request.payload;
+        let {
+            _id,
+            name,
+            campaignId,
+            cycleMinutes,
+            runCounts,
+            endTime,
+            scheduleType,
+        } = request.payload;
 
         let id = request.auth.credentials.id;
 
-        function save(feed) {
-            feed.save()
-                .then(function(feed) {
-                    return reply(feed);
+        function save(schedule) {
+            schedule.save()
+                .then(function(schedule) {
+                    return reply(schedule);
                 })
                 .catch(function(err) {
                     console.log("SAVE FEEDS", err);
@@ -52,47 +60,53 @@ exports.saveFeed = {
         }
 
         if (_id) {
-            Feed.findOne({
+            Schedule.findOne({
                     created_by: id,
                     _id: _id
                 })
-                .then(function(feed) {
-                    if (feed) {
-                        feed.title = title;
-                        feed.message = message;
-                        feed.url = url;
-                        feed.modified = new Date()
-                        save(feed);
+                .then(function(schedule) {
+                    if (schedule) {
+                        schedule.name = name || schedule.name;
+                        schedule.campaignId = campaignId || schedule.campaignId;
+                        schedule.cycleMinutes = cycleMinutes || schedule.cycleMinutes;
+                        schedule.runCounts = runCounts || schedule.runCounts;
+                        schedule.endTime = endTime || schedule.endTime;
+                        schedule.scheduleType = scheduleType || schedule.scheduleType;
+                        schedule.modified = new Date();
+                        save(schedule);
                     } else {
                         return reply(false);
                     }
                 });
         } else {
-            let feed = new Feed({
-                message,
-                url,
-                title,
+            let schedule = new Schedule({
+                name,
+                campaignId,
+                cycleMinutes,
+                runCounts,
+                endTime,
+                scheduleType,
                 created_by: id
             });
-            save(feed);
+            save(schedule);
         }
     }
 };
 
-// Remove feed
-exports.removeFeed = {
+// Remove schedule
+exports.removeSchedule = {
     auth: 'jwt',
     handler: function(request, reply) {
         let userId = request.auth.credentials.id;
-        let feedId = request.payload.feedId;
+        let scheduleId = request.payload.scheduleId;
 
-        Feed.findOne({
-                _id: feedId,
+        Schedule.findOne({
+                _id: scheduleId,
                 created_by: userId
             })
-            .then(function(feed) {
-                if (feed) {
-                    feed.remove()
+            .then(function(schedule) {
+                if (schedule) {
+                    schedule.remove()
                         .then(function() {
                             return reply(true);
                         })
@@ -102,6 +116,67 @@ exports.removeFeed = {
             })
             .catch(function(err) {
                 console.log("REMOVE FEEDS", err);
+                return reply(Boom.badRequest(ErrorHandler.getErrorMessage(err)));
+            });
+    }
+};
+
+exports.runSchedule = {
+    auth: 'jwt',
+    handler: function(request, reply) {
+        let { scheduleId } = request.payload;
+        let id = request.auth.credentials.id;
+        Schedule.findOne({
+                _id: scheduleId,
+                created_by: id
+            })
+            .then(function(schedule) {
+                if (schedule) {
+                    schedule.running = true;
+                    schedule.runTimes = 0;
+                    return schedule.save();
+                } else {
+                    return reply(Boom.badRequest("Không tìm thấy lịch trình."));
+                }
+            })
+            .then(function(schedule) {
+                return reply({
+                    status: true,
+                    msg: "Đã khởi động lịch trình thành công",
+                    data: schedule
+                });
+            })
+            .catch(function(err) {
+                return reply(Boom.badRequest(ErrorHandler.getErrorMessage(err)));
+            });
+    }
+};
+
+exports.stopSchedule = {
+    auth: 'jwt',
+    handler: function(request, reply) {
+        let { scheduleId } = request.payload;
+        let id = request.auth.credentials.id;
+        Schedule.findOne({
+                _id: scheduleId,
+                created_by: id
+            })
+            .then(function(schedule) {
+                if (schedule) {
+                    schedule.running = false;
+                    return schedule.save();
+                } else {
+                    return reply(Boom.badRequest("Không tìm thấy lịch trình."));
+                }
+            })
+            .then(function(schedule) {
+                return reply({
+                    status: true,
+                    msg: "Đã dừng lịch trình thành công",
+                    data: schedule
+                });
+            })
+            .catch(function(err) {
                 return reply(Boom.badRequest(ErrorHandler.getErrorMessage(err)));
             });
     }

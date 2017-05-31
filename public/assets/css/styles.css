@@ -1796,3 +1796,7 @@ ul.alert-dropdown {
 
 .is-loading {
   display: none; }
+
+.divide {
+  border-top: 1px solid #9d9d9d;
+  height: 0px; }

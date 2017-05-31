@@ -18,7 +18,7 @@ exports.getCampaigns = {
             Campaign.find({
                     created_by: id
                 })
-                .sort("-created")
+                .sort("-modified")
                 .lean()
                 .then(function(campaigns) {
                     return reply(campaigns);

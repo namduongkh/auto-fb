@@ -29,17 +29,20 @@
 
         userCtrl.getAccount = function() {
             UserService.account().then(function(resp) {
-                if (resp.status == 200) {
-                    userCtrl.accountInfo = resp.data;
-                    if (resp.data.appId && resp.data.appSecret) {
-                        userCtrl.appIdValid = true;
+                    if (resp.status == 200) {
+                        userCtrl.accountInfo = resp.data;
+                        if (resp.data.appId && resp.data.appSecret) {
+                            userCtrl.appIdValid = true;
+                        }
+                        if (new Date(userCtrl.accountInfo.tokenExpire) < new Date()) {
+                            userCtrl.accountInfo.accessToken = "";
+                        }
+                        userCtrl.showLoading = true;
                     }
-                    if (new Date(userCtrl.accountInfo.tokenExpire) < new Date()) {
-                        userCtrl.accountInfo.accessToken = "";
-                    }
+                })
+                .catch(function() {
                     userCtrl.showLoading = true;
-                }
-            });
+                });
         };
 
         userCtrl.getAccount();
@@ -172,12 +175,14 @@
             if (!groupUrl) {
                 return;
             }
-            var groupName = groupUrl.match(/\/groups\/(.*)\//g)[0].replace(/\/groups\/(.*)\//g, "$1");
+            var groupName = (groupUrl.replace(/\/$/g, "") + "/")
+                .match(/\/groups\/([^/]*)\//g)[0]
+                .replace(/\/groups\/([^/]*)\//g, "$1");
             if (groupName) {
                 $facebook.api(`/search?q=${groupName}&type=group&access_token=${userCtrl.accountInfo.accessToken}`)
                     .then(function(resp) {
-                        // console.log("resp", resp);
-                        if (resp.data) {
+                        console.log("get group info", resp);
+                        if (resp.data && resp.data.length) {
                             for (var i in resp.data) {
                                 var fetchData = resp.data[i];
                                 var exist = false;
@@ -195,6 +200,8 @@
                             updateProfile({
                                 groups: userCtrl.accountInfo.groups
                             }, false, "Đã cập nhật danh sách nhóm thành công.");
+                        } else {
+                            toastr.error("Không lấy được thông tin.", "Lỗi!");
                         }
                     }, function(err) {
                         console.log("group info", err);

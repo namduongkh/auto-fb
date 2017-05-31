@@ -21,6 +21,12 @@ module.exports = {
                 '/libs/ng-facebook/ngFacebook.js',
                 '/libs/ng-file-upload/ng-file-upload.min.js',
                 '/libs/async/dist/async.min.js',
+                '/libs/moment/min/moment.min.js',
+                '/libs/moment/min/locales.min.js',
+                '/libs/moment/min/moment-with-locales.min.js',
+                '/libs/moment/locale/vi.js',
+                '/libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+                '/libs/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
 
                 '/assets/js/app.js',
                 '/assets/js/config.js',
@@ -32,6 +38,7 @@ module.exports = {
                 '/libs/font-awesome/css/font-awesome.min.css',
                 '/libs/angular-loading-bar/build/loading-bar.min.css',
                 '/libs/angular-toastr/dist/angular-toastr.min.css',
+                '/libs/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
 
                 '/assets/css/styles.css',
                 // '/assets/min/app.min.css',

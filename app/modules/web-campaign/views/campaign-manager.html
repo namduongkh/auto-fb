@@ -42,9 +42,9 @@
                         <div ng-if="!CampaignForm.postType.$pristine" error-message="CampaignForm.postType.$error"></div>
                     </div>
                     <div class="form-group" ng-if="campaignCtrl.campaign.postType=='feed'">
-                        <label for="group">Bài đăng</label>
+                        <label for="group">Trạng thái</label>
                         <select name="feedId" required placeholder="Chọn 1 nhóm" ng-model="campaignCtrl.campaign.feedId" class="form-control" ng-options="feed._id as feed.title for feed in campaignCtrl.listFeeds">
-                            <option value="">-- Chọn 1 bài đăng</option>
+                            <option value="">-- Chọn 1 trạng thái</option>
                         </select>
                         <div error-message="CampaignForm.feedId.$error" ng-if="!CampaignForm.feedId.$pristine"></div>
                     </div>
@@ -79,14 +79,14 @@
                 <table class="table table-bordered table-hover table-striped">
                     <tr>
                         <th>Tiêu đề</th>
-                        <th>Ngày tạo</th>
+                        <th>Cập nhật</th>
                         <th>Hành động</th>
                     </tr>
                     <tr ng-repeat="campaign in campaignCtrl.listCampaigns track by $index">
                         <td>
                             <strong ng-bind="campaign.title"></strong>
                         </td>
-                        <td ng-bind="campaign.created | date:'dd/MM/yyyy hh:mm a'"></td>
+                        <td ng-bind="campaign.modified | date:'dd/MM/yyyy hh:mm a'"></td>
                         <td>
                             <a href="javascript:void(0);" class="btn btn-xs btn-info" ng-click="campaignCtrl.selectCampaign(campaign)"><span class="glyphicon glyphicon-edit"></span> Xem</a>
                             <a href="javascript:void(0);" class="btn btn-xs btn-danger" ng-click="campaignCtrl.removeCampaign(campaign._id, $index)"><span class="glyphicon glyphicon-trash"></span> Xóa</a>

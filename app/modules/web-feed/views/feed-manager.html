@@ -39,14 +39,14 @@
                 <table class="table table-bordered table-hover table-striped">
                     <tr>
                         <th>Tiêu đề</th>
-                        <th>Ngày tạo</th>
+                        <th>Cập nhật</th>
                         <th>Hành động</th>
                     </tr>
                     <tr ng-repeat="feed in feedCtrl.listFeeds track by $index">
                         <td>
                             <strong ng-bind="feed.title"></strong>
                         </td>
-                        <td ng-bind="feed.created | date:'dd/MM/yyyy hh:mm a'"></td>
+                        <td ng-bind="feed.modified | date:'dd/MM/yyyy hh:mm a'"></td>
                         <td>
                             <a href="javascript:void(0);" class="btn btn-xs btn-info" ng-click="feedCtrl.selectFeed(feed)"><span class="glyphicon glyphicon-edit"></span> Xem</a>
                             <a href="javascript:void(0);" class="btn btn-xs btn-danger" ng-click="feedCtrl.removeFeed(feed._id, $index)"><span class="glyphicon glyphicon-trash"></span> Xóa</a>

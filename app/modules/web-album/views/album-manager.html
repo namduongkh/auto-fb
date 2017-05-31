@@ -63,14 +63,14 @@
                 <table class="table table-bordered table-hover table-striped">
                     <tr>
                         <th>Tên</th>
-                        <th>Ngày tạo</th>
+                        <th>Cập nhật</th>
                         <th>Hành động</th>
                     </tr>
                     <tr ng-repeat="album in albumCtrl.listAlbums track by $index">
                         <td>
                             <strong ng-bind="album.name"></strong>
                         </td>
-                        <td ng-bind="album.created | date:'dd/MM/yyyy hh:mm a'"></td>
+                        <td ng-bind="album.modified | date:'dd/MM/yyyy hh:mm a'"></td>
                         <td>
                             <a href="javascript:void(0);" class="btn btn-xs btn-info" ng-click="albumCtrl.selectAlbum(album)"><span class="glyphicon glyphicon-edit"></span> Xem</a>
                             <a href="javascript:void(0);" class="btn btn-xs btn-danger" ng-click="albumCtrl.removeAlbum(album._id, $index)"><span class="glyphicon glyphicon-trash"></span> Xóa</a>
