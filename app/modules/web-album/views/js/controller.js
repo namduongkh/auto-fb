@@ -14,7 +14,6 @@
                     albumCtrl.accountInfo = resp.data;
                     if (new Date(albumCtrl.accountInfo.tokenExpire) < new Date()) {
                         albumCtrl.accountInfo.accessToken = "";
-                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
                     }
                 }
             });

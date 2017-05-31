@@ -50,11 +50,9 @@ var UserSchema = new Schema({
         name: { type: String },
         id: { type: String }
     }],
-    feeds: [{
-        title: { type: String },
-        message: { type: String },
-        url: { type: String }
-    }]
+    banCampaign: {
+        type: Date
+    }
 }, {
     collection: 'users'
 });

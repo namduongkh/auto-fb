@@ -24,7 +24,6 @@
                     albumCtrl.accountInfo = resp.data;
                     if (new Date(albumCtrl.accountInfo.tokenExpire) < new Date()) {
                         albumCtrl.accountInfo.accessToken = "";
-                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
                     }
                 }
             });
@@ -188,6 +187,185 @@
         }
     }
 })();
+(function() {
+    'use strict';
+
+    angular.module('Campaign', [])
+        .config(["$interpolateProvider", function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+})();
+(function() {
+    'use strict';
+
+    CampaignController.$inject = ["UserService", "CampaignService", "FeedService", "AlbumService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http"];
+    angular.module("Campaign")
+        .controller("CampaignController", CampaignController);
+
+    function CampaignController(UserService, CampaignService, FeedService, AlbumService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
+        var campaignCtrl = this;
+        campaignCtrl.accountInfo = {};
+
+        campaignCtrl.getAccount = function() {
+            UserService.account().then(function(resp) {
+                if (resp.status == 200) {
+                    campaignCtrl.accountInfo = resp.data;
+                    if (new Date(campaignCtrl.accountInfo.tokenExpire) < new Date()) {
+                        campaignCtrl.accountInfo.accessToken = "";
+                    }
+                }
+            });
+        };
+
+        campaignCtrl.init = function() {
+            campaignCtrl.getAccount();
+            CampaignService.getCampaigns()
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        campaignCtrl.listCampaigns = resp.data;
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function() {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        campaignCtrl.saveCampaign = function(valid) {
+            if (!valid) {
+                toastr.error("Kiểm tra lại dữ liệu và thử lại.", "Lỗi!");
+                return;
+            }
+            CampaignService.saveCampaign(campaignCtrl.campaign)
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        if (!campaignCtrl.campaign._id) {
+                            if (!campaignCtrl.listCampaigns) {
+                                campaignCtrl.listCampaigns = [];
+                            }
+                            campaignCtrl.listCampaigns.unshift(resp.data);
+                        } else {
+                            for (var i in campaignCtrl.listCampaigns) {
+                                if (campaignCtrl.listCampaigns[i]._id == campaignCtrl.campaign._id) {
+                                    campaignCtrl.listCampaigns[i] = resp.data;
+                                    break;
+                                }
+                            }
+                        }
+                        campaignCtrl.campaign = resp.data;
+                        toastr.success("Lưu bài đăng thành công.", "Thành công!");
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function(err) {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        campaignCtrl.removeCampaign = function(campaignId, index) {
+            if (confirm("Bạn có chắc chắn muốn xóa?")) {
+                CampaignService.removeCampaign(campaignId)
+                    .then(function(resp) {
+                        if (resp.status == 200 && resp.data) {
+                            toastr.success("Xóa bài đăng thành công.", "Thành công!");
+                            campaignCtrl.listCampaigns.splice(index, 1);
+                            campaignCtrl.resetCampaign();
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function(err) {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    });
+            }
+        };
+
+        campaignCtrl.runCampaign = function(campaignId) {
+            if (confirm("Bạn chắc chắn muốn chạy chiến dịch này?")) {
+                CampaignService.runCampaign(campaignId)
+                    .then(function(resp) {
+                        if (resp.status == 200 && resp.data) {
+                            toastr.success(resp.data.msg, "Thành công!");
+                            // campaignCtrl.resetCampaign();
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function(err) {
+                        toastr.error(err.data.message, "Lỗi!");
+                    });
+            }
+        };
+
+        campaignCtrl.selectCampaign = function(campaign) {
+            campaignCtrl.campaign = campaign;
+            Common.scrollTo("#campaign-top", 'fast');
+            campaignCtrl.postTypeChange();
+        };
+
+        campaignCtrl.resetCampaign = function() {
+            campaignCtrl.campaign = {};
+        };
+
+        campaignCtrl.postTypeChange = function() {
+            if (campaignCtrl.campaign.postType == "feed") {
+                FeedService.getFeeds()
+                    .then(function(resp) {
+                        if (resp.status == 200) {
+                            campaignCtrl.listFeeds = resp.data;
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function() {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    });
+            } else {
+                AlbumService.getAlbums()
+                    .then(function(resp) {
+                        if (resp.status == 200) {
+                            campaignCtrl.listAlbums = resp.data;
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function() {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    });
+            }
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    CampaignService.$inject = ["$http"];
+    angular.module("Campaign")
+        .service("CampaignService", CampaignService);
+
+    function CampaignService($http) {
+        return {
+            getCampaigns: function() {
+                return $http.get(apiPath + "/api/campaign/getCampaigns");
+            },
+            saveCampaign: function(data) {
+                return $http.post(apiPath + "/api/campaign/saveCampaign", data);
+            },
+            removeCampaign: function(id) {
+                return $http.post(apiPath + "/api/campaign/removeCampaign", { campaignId: id });
+            },
+            runCampaign: function(id) {
+                return $http.post(apiPath + "/api/campaign/runCampaign", { campaignId: id });
+            },
+            stopCampaign: function(id) {
+                return $http.post(apiPath + "/api/campaign/stopCampaign", { campaignId: id });
+            },
+        }
+    }
+})();
 var Common = (function() {
     'use strict';
     return {
@@ -209,16 +387,6 @@ var Common = (function() {
             $interpolateProvider.startSymbol('{[');
             $interpolateProvider.endSymbol(']}');
         }]);
-})();
-var sideMenu = (function() {
-    return {
-        open: function() {
-
-        },
-        close: function() {
-
-        }
-    }
 })();
 (function() {
     'use strict';
@@ -257,6 +425,42 @@ var sideMenu = (function() {
 (function() {
     'use strict';
 
+    PreResponse.$inject = ["$rootScope", "$timeout", "$q"];
+    angular.module('Core')
+        .factory('PreResponse', PreResponse)
+        .config(['$httpProvider', function($httpProvider) {
+            $httpProvider.interceptors.push('PreResponse');
+        }]);
+
+    function PreResponse($rootScope, $timeout, $q) {
+        return {
+            response: function(response) {
+                // console.log("Chạy vào đây");
+                if (response.status == 200) {
+                    if (response.data.noAccessToken) {
+                        $rootScope.$broadcast("NO_ACCESS_TOKEN_ERROR");
+                    }
+                    if (response.data.tokenHasExpired) {
+                        $rootScope.$broadcast("TOKEN_HAS_EXPIRED_ERROR");
+                    }
+                    if (response.data.rejectApi) {
+                        return $q.reject({
+                            status: false,
+                            data: {
+                                message: 'You have access token!'
+                            },
+                            handle: 'PreResponse'
+                        });
+                    }
+                }
+                return response;
+            },
+        }
+    };
+})();
+(function() {
+    'use strict';
+
     angular.module('Feed', [])
         .config(["$interpolateProvider", function($interpolateProvider) {
             $interpolateProvider.startSymbol('{[');
@@ -280,7 +484,6 @@ var sideMenu = (function() {
                     feedCtrl.accountInfo = resp.data;
                     if (new Date(feedCtrl.accountInfo.tokenExpire) < new Date()) {
                         feedCtrl.accountInfo.accessToken = "";
-                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
                     }
                 }
             });
@@ -323,7 +526,7 @@ var sideMenu = (function() {
                             }
                         }
                         feedCtrl.feed = resp.data;
-                        toastr.success("Lưu bài đăng thành công.", "Thành công!");
+                        toastr.success("Lưu trạng thái thành công.", "Thành công!");
                     } else {
                         toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
                     }
@@ -338,7 +541,7 @@ var sideMenu = (function() {
                 FeedService.removeFeed(feedId)
                     .then(function(resp) {
                         if (resp.status == 200 && resp.data) {
-                            toastr.success("Xóa bài đăng thành công.", "Thành công!");
+                            toastr.success("Xóa trạng thái thành công.", "Thành công!");
                             feedCtrl.listFeeds.splice(index, 1);
                             feedCtrl.resetFeed();
                         } else {
@@ -408,7 +611,6 @@ var sideMenu = (function() {
                     graphCtrl.accountInfo = resp.data;
                     if (new Date(graphCtrl.accountInfo.tokenExpire) < new Date()) {
                         graphCtrl.accountInfo.accessToken = "";
-                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
                     }
                 }
             });
@@ -558,13 +760,33 @@ var sideMenu = (function() {
         var userCtrl = this;
         userCtrl.accountInfo = {};
 
+        userCtrl.showApiError = function(message) {
+            if (window.location.href.search("trang-ca-nhan") == -1) {
+                toastr.error(message, "Lỗi");
+                $timeout(function() {
+                    window.location.href = window.settings.services.webUrl + "/trang-ca-nhan";
+                }, 2000);
+
+            }
+        }
+
+        $rootScope.$on("NO_ACCESS_TOKEN_ERROR", function() {
+            userCtrl.showApiError("Bạn chưa có mã truy cập, hãy đến trang cá nhân, bổ sung thông tin và nhận mã truy cập.");
+        });
+
+        $rootScope.$on("TOKEN_HAS_EXPIRED_ERROR", function() {
+            userCtrl.showApiError("Mã truy cập đã hết hạn, hãy đến trang cá nhân và cập nhật mã truy cập.");
+        });
+
         userCtrl.getAccount = function() {
             UserService.account().then(function(resp) {
                 if (resp.status == 200) {
                     userCtrl.accountInfo = resp.data;
+                    if (resp.data.appId && resp.data.appSecret) {
+                        userCtrl.appIdValid = true;
+                    }
                     if (new Date(userCtrl.accountInfo.tokenExpire) < new Date()) {
                         userCtrl.accountInfo.accessToken = "";
-                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
                     }
                 }
             });
@@ -618,7 +840,9 @@ var sideMenu = (function() {
                     console.log("Resp", resp);
                     // window.location.reload();
                     toastr.success("Đăng ký tài khoản thành công!", "Thông báo!");
-                    $timeout(userCtrl.login, 2000);
+                    $timeout(function() {
+                        userCtrl.login(true);
+                    }, 2000);
                 })
                 .catch(function(resp) {
                     var error = resp.data;

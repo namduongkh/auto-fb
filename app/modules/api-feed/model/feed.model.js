@@ -10,7 +10,7 @@ var FeedSchema = new Schema({
     message: {
         type: String
     },
-    url: {
+    link: {
         type: String
     },
     created: {

@@ -1,6 +1,7 @@
 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
 <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav side-nav">
+        {{#if credentials.id}}
         <li class="{{activeMenu activeMenu 'index'}}">
             <a href="/"><i class="fa fa-home" aria-hidden="true"></i> Trang chủ</a>
         </li>
@@ -8,13 +9,24 @@
             <a href="/quan-ly-nhom"><i class="fa fa-users" aria-hidden="true"></i> Quản lý nhóm</a>
         </li>
         <li class="{{activeMenu activeMenu 'feedManager'}}">
-            <a href="/quan-ly-feed"><i class="fa fa-rss-square" aria-hidden="true"></i> Quản lý bài đăng</a>
+            <a href="/quan-ly-feed"><i class="fa fa-sticky-note-o" aria-hidden="true"></i> Quản lý trạng thái</a>
         </li>
         <li class="{{activeMenu activeMenu 'albumManager'}}">
             <a href="/quan-ly-album"><i class="fa fa-photo" aria-hidden="true"></i> Quản lý album</a>
         </li>
-        <li class="{{activeMenu activeMenu 'postGroup'}}">
+        <!--<li class="{{activeMenu activeMenu 'postGroup'}}">
             <a href="/dang-len-nhom"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Đăng lên nhóm</a>
+        </li>-->
+        <li class="{{activeMenu activeMenu 'campaignManager'}}">
+            <a href="/quan-ly-campaign"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Quản lý chiến dịch</a>
         </li>
+        {{else}}
+        <li class="{{activeMenu activeMenu 'login'}}">
+            <a href="/dang-nhap"><i class="glyphicon glyphicon-log-in" aria-hidden="true"></i> Đăng nhập</a>
+        </li>
+        <li class="{{activeMenu activeMenu 'register'}}">
+            <a href="/dang-ky"><i class="glyphicon glyphicon-user" aria-hidden="true"></i> Đăng ký</a>
+        </li>
+        {{/if}}
     </ul>
 </div>

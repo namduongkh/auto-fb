@@ -5,7 +5,7 @@ exports.feedManager = {
     handler: function(request, reply) {
         return reply.view('web-feed/views/feed-manager', {
             meta: {
-                title: "Bài đăng"
+                title: "Quản lý trạng thái"
             },
             activeMenu: "feedManager"
         });

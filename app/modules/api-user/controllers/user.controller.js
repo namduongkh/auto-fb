@@ -36,6 +36,7 @@ exports.login = {
                             name: user.name,
                             email: user.email,
                             scopes: user.roles,
+                            tokenExpire: user.tokenExpire,
                             exp: new Date().getTime() + 30 * 60 * 1000 // expires in 30 minutes time
                         };
                         const secret = request.server.configManager.get('web.jwt.secret');
@@ -47,6 +48,8 @@ exports.login = {
                             })
                             .header("Authorization", token)
                             .state("appId", user.appId, cookieOptions)
+                            .state("accessToken", user.accessToken, cookieOptions)
+                            // .state("tokenExpire", user.tokenExpire, cookieOptions)
                             .state("token", token, cookieOptions);
                     }
                 });
@@ -93,7 +96,10 @@ exports.update = {
 
         const promise = user.save();
         promise.then(user => {
-                return reply(user).state("appId", user.appId, request.server.configManager.get("web.cookieOptions"));
+                return reply(user)
+                    .state("appId", user.appId, request.server.configManager.get("web.cookieOptions"))
+                    .state("accessToken", user.accessToken, request.server.configManager.get("web.cookieOptions"))
+                    // .state("tokenExpire", user.tokenExpire.toLocaleString(), request.server.configManager.get("web.cookieOptions"));
             })
             .catch(err => {
                 // console.log("Err", err);
@@ -108,7 +114,9 @@ exports.logout = {
         let cookieOptions = request.server.configManager.get('web.cookieOptions');
         reply({ status: true }).header("Authorization", '')
             .unstate('appId', cookieOptions)
-            .unstate('token', cookieOptions);
+            .unstate('token', cookieOptions)
+            .unstate('accessToken', cookieOptions)
+            // .unstate('tokenExpire', cookieOptions);
     },
 };
 
@@ -119,10 +127,17 @@ exports.account = {
     }],
     // auth: 'jwt',
     handler: function(request, reply) {
-        const user = request.pre.user;
+        var user = request.pre.user
         if (user) {
+            user = user.toJSON();
             if (user.password) {
                 user.password = "haspassword";
+            }
+            if (!user.accessToken) {
+                user.noAccessToken = true;
+            }
+            if (user.tokenExpire && new Date(user.tokenExpire) < new Date()) {
+                user.tokenHasExpired = true;
             }
             return reply(user);
         }

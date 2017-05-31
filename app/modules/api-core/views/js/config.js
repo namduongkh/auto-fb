@@ -7,3 +7,13 @@
             $interpolateProvider.endSymbol(']}');
         });
 })();
+var sideMenu = (function() {
+    return {
+        open: function() {
+
+        },
+        close: function() {
+
+        }
+    }
+})();

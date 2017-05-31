@@ -1,7 +1,7 @@
 <div ng-controller="FeedController as feedCtrl" ng-init="feedCtrl.init()">
     <div class="row">
         <div class="col-md-12" id="feed-top">
-            <h3><span class="glyphicon glyphicon-cog"></span> Quản lý bài đăng</h3>
+            <h3><span class="glyphicon glyphicon-cog"></span> Quản lý trạng thái</h3>
             <hr>
             <form action="#" role="form" name="FeedForm">
                 <div class="form-group">
@@ -25,7 +25,7 @@
                     <div ng-if="!FeedForm.url.$pristine" error-message="FeedForm.url.$error"></div>
                 </div>
                 <button ng-disabled="FeedForm.$invalid" class="btn btn-primary" type="button" ng-click="feedCtrl.saveFeed(FeedForm.$valid)">
-                    <span class="glyphicon glyphicon-floppy-saved"></span> Lưu bài đăng
+                    <span class="glyphicon glyphicon-floppy-saved"></span> Lưu trạng thái
                 </button>
                 <button class="btn btn-info" type="button" ng-click="feedCtrl.resetFeed()">
                     <span class="glyphicon glyphicon-refresh"></span> Làm mới

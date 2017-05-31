@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    angular.module('Core', [])
+    angular.module('Campaign', [])
         .config(function($interpolateProvider) {
             $interpolateProvider.startSymbol('{[');
             $interpolateProvider.endSymbol(']}');

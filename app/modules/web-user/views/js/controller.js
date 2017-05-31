@@ -8,13 +8,33 @@
         var userCtrl = this;
         userCtrl.accountInfo = {};
 
+        userCtrl.showApiError = function(message) {
+            if (window.location.href.search("trang-ca-nhan") == -1) {
+                toastr.error(message, "Lỗi");
+                $timeout(function() {
+                    window.location.href = window.settings.services.webUrl + "/trang-ca-nhan";
+                }, 2000);
+
+            }
+        }
+
+        $rootScope.$on("NO_ACCESS_TOKEN_ERROR", function() {
+            userCtrl.showApiError("Bạn chưa có mã truy cập, hãy đến trang cá nhân, bổ sung thông tin và nhận mã truy cập.");
+        });
+
+        $rootScope.$on("TOKEN_HAS_EXPIRED_ERROR", function() {
+            userCtrl.showApiError("Mã truy cập đã hết hạn, hãy đến trang cá nhân và cập nhật mã truy cập.");
+        });
+
         userCtrl.getAccount = function() {
             UserService.account().then(function(resp) {
                 if (resp.status == 200) {
                     userCtrl.accountInfo = resp.data;
+                    if (resp.data.appId && resp.data.appSecret) {
+                        userCtrl.appIdValid = true;
+                    }
                     if (new Date(userCtrl.accountInfo.tokenExpire) < new Date()) {
                         userCtrl.accountInfo.accessToken = "";
-                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
                     }
                 }
             });
@@ -68,7 +88,9 @@
                     console.log("Resp", resp);
                     // window.location.reload();
                     toastr.success("Đăng ký tài khoản thành công!", "Thông báo!");
-                    $timeout(userCtrl.login, 2000);
+                    $timeout(function() {
+                        userCtrl.login(true);
+                    }, 2000);
                 })
                 .catch(function(resp) {
                     var error = resp.data;

@@ -36,7 +36,7 @@ exports.getFeeds = {
 exports.saveFeed = {
     auth: 'jwt',
     handler: function(request, reply) {
-        let { _id, title, message, url } = request.payload;
+        let { _id, title, message, link } = request.payload;
 
         let id = request.auth.credentials.id;
 
@@ -60,7 +60,7 @@ exports.saveFeed = {
                     if (feed) {
                         feed.title = title;
                         feed.message = message;
-                        feed.url = url;
+                        feed.link = link;
                         feed.modified = new Date()
                         save(feed);
                     } else {
@@ -70,7 +70,7 @@ exports.saveFeed = {
         } else {
             let feed = new Feed({
                 message,
-                url,
+                link,
                 title,
                 created_by: id
             });

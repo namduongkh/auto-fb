@@ -14,7 +14,6 @@
                     graphCtrl.accountInfo = resp.data;
                     if (new Date(graphCtrl.accountInfo.tokenExpire) < new Date()) {
                         graphCtrl.accountInfo.accessToken = "";
-                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
                     }
                 }
             });

@@ -7,8 +7,9 @@ exports.login = {
         }
         return reply.view('web-user/views/login', {
             meta: {
-                title: "Đăng nhập"
-            }
+                title: "Đăng nhập",
+            },
+            activeMenu: "login"
         });
     },
 };
@@ -20,8 +21,9 @@ exports.register = {
         }
         return reply.view('web-user/views/register', {
             meta: {
-                title: "Đăng ký"
-            }
+                title: "Đăng ký",
+            },
+            activeMenu: "register"
         });
     },
 };

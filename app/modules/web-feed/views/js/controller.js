@@ -14,7 +14,6 @@
                     feedCtrl.accountInfo = resp.data;
                     if (new Date(feedCtrl.accountInfo.tokenExpire) < new Date()) {
                         feedCtrl.accountInfo.accessToken = "";
-                        toastr.error("Access token đã hết hạn, hãy làm mới access token để có thể tiếp tục sử dụng.", "Cảnh báo!");
                     }
                 }
             });
@@ -57,7 +56,7 @@
                             }
                         }
                         feedCtrl.feed = resp.data;
-                        toastr.success("Lưu bài đăng thành công.", "Thành công!");
+                        toastr.success("Lưu trạng thái thành công.", "Thành công!");
                     } else {
                         toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
                     }
@@ -72,7 +71,7 @@
                 FeedService.removeFeed(feedId)
                     .then(function(resp) {
                         if (resp.status == 200 && resp.data) {
-                            toastr.success("Xóa bài đăng thành công.", "Thành công!");
+                            toastr.success("Xóa trạng thái thành công.", "Thành công!");
                             feedCtrl.listFeeds.splice(index, 1);
                             feedCtrl.resetFeed();
                         } else {
