@@ -33,7 +33,7 @@ module.exports = {
             secret: 'L7FWdNnQU7cfmQ87WuucQFK3YZvNBuvc'
         },
         connections: [{
-                port: process.env.WEB_PORT || 3000,
+                port: process.env.WEB_PORT || 3001,
                 labels: 'web',
                 routes: {
                     cors: {
@@ -46,7 +46,7 @@ module.exports = {
                 }
             },
             {
-                port: process.env.API_PORT || 3100,
+                port: process.env.API_PORT || 3002,
                 labels: 'api',
                 routes: {
                     cors: {
@@ -56,7 +56,7 @@ module.exports = {
                 }
             },
             {
-                port: process.env.CMS_PORT || 3200,
+                port: process.env.CMS_PORT || 3000,
                 labels: 'admin',
                 routes: {
                     cors: {
