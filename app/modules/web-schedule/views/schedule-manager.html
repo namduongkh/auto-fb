@@ -48,21 +48,21 @@
                         <input required class="form-control" name="endTime" datetimepicker ng-model="scheduleCtrl.schedule.endTime" options="scheduleCtrl.dateOptions" />
                     </div>
                 </div>
-                <div class="col-md-12" ng-if="scheduleCtrl.schedule._id">
-                    <button ng-disabled="scheduleCtrl.schedule.running" class="btn btn-success" type="button" ng-click="scheduleCtrl.runSchedule(scheduleCtrl.schedule._id)">
-                        <span class="fa fa-play"></span> Chạy lịch trình
-                    </button>
-                    <button ng-disabled="!scheduleCtrl.schedule.running" class="btn btn-danger" type="button" ng-click="scheduleCtrl.stopSchedule(scheduleCtrl.schedule._id)">
-                        <span class="fa fa-stop"></span> Dừng lịch trình
-                    </button>
-                    <div class="spacing-10"></div>
-                </div>
                 <div class="col-md-12">
                     <button ng-disabled="ScheduleForm.$invalid" class="btn btn-primary" type="button" ng-click="scheduleCtrl.saveSchedule(ScheduleForm.$valid)">
                         <span class="glyphicon glyphicon-floppy-saved"></span> Lưu lịch trình
                     </button>
                     <button class="btn btn-info" type="button" ng-click="scheduleCtrl.resetSchedule()">
                         <span class="glyphicon glyphicon-refresh"></span> Làm mới
+                    </button>
+                </div>
+                <div class="col-md-12" ng-if="scheduleCtrl.schedule._id">
+                    <div class="spacing-10"></div>
+                    <button ng-disabled="scheduleCtrl.schedule.running || !ScheduleForm.$pristine" class="btn btn-success" type="button" ng-click="scheduleCtrl.runSchedule(scheduleCtrl.schedule._id)">
+                        <span class="fa fa-play"></span> Chạy lịch trình
+                    </button>
+                    <button ng-disabled="!scheduleCtrl.schedule.running" class="btn btn-danger" type="button" ng-click="scheduleCtrl.stopSchedule(scheduleCtrl.schedule._id)">
+                        <span class="fa fa-stop"></span> Dừng lịch trình
                     </button>
                 </div>
             </form>
@@ -85,7 +85,7 @@
                         </td>
                         <td ng-bind="schedule.cycleMinutes"></td>
                         <td>
-                            <span ng-if="!schedule.running" class="label label-danger"><i class="fa fa-stop"></i> Dừng</span>
+                            <span ng-if="!schedule.running" class="label label-danger"><i class="fa fa-stop"></i> Đang dừng</span>
                             <span ng-if="schedule.running" class="label label-success"><i class="fa fa-play"></i> Đang chạy</span>
                         </td>
                         <td ng-bind="schedule.modified | date:'dd/MM/yyyy hh:mm a'"></td>

@@ -6,7 +6,14 @@ const Path = require('path');
 global.BASE_PATH = __dirname;
 
 // Tạo server hapi
-const server = new Hapi.Server({});
+const server = new Hapi.Server({
+    cache: [{
+        name: 'mongoCache',
+        engine: require('catbox-mongodb'),
+        host: '127.0.0.1',
+        partition: 'db_auto_fb'
+    }]
+});
 
 // Module hapi-kea-config: 
 // Cần tồn tại 3 file trong thư mục /app/config 

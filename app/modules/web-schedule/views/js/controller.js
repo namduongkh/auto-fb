@@ -4,7 +4,7 @@
     angular.module("Schedule")
         .controller("ScheduleController", ScheduleController);
 
-    function ScheduleController(UserService, CampaignService, ScheduleService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
+    function ScheduleController(UserService, CampaignService, ScheduleService, $cookies, $scope, $rootScope, toastr, $timeout, $facebook, $http) {
         var scheduleCtrl = this;
         scheduleCtrl.accountInfo = {};
         scheduleCtrl.schedule = {};
@@ -74,6 +74,7 @@
                             }
                         }
                         scheduleCtrl.schedule = resp.data;
+                        $scope.ScheduleForm.$setPristine();
                         toastr.success("Lưu trạng thái thành công.", "Thành công!");
                     } else {
                         toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");

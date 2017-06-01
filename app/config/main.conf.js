@@ -2,6 +2,9 @@
 
 module.exports = {
     web: {
+        app: {
+            title: "Auto Facebook"
+        },
         upload: {
             path: BASE_PATH + '/public/files',
         },
@@ -11,6 +14,11 @@ module.exports = {
                 user: '',
                 pass: ''
             }
+        },
+        paging: {
+            defaultPageSize: 25,
+            numberVisiblePages: 10,
+            itemsPerPage: 20
         },
         cookieOptions: {
             ttl: 365 * 24 * 60 * 60 * 1000, // expires a year from today
@@ -40,6 +48,16 @@ module.exports = {
             {
                 port: process.env.API_PORT || 3100,
                 labels: 'api',
+                routes: {
+                    cors: {
+                        origin: ['*'],
+                        credentials: true
+                    }
+                }
+            },
+            {
+                port: process.env.CMS_PORT || 3200,
+                labels: 'admin',
                 routes: {
                     cors: {
                         origin: ['*'],

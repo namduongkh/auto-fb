@@ -42,7 +42,7 @@
             link: function(scope, elem, attr) {
                 scope.$watch('showLoading', function(value) {
                     if (value) {
-                        $(elem).fadeIn();
+                        $(elem).fadeIn('fast');
                     }
                 });
             }

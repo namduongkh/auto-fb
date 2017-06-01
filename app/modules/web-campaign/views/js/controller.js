@@ -4,7 +4,7 @@
     angular.module("Campaign")
         .controller("CampaignController", CampaignController);
 
-    function CampaignController(UserService, CampaignService, FeedService, AlbumService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
+    function CampaignController(UserService, CampaignService, FeedService, AlbumService, $cookies, $scope, $rootScope, toastr, $timeout, $facebook, $http) {
         var campaignCtrl = this;
         campaignCtrl.accountInfo = {};
 
@@ -55,6 +55,7 @@
                                 }
                             }
                         }
+                        $scope.CampaignForm.$setPristine();
                         campaignCtrl.campaign = resp.data;
                         toastr.success("Lưu bài đăng thành công.", "Thành công!");
                     } else {

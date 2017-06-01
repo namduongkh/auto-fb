@@ -56,18 +56,18 @@
                         <div error-message="CampaignForm.albumId.$error" ng-if="!CampaignForm.albumId.$pristine"></div>
                     </div>
                 </div>
-                <div class="col-md-12" ng-if="campaignCtrl.campaign._id">
-                    <button class="btn btn-success" type="button" ng-click="campaignCtrl.runCampaign(campaignCtrl.campaign._id)">
-                        <span class="glyphicon glyphicon-play"></span> Chạy chiến dịch
-                    </button>
-                    <div class="spacing-10"></div>
-                </div>
                 <div class="col-md-12">
                     <button ng-disabled="CampaignForm.$invalid" class="btn btn-primary" type="button" ng-click="campaignCtrl.saveCampaign(CampaignForm.$valid)">
                         <span class="glyphicon glyphicon-floppy-saved"></span> Lưu chiến dịch
                     </button>
                     <button class="btn btn-info" type="button" ng-click="campaignCtrl.resetCampaign()">
                         <span class="glyphicon glyphicon-refresh"></span> Làm mới
+                    </button>
+                </div>
+                <div class="col-md-12" ng-if="campaignCtrl.campaign._id">
+                    <div class="spacing-10"></div>
+                    <button ng-disabled="!CampaignForm.$pristine" class="btn btn-success" type="button" ng-click="campaignCtrl.runCampaign(campaignCtrl.campaign._id)">
+                        <span class="glyphicon glyphicon-play"></span> Chạy chiến dịch
                     </button>
                 </div>
             </form>

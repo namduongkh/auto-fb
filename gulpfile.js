@@ -40,6 +40,24 @@ gulp.task('minjs', () => {
         .pipe(uglify())
         // .pipe(stripDebug())
         .pipe(gulp.dest(minDir));
+    gulp
+        .src([
+            jsDir + '/app-admin.js',
+        ])
+        .pipe($.plumber({
+            errorHandler: function(error) {
+                console.log(error);
+                this.emit('end');
+            }
+        }))
+        .pipe(ngAnnotate())
+        .pipe(concat('app-admin.min.js'))
+        .pipe(gulp.dest(minDir))
+        .pipe(babel({ presets: ['es2015'], compact: false }))
+        .pipe(purgeSourcemaps())
+        .pipe(uglify())
+        // .pipe(stripDebug())
+        .pipe(gulp.dest(minDir));
 });
 
 gulp.task('mincss', function() {
@@ -47,6 +65,14 @@ gulp.task('mincss', function() {
             cssDir + '/styles.css'
         ])
         .pipe(concatCss('app.min.css'))
+        .pipe(gulp.dest(minDir))
+        .pipe(cleanCSS())
+        .pipe(gulp.dest(minDir));
+
+    gulp.src([
+            cssDir + '/styles-admin.css'
+        ])
+        .pipe(concatCss('app-admin.min.css'))
         .pipe(gulp.dest(minDir))
         .pipe(cleanCSS())
         .pipe(gulp.dest(minDir));
@@ -76,6 +102,10 @@ gulp.task('styles', function() {
         .pipe(sass().on('error', sass.logError))
         .pipe(concat('styles.css'))
         .pipe(gulp.dest(cssDir));
+    gulp.src(['app/modules/admin*/views/css/*.scss', 'app/modules/admin*/views/css/*.css'])
+        .pipe(sass().on('error', sass.logError))
+        .pipe(concat('styles-admin.css'))
+        .pipe(gulp.dest(cssDir));
 });
 
 gulp.task('javascripts', () => {
@@ -89,6 +119,16 @@ gulp.task('javascripts', () => {
         .pipe(ngAnnotate())
         .pipe(concat('app.js'))
         .pipe(gulp.dest(jsDir));
+    gulp.src(['app/modules/admin*/views/js/app/*.js', 'app/modules/admin*/views/js/*.js'])
+        .pipe($.plumber({
+            errorHandler: function(error) {
+                console.log(error.toString());
+                this.emit('end');
+            }
+        }))
+        .pipe(ngAnnotate())
+        .pipe(concat('app-admin.js'))
+        .pipe(gulp.dest(jsDir));
 });
 
 gulp.task('build', ['minjs', 'mincss']);
@@ -96,5 +136,5 @@ gulp.task('build', ['minjs', 'mincss']);
 
 gulp.task('default', ['nodemon', 'browser-sync', 'styles', 'javascripts'], function() {
     gulp.watch(['app/modules/**/views/css/*.scss'], ['styles']);
-    gulp.watch(['app/modules/**/views/js/*.js'], ['javascripts']);
+    gulp.watch(['app/modules/admin*/views/js/app/*.js', 'app/modules/**/views/js/*.js'], ['javascripts']);
 });

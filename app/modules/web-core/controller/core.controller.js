@@ -147,39 +147,22 @@ exports.getCredentials = function(request, reply) {
 //     });
 // };
 
-// exports.getMeta = function(request, reply) {
-//     var {
-//         getSetting
-//     } = request.server.plugins['api-setting'];
-//     let response = request.response;
-//     if (response.variety === 'view') {
-//         let config = request.server.configManager;
-//         let app = config.get('web.context.app');
-//         let title = app.title;
-//         var site = "Bidy";
-//         var hostname = request.info.hostname;
-//         if (hostname == 'fig.bidy.vn') {
-//             site = "Figure";
-//         }
-//         app.title = title.replace("%site%", site);
-//         let description = response.source.context.meta.description;
-//         if (response.source.context.meta) {
-//             if (response.source.context.meta.title) {
-//                 response.source.context.meta.title = response.source.context.meta.title + ' - ' + app.title;
-//             } else {
-//                 response.source.context.meta.title = app.title;
-//             }
-//             if (description) {
-//                 response.source.context.meta.description = response.source.context.meta.description;
-//             } else {
-//                 response.source.context.meta.description = app.description;
-//             }
-//         } else {
-//             response.source.context.meta = app
-//         }
-//     }
-//     reply.continue();
-// };
+exports.getMeta = function(request, reply) {
+    let response = request.response;
+    if (response.variety === 'view') {
+        let config = request.server.configManager;
+        let app = config.get('web.app');
+        if (response.source.context.meta && response.source.context.meta.title) {
+
+            if (response.source.context.meta.title) {
+                response.source.context.meta.title = response.source.context.meta.title + ' - ' + app.title
+            }
+        } else {
+            response.source.context.meta = app
+        }
+    }
+    reply.continue();
+}
 
 
 // exports.getMetaImage = function(request, reply) {

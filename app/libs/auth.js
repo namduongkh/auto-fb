@@ -12,7 +12,7 @@ exports.register = function(server, options, next) {
         // console.log("Decode", decoded);
         // do your checks to see if the person is valid
         if (decoded && decoded.valid) {
-            return callback(null, true, { id: decoded.id, email: decoded.email });
+            return callback(null, true);
         } else {
             return callback(null, false);
         }

@@ -30,9 +30,11 @@ module.exports = function(server) {
             },
             helpersPath: global.BASE_PATH + '/app/views/helpers',
             relativeTo: global.BASE_PATH + '/app/modules',
-            partialsPath: global.BASE_PATH + '/app/views/layouts/partials',
+            partialsPath: global.BASE_PATH + '/app/views/layouts',
             layoutPath: global.BASE_PATH + '/app/views/layouts',
-            layout: true,
+            layout: function() {
+                return 'web/layout';
+            }(),
             context: {
                 settings: config.get("web.settings"),
                 assets: config.get("web.assets"),

@@ -35,7 +35,7 @@ exports.login = {
                             id: user._id, // a random session id,
                             name: user.name,
                             email: user.email,
-                            scopes: user.roles,
+                            scope: user.roles,
                             tokenExpire: user.tokenExpire,
                             exp: new Date().getTime() + 30 * 60 * 1000 // expires in 30 minutes time
                         };

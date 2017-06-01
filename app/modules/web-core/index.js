@@ -11,19 +11,15 @@ exports.register = function(server, options, next) {
     // server.ext('onPostHandler', CoreController.getGACode);
     // server.ext('onPostHandler', CoreController.getPostCategories);
     // server.ext('onPostHandler', CoreController.getProductCategories);
-    // server.ext('onPostHandler', CoreController.getMeta);
+    server.ext('onPostHandler', CoreController.getMeta);
     // server.ext('onPostHandler', CoreController.getMetaImage);
     // server.ext('onPostHandler', CoreController.getSticker);
     server.ext('onPreResponse', CoreController.getAppId);
     server.ext('onPreResponse', CoreController.handleError);
     // server.ext('onPreHandler', CoreController.getPushToken);
 
-    // let mongoCache = require('./util/mongoCache')(server, options);
-    // let getSticker = require('./util/getSticker')(server, options);
-    // let core = require('./util/core')();
-    // server.expose('mongoCache', mongoCache);
-    // server.expose('getSticker', getSticker.getSticker);
-    // server.expose('allowCollection', core.allowCollection);
+    let mongoCache = require('./util/mongoCache')(server, options);
+    server.expose('mongoCache', mongoCache);
 
     server.route({
         method: 'GET',
