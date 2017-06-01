@@ -6,6 +6,7 @@ module.exports = {
             services: {
                 apiUrl: 'http://localhost:3100',
                 webUrl: 'http://localhost:3000',
+                adminUrl: 'http://localhost:3200/admin',
             },
         },
         assets: {

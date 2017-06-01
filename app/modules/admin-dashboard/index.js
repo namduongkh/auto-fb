@@ -6,8 +6,18 @@ exports.register = function(server, options, next) {
     var configManager = server.plugins['hapi-kea-config'];
     server.route({
         method: 'GET',
-        path: '/',
-        config: DashboardController.index,
+        path: '/{view?}',
+        config: {
+            handler: function(request, reply) {
+                let view = request.params.view;
+                // console.log("view", view);
+                if (view) {
+                    return reply.redirect("/admin/" + request.params.view);
+                } else {
+                    return reply.redirect("/admin");
+                }
+            }
+        },
     });
     server.route({
         method: 'GET',

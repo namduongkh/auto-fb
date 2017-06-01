@@ -6,6 +6,7 @@ module.exports = {
             services: {
                 apiUrl: 'http://fbauto.tk',
                 webUrl: 'http://fbauto.tk',
+                adminUrl: 'http://fbauto.tk/admin',
             },
         },
         assets: {

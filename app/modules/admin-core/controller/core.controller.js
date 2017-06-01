@@ -85,7 +85,8 @@ exports.handleError = function(request, reply) {
         return reply("Không tìm thấy nội dung.");
     } else if (statusCode === 403 || statusCode === 401) {
         request.log(['error', 'permission'], 'You have not permission to access this page');
-        return reply.redirect(loginUrl);
+        // console.log("admin");
+        return reply.redirect(config.get("web.settings.services.adminUrl") + loginUrl);
     } else {
         return reply.continue();
     }
