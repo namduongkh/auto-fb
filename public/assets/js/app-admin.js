@@ -310,7 +310,7 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
             $scope.isSubmit = true;
             var data = $scope.credentials;
             data.scope = 'admin';
-            $http.post($window.settings.services.userApi + '/api/user/login', data).then(function(response) {
+            $http.post($window.settings.services.apiUrl + '/api/user/login', data).then(function(response) {
                 if (response.status == 200) {
                     response = response.data;
                     if (response.token) {
@@ -325,7 +325,7 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
         };
 
         $scope.signout = function() {
-            $http.get($window.settings.services.userApi + '/api/user/logout').then(function(response) {
+            $http.get($window.settings.services.apiUrl + '/api/user/logout').then(function(response) {
                 if (response.status == 200) {
                     response = response.data;
                     $scope.authentication.user = '';
