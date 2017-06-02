@@ -262,7 +262,7 @@ exports.handleError = (request, reply) => {
         return reply.continue();
     }
     let config = request.server.configManager;
-    let loginUrl = config.get('web.error.user.login');
+    let loginUrl = config.get('web.error.web.login');
     // let notFoundUrl = config.get('web.error.notFound.url');
 
     const error = response;

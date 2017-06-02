@@ -6,30 +6,30 @@ exports.register = function(server, options, next) {
     var configManager = server.plugins['hapi-kea-config'];
     server.route({
         method: 'GET',
-        path: '/page',
+        path: '/admin/page',
         config: PageController.getAll,
     });
     server.route({
         method: ['GET'],
-        path: '/page/{id}',
+        path: '/admin/page/{id}',
         config: PageController.edit,
 
     });
     server.route({
         method: ['DELETE'],
-        path: '/page/{id}',
+        path: '/admin/page/{id}',
         config: PageController.delete
 
     });
     server.route({
         method: 'POST',
-        path: '/page',
+        path: '/admin/page',
         config: PageController.save,
 
     });
     server.route({
         method: ['PUT', 'POST'],
-        path: '/page/{id}',
+        path: '/admin/page/{id}',
         config: PageController.update,
 
     });

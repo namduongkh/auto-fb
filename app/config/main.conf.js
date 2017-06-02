@@ -67,8 +67,11 @@ module.exports = {
             }
         ],
         error: {
-            user: {
+            web: {
                 login: "/dang-nhap"
+            },
+            admin: {
+                login: "/admin/dang-nhap"
             },
         }
     }

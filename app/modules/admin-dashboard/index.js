@@ -8,7 +8,11 @@ exports.register = function(server, options, next) {
     server.route({
         method: 'GET',
         path: '/',
-        config: DashboardController.index,
+        config: {
+            handler: function(request, reply) {
+                return reply.redirect('/admin');
+            }
+        },
     });
 
     server.route({

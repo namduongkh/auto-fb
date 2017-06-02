@@ -2,8 +2,8 @@
 
 //Caches service used to communicate Caches REST endpoints
 angular.module('caches').factory('Caches', ['$resource',
-    function ($resource) {
-        return $resource('cache/:cacheId', {
+    function($resource) {
+        return $resource('admin/cache/:cacheId', {
             cacheId: '@_id'
         }, {
             update: {
@@ -13,7 +13,7 @@ angular.module('caches').factory('Caches', ['$resource',
                 isArray: false,
             },
             removeAll: {
-                url: '/cache/removeAll',
+                url: '/admin/cache/removeAll',
                 method: 'PUT'
             }
         });

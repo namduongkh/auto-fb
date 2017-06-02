@@ -309,7 +309,7 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
                         $cookies.put('token', response.data.token, {
                             path: "/"
                         });
-                        $window.location.href = '/';
+                        $window.location.href = '/admin';
                     }
                     $scope.error = response.message;
                 })
@@ -324,7 +324,7 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
                 .then(function(response) {
                     $scope.authentication.user = '';
                     $cookies.remove('token');
-                    $window.location.href = '/';
+                    $window.location.href = '/admin';
                 })
                 .catch(function(response) {
                     $scope.error = response.message;
@@ -495,8 +495,8 @@ angular.module('caches').controller('CachesController', ['$scope', '$window', '$
 
 //Caches service used to communicate Caches REST endpoints
 angular.module('caches').factory('Caches', ['$resource',
-    function ($resource) {
-        return $resource('cache/:cacheId', {
+    function($resource) {
+        return $resource('admin/cache/:cacheId', {
             cacheId: '@_id'
         }, {
             update: {
@@ -506,7 +506,7 @@ angular.module('caches').factory('Caches', ['$resource',
                 isArray: false,
             },
             removeAll: {
-                url: '/cache/removeAll',
+                url: '/admin/cache/removeAll',
                 method: 'PUT'
             }
         });
@@ -1006,7 +1006,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
 //Pages service used to communicate Pages REST endpoints
 angular.module('pages').factory('Pages', ['$resource',
     function($resource) {
-        return $resource('page/:pageId', {
+        return $resource('admin/page/:pageId', {
             pageId: '@_id'
         }, {
             update: {

@@ -13,7 +13,7 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
                         $cookies.put('token', response.data.token, {
                             path: "/"
                         });
-                        $window.location.href = '/';
+                        $window.location.href = '/admin';
                     }
                     $scope.error = response.message;
                 })
@@ -28,7 +28,7 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
                 .then(function(response) {
                     $scope.authentication.user = '';
                     $cookies.remove('token');
-                    $window.location.href = '/';
+                    $window.location.href = '/admin';
                 })
                 .catch(function(response) {
                     $scope.error = response.message;
