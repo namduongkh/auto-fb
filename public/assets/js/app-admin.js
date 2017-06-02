@@ -306,25 +306,22 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
     function($scope, $http, $location, $window, Authentication, $cookies) {
         $scope.authentication = Authentication;
 
-        $scope.signin = function(valid) {
+        $scope.signin = function() {
             $scope.isSubmit = true;
-            if (valid) {
-                var data = $scope.credentials;
-                data.scope = 'admin';
-                $http.post($window.settings.services.userApi + '/api/user/login', data).then(function(response) {
-                    if (response.status == 200) {
-                        response = response.data;
-                        if (response.token) {
-                            $window.location.href = '/';
-                        }
-                        $scope.error = response.message;
+            var data = $scope.credentials;
+            data.scope = 'admin';
+            $http.post($window.settings.services.userApi + '/api/user/login', data).then(function(response) {
+                if (response.status == 200) {
+                    response = response.data;
+                    if (response.token) {
+                        $window.location.href = '/';
                     }
-
-                }).catch(function(response) {
                     $scope.error = response.message;
-                });
-            }
+                }
 
+            }).catch(function(response) {
+                $scope.error = response.message;
+            });
         };
 
         $scope.signout = function() {
