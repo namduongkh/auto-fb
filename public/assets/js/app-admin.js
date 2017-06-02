@@ -328,20 +328,15 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
         };
 
         $scope.signout = function() {
-            ActionLogs.create({
-                    type: 'signout'
-                })
-                .then(function() {
-                    $http.get($window.settings.services.userApi + '/api/user/logout').then(function(response) {
-                        if (response.status == 200) {
-                            response = response.data;
-                            $scope.authentication.user = '';
-                            $window.location.href = '/';
-                        }
-                    }).catch(function(response) {
-                        $scope.error = response.message;
-                    });
-                });
+            $http.get($window.settings.services.userApi + '/api/user/logout').then(function(response) {
+                if (response.status == 200) {
+                    response = response.data;
+                    $scope.authentication.user = '';
+                    $window.location.href = '/';
+                }
+            }).catch(function(response) {
+                $scope.error = response.message;
+            });
         };
     }
 ]);
