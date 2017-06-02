@@ -306,9 +306,9 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
             $http.post($window.settings.services.apiUrl + '/api/user/login', data)
                 .then(function(response) {
                     if (response.data.token) {
-                        $cookies.put('token', response.data.token, {
-                            path: "/"
-                        });
+                        // $cookies.put('token', response.data.token, {
+                        //     path: "/"
+                        // });
                         $window.location.href = '/admin';
                     }
                     $scope.error = response.message;
@@ -323,7 +323,7 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
             $http.get($window.settings.services.apiUrl + '/api/user/logout')
                 .then(function(response) {
                     $scope.authentication.user = '';
-                    $cookies.remove('token');
+                    // $cookies.remove('token');
                     $window.location.href = '/admin';
                 })
                 .catch(function(response) {

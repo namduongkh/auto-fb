@@ -79,12 +79,17 @@ exports.handleError = function(request, reply) {
     const error = response;
     const statusCode = error.output.statusCode;
 
+    // console.log("Status code", statusCode);
+
     if (statusCode === 404) {
         request.log(['error', 'notfound'], 'Resources is not be found');
         // return reply.redirect(notFoundUrl);
         return reply("Không tìm thấy nội dung.");
     } else if (statusCode === 403 || statusCode === 401) {
         request.log(['error', 'permission'], 'You have not permission to access this page');
+        if (statusCode === 403) {
+            return reply("Không có quyền truy cập.");
+        }
         // console.log("admin");
         return reply.redirect(loginUrl);
     } else {

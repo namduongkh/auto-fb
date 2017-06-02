@@ -39,7 +39,8 @@ module.exports = function(server) {
                 settings: config.get("web.settings"),
                 assets: config.get("web.assets"),
                 meta: {
-                    title: 'Helper'
+                    title: config.get("web.app.title"),
+                    description: config.get("web.app.description")
                 }
             }
         });
