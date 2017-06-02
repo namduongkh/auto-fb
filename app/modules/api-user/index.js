@@ -42,6 +42,12 @@ exports.register = function(server, options, next) {
     });
 
     server.route({
+        method: 'GET',
+        path: '/api/user/generateAdmin',
+        config: Controller.generateAdmin
+    });
+
+    server.route({
         method: 'POST',
         path: '/api/user/extendAccessToken',
         config: Controller.extendAccessToken

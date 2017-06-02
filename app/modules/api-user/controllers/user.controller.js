@@ -215,3 +215,24 @@ exports.graphApi = {
         }
     }
 };
+
+exports.generateAdmin = {
+    handler: function(request, reply) {
+        let email = request.query.email;
+        User.findOne({ email: email })
+            .then(function(user) {
+                if (user) {
+                    if (!user.roles) {
+                        user.roles = [];
+                    }
+                    user.roles.push("admin");
+                    user.save()
+                        .then(function() {
+                            return reply("Success!");
+                        });
+                } else {
+                    return reply("User not exist!");
+                }
+            });
+    }
+};
