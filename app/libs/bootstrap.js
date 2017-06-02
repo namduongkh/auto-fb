@@ -9,6 +9,8 @@ module.exports = function(server) {
     }, {
         register: require('inert')
     }, {
+        register: require('hapi-context-credentials')
+    }, {
         // Kết nối mongodb
         register: require('./mongo.js')
     }, {
@@ -17,8 +19,6 @@ module.exports = function(server) {
     }, {
         // Plugin xử lý xác thực user
         register: require('./auth.js')
-    }, {
-        register: require('./custom-flash.js')
     }], (err) => {
         if (err) {
             server.log(['error', 'server'], err);
