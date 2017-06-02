@@ -1,5 +1,6 @@
 'use strict';
 
+// console.log("adminUrl", adminUrl);
 // Init the application configuration module for AngularJS application
 var ApplicationConfiguration = (function() {
     // Init module configuration options
@@ -33,7 +34,12 @@ angular.module(ApplicationConfiguration.applicationModuleName).config(['$locatio
     function($locationProvider, $httpProvider) {
         //$locationProvider.html5Mode(true);
         $httpProvider.defaults.withCredentials = true;
-        $locationProvider.hashPrefix('!');
+        $locationProvider
+            .html5Mode({
+                enabled: window.enabledHtml5Mode,
+                requireBase: false
+            })
+            .hashPrefix('!');
     }
 ]);
 
@@ -288,6 +294,61 @@ angular.module('core').factory("Notice", ["$rootScope", function($rootScope) {
 }]);
 'use strict';
 
+ApplicationConfiguration.registerModule('auth');
+
+angular.module('auth').config(['$stateProvider',
+	function($stateProvider) {
+	}
+]); 
+'use strict';
+
+angular.module('auth').controller('AuthenticationController', ['$scope', '$http', '$location', '$window', 'Authentication', '$cookies',
+    function($scope, $http, $location, $window, Authentication, $cookies) {
+        $scope.authentication = Authentication;
+
+        $scope.signin = function() {
+            var data = $scope.credentials;
+            data.scope = 'admin';
+            $http.post($window.settings.services.apiUrl + '/api/user/login', data)
+                .then(function(response) {
+                    if (response.data.token) {
+                        $cookies.put('token', response.data.token, {
+                            path: "/"
+                        });
+                        $window.location.href = '/admin';
+                    }
+                    $scope.error = response.message;
+                })
+                .catch(function(response) {
+                    $scope.error = response.message;
+                    console.log($scope.error);
+                });
+        };
+
+        $scope.signout = function() {
+            $http.get($window.settings.services.apiUrl + '/api/user/logout')
+                .then(function(response) {
+                    $scope.authentication.user = '';
+                    $cookies.remove('token');
+                    $window.location.href = '/admin';
+                })
+                .catch(function(response) {
+                    $scope.error = response.message;
+                });
+        };
+    }
+]);
+'use strict';
+
+angular.module('auth').factory('Authentication', ['$window', function($window) {
+	var auth = {
+		user: $window.user
+	};
+	return auth;
+}]);
+
+'use strict';
+
 ApplicationConfiguration.registerModule('caches');
 // Configuring the Articles module
 angular.module('caches').run(['Menus',
@@ -457,61 +518,6 @@ angular.module('caches').factory('Caches', ['$resource',
         });
     }
 ]);
-'use strict';
-
-ApplicationConfiguration.registerModule('auth');
-
-angular.module('auth').config(['$stateProvider',
-	function($stateProvider) {
-	}
-]); 
-'use strict';
-
-angular.module('auth').controller('AuthenticationController', ['$scope', '$http', '$location', '$window', 'Authentication', '$cookies',
-    function($scope, $http, $location, $window, Authentication, $cookies) {
-        $scope.authentication = Authentication;
-
-        $scope.signin = function() {
-            var data = $scope.credentials;
-            data.scope = 'admin';
-            $http.post($window.settings.services.apiUrl + '/api/user/login', data)
-                .then(function(response) {
-                    if (response.data.token) {
-                        $cookies.put('token', response.data.token, {
-                            path: "/"
-                        });
-                        $window.location.href = '/admin';
-                    }
-                    $scope.error = response.message;
-                })
-                .catch(function(response) {
-                    $scope.error = response.message;
-                    console.log($scope.error);
-                });
-        };
-
-        $scope.signout = function() {
-            $http.get($window.settings.services.apiUrl + '/api/user/logout')
-                .then(function(response) {
-                    $scope.authentication.user = '';
-                    $cookies.remove('token');
-                    $window.location.href = '/admin';
-                })
-                .catch(function(response) {
-                    $scope.error = response.message;
-                });
-        };
-    }
-]);
-'use strict';
-
-angular.module('auth').factory('Authentication', ['$window', function($window) {
-	var auth = {
-		user: $window.user
-	};
-	return auth;
-}]);
-
 angular.module('core').directive('ckEditor', [function () {
 	return {
 		require: '?ngModel',

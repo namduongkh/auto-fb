@@ -17,6 +17,8 @@ module.exports = function(server) {
     }, {
         // Plugin xử lý xác thực user
         register: require('./auth.js')
+    }, {
+        register: require('./custom-flash.js')
     }], (err) => {
         if (err) {
             server.log(['error', 'server'], err);

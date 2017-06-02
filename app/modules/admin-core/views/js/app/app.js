@@ -1,5 +1,6 @@
 'use strict';
 
+// console.log("adminUrl", adminUrl);
 // Init the application configuration module for AngularJS application
 var ApplicationConfiguration = (function() {
     // Init module configuration options
@@ -33,7 +34,12 @@ angular.module(ApplicationConfiguration.applicationModuleName).config(['$locatio
     function($locationProvider, $httpProvider) {
         //$locationProvider.html5Mode(true);
         $httpProvider.defaults.withCredentials = true;
-        $locationProvider.hashPrefix('!');
+        $locationProvider
+            .html5Mode({
+                enabled: window.enabledHtml5Mode,
+                requireBase: false
+            })
+            .hashPrefix('!');
     }
 ]);
 
