@@ -24,7 +24,7 @@ module.exports = function(server) {
             //     expiresIn: 1000          // One second session
             // },
         }
-    } {
+    }, {
         // Kết nối mongodb
         register: require('./mongo.js')
     }, {
