@@ -4,9 +4,9 @@ module.exports = {
     web: {
         settings: {
             services: {
-                apiUrl: 'http://www.fbauto.tk',
-                webUrl: 'http://www.fbauto.tk',
-                adminUrl: 'http://www.fbauto.tk:3200',
+                apiUrl: 'http://www.tudongxuatban.tk',
+                webUrl: 'http://www.tudongxuatban.tk',
+                adminUrl: 'http://www.tudongxuatban.tk:3200',
             },
         },
         assets: {
