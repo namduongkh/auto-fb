@@ -37,6 +37,9 @@
                         if (new Date(userCtrl.accountInfo.tokenExpire) < new Date()) {
                             userCtrl.accountInfo.accessToken = "";
                         }
+                        if (userCtrl.accountInfo.includes('admin')) {
+                            userCtrl.accountInfo.isAdmin = true;
+                        }
                         userCtrl.showLoading = true;
                     }
                 })

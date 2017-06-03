@@ -3,6 +3,7 @@
 angular.module('auth').controller('AuthenticationController', ['$scope', '$http', '$location', '$window', 'Authentication', '$cookies',
     function($scope, $http, $location, $window, Authentication, $cookies) {
         $scope.authentication = Authentication;
+        $scope.webUrl = $window.settings.services.webUrl;
 
         $scope.signin = function() {
             $scope.isSubmit = true;
@@ -27,6 +28,7 @@ angular.module('auth').controller('AuthenticationController', ['$scope', '$http'
                 if (response.status == 200) {
                     response = response.data;
                     $scope.authentication.user = '';
+                    $cookies.remove('token');
                     $window.location.href = '/';
                 }
             }).catch(function(response) {

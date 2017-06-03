@@ -74,7 +74,9 @@ exports.handleError = function(request, reply) {
         return reply.continue();
     }
     let config = request.server.configManager;
-    let loginUrl = config.get('web.error.web.login');
+    // let loginUrl = config.get('web.error.web.login');
+
+    loginUrl = config.get("web.settings.services.webUrl") + config.get('web.error.web.login');
 
     const error = response;
     const statusCode = error.output.statusCode;
@@ -88,7 +90,7 @@ exports.handleError = function(request, reply) {
     } else if (statusCode === 403 || statusCode === 401) {
         request.log(['error', 'permission'], 'You have not permission to access this page');
         if (statusCode === 403) {
-            return reply("Không có quyền truy cập.");
+            return reply.redirect(config.get("web.settings.services.webUrl"));
         }
         // console.log("admin");
         return reply.redirect(loginUrl);

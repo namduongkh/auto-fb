@@ -7,6 +7,7 @@ exports.viewLogin = {
         if (request.auth.isAuthenticated) {
             return reply.redirect('/');
         }
-        return reply.view('admin-auth/views/signin', null, { layout: 'admin/layout-admin-login' });
+        // return reply.view('admin-auth/views/signin', null, { layout: 'admin/layout-admin-login' });
+        return reply.redirect(request.server.configManager.get("web.settings.services.webUrl") + '/dang-nhap');
     },
 }
