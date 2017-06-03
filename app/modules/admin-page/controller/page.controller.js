@@ -105,7 +105,7 @@ exports.update = {
     handler: function(request, reply) {
         var {
             mongoCache
-        } = request.server.plugins['admin-core'];
+        } = request.server.plugins['web-core'];
         let page = request.pre.page;
         delete request.payload.id;
         delete request.payload._id;
