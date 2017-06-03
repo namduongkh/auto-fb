@@ -76,7 +76,7 @@ exports.handleError = function(request, reply) {
     let config = request.server.configManager;
     // let loginUrl = config.get('web.error.web.login');
 
-    loginUrl = config.get("web.settings.services.webUrl") + config.get('web.error.web.login');
+    let loginUrl = config.get("web.settings.services.webUrl") + config.get('web.error.web.login');
 
     const error = response;
     const statusCode = error.output.statusCode;
