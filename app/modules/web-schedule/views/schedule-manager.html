@@ -40,7 +40,7 @@
                     </div>
                     <div class="form-group" ng-if="scheduleCtrl.schedule.scheduleType=='count'">
                         <label for="runCounts">Số lần lặp</label>
-                        <input required class="form-control" type="number" min="1" max="100" name="runCounts" ng-model="scheduleCtrl.schedule.runCounts" placeholder="Chu kỳ" />
+                        <input required class="form-control" type="number" min="1" max="100" name="runCounts" ng-model="scheduleCtrl.schedule.runCounts" placeholder="Số lần lặp" />
                         <div ng-if="!ScheduleForm.runCounts.$pristine" error-message="ScheduleForm.runCounts.$error"></div>
                     </div>
                     <div class="form-group" ng-if="scheduleCtrl.schedule.scheduleType=='time'">
