@@ -1800,3 +1800,6 @@ ul.alert-dropdown {
 .divide {
   border-top: 1px solid #9d9d9d;
   height: 0px; }
+
+#page-content img {
+  max-width: 500px; }
