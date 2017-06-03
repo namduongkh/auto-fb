@@ -3,7 +3,7 @@
 //Pages service used to communicate Pages REST endpoints
 angular.module('pages').factory('Pages', ['$resource',
     function($resource) {
-        return $resource('admin/page/:pageId', {
+        return $resource('page/:pageId', {
             pageId: '@_id'
         }, {
             update: {

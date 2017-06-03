@@ -11,9 +11,10 @@ exports.register = function(server, options, next) {
 
     server.route({
         method: 'GET',
-        path: '/admin/dang-nhap',
+        path: '/dang-nhap',
         config: AuthController.viewLogin
     });
+
     next();
 };
 

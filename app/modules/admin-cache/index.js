@@ -6,35 +6,35 @@ exports.register = function(server, options, next) {
     var configManager = server.plugins['hapi-kea-config'];
     server.route({
         method: 'GET',
-        path: '/admin/cache',
+        path: '/cache',
         config: CacheController.getAll,
     });
     server.route({
         method: ['GET'],
-        path: '/admin/cache/{id}',
+        path: '/cache/{id}',
         config: CacheController.edit,
 
     });
     server.route({
         method: ['DELETE'],
-        path: '/admin/cache/{id}',
+        path: '/cache/{id}',
         config: CacheController.delete
 
     });
     server.route({
         method: 'POST',
-        path: '/admin/cache',
+        path: '/cache',
         config: CacheController.save,
 
     });
     server.route({
         method: ['PUT'],
-        path: '/admin/cache/{id}',
+        path: '/cache/{id}',
         config: CacheController.update,
     });
     server.route({
         method: ['PUT'],
-        path: '/admin/cache/removeAll',
+        path: '/cache/removeAll',
         config: CacheController.removeAll,
     });
     next();

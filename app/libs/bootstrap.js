@@ -11,20 +11,6 @@ module.exports = function(server) {
     }, {
         register: require('hapi-context-credentials')
     }, {
-        register: require('yar'),
-        options: {
-            // maxCookieSize: 0,
-            // storeBlank: false,
-            cookieOptions: {
-                password: '{u$MQW#F7-@KyXNXzY4tWj*L:CN!j~tr',
-                isSecure: false,
-                ttl: 24 * 60 * 60 * 1000
-            },
-            // cache: {
-            //     expiresIn: 1000          // One second session
-            // },
-        }
-    }, {
         // Kết nối mongodb
         register: require('./mongo.js')
     }, {

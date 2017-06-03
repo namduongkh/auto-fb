@@ -74,7 +74,7 @@ exports.handleError = function(request, reply) {
         return reply.continue();
     }
     let config = request.server.configManager;
-    let loginUrl = config.get('web.error.admin.login');
+    let loginUrl = config.get('web.error.web.login');
 
     const error = response;
     const statusCode = error.output.statusCode;

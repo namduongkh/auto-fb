@@ -2,6 +2,7 @@
 
 exports.index = {
     handler: function(request, reply) {
+        console.log("WEB");
         // console.log("Auth", request.auth);
         return reply.view('web-home/views/index', {
             meta: {

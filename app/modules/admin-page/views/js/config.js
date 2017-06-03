@@ -11,6 +11,7 @@ angular.module('pages').run(['Menus',
     }
 ]).config(['$stateProvider',
     function($stateProvider) {
+
         // Pages state routing
         $stateProvider.
         state('listPages', {

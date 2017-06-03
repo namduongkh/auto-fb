@@ -47,17 +47,6 @@ module.exports = {
                 ]
             },
             admin: {
-                css: [
-                    '/libs/AdminLTE/bootstrap/css/bootstrap.min.css',
-                    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css',
-                    'https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css',
-                    '/libs/AdminLTE/plugins/datatables/dataTables.bootstrap.css',
-                    '/libs/AdminLTE/dist/css/skins/skin-blue.min.css',
-                    '/libs/AdminLTE/plugins/select2/select2.min.css',
-                    '/libs/AdminLTE/dist/css/AdminLTE.min.css',
-
-                    '/assets/css/styles-admin.css',
-                ],
                 js: [
                     'https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js',
                     '/libs/jquery/dist/jquery.min.js',
@@ -75,7 +64,18 @@ module.exports = {
                     '/libs/ng-file-upload/ng-file-upload.min.js',
 
                     '/assets/js/app-admin.js',
-                ]
+                ],
+                css: [
+                    '/libs/AdminLTE/bootstrap/css/bootstrap.min.css',
+                    '/libs/font-awesome/css/font-awesome.min.css',
+                    '/libs/Ionicons/css/ionicons.min.css',
+                    '/libs/AdminLTE/plugins/datatables/dataTables.bootstrap.css',
+                    '/libs/AdminLTE/dist/css/skins/skin-blue.min.css',
+                    '/libs/AdminLTE/plugins/select2/select2.min.css',
+                    '/libs/AdminLTE/dist/css/AdminLTE.min.css',
+
+                    '/assets/css/styles-admin.css',
+                ],
             }
         }
     }

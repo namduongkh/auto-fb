@@ -7,7 +7,7 @@ exports.index = {
     handler: function(request, reply) {
         if (!request.auth.credentials) {
             // return reply("Không có quyền truy cập");
-            return reply.redirect('/admin/dang-nhap');
+            return reply.redirect('/dang-nhap');
         }
         if (!request.auth.credentials.scope.includes('admin')) {
             return reply("Không có quyền truy cập.");

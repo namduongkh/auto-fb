@@ -43,6 +43,10 @@ angular.module(ApplicationConfiguration.applicationModuleName).config(['$locatio
     }
 ]);
 
+angular.module(ApplicationConfiguration.applicationModuleName).config(["localStorageServiceProvider", function(localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix(ApplicationConfiguration.applicationModuleName);
+}]);
+
 //Then define the init function for starting up the application
 angular.element(document).ready(function() {
     //Fixing facebook bug with redirect
@@ -501,7 +505,7 @@ angular.module('caches').controller('CachesController', ['$scope', '$window', '$
 //Caches service used to communicate Caches REST endpoints
 angular.module('caches').factory('Caches', ['$resource',
     function($resource) {
-        return $resource('admin/cache/:cacheId', {
+        return $resource('cache/:cacheId', {
             cacheId: '@_id'
         }, {
             update: {
@@ -511,7 +515,7 @@ angular.module('caches').factory('Caches', ['$resource',
                 isArray: false,
             },
             removeAll: {
-                url: '/admin/cache/removeAll',
+                url: '/cache/removeAll',
                 method: 'PUT'
             }
         });
@@ -775,6 +779,7 @@ angular.module('pages').run(['Menus',
     }
 ]).config(['$stateProvider',
     function($stateProvider) {
+
         // Pages state routing
         $stateProvider.
         state('listPages', {
@@ -1011,7 +1016,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
 //Pages service used to communicate Pages REST endpoints
 angular.module('pages').factory('Pages', ['$resource',
     function($resource) {
-        return $resource('admin/page/:pageId', {
+        return $resource('page/:pageId', {
             pageId: '@_id'
         }, {
             update: {

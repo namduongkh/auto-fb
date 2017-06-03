@@ -43,6 +43,10 @@ angular.module(ApplicationConfiguration.applicationModuleName).config(['$locatio
     }
 ]);
 
+angular.module(ApplicationConfiguration.applicationModuleName).config(function(localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix(ApplicationConfiguration.applicationModuleName);
+});
+
 //Then define the init function for starting up the application
 angular.element(document).ready(function() {
     //Fixing facebook bug with redirect
