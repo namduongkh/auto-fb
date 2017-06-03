@@ -10,12 +10,13 @@
         userCtrl.showLoading = false;
 
         userCtrl.showApiError = function(message) {
-            if (window.location.href.search("trang-ca-nhan") == -1) {
+            if (window.location.href.search("trang-ca-nhan") == -1 &&
+                window.location.href.search("trang") == -1 &&
+                window.location.href.search("tro-giup") == -1) {
                 toastr.error(message, "Lỗi");
                 $timeout(function() {
                     window.location.href = window.settings.services.webUrl + "/trang-ca-nhan";
                 }, 2000);
-
             }
         }
 
