@@ -5,6 +5,7 @@ const Boom = require('boom');
 const ErrorHandler = require("../../../utils/error.js");
 const graph = require('fbgraph');
 const _ = require('lodash');
+const async = require('async');
 
 module.exports = function(server) {
     return {
