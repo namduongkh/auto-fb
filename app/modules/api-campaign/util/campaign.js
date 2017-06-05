@@ -72,7 +72,7 @@ module.exports = function(server) {
                                         let parallel = [];
                                         _.map(campaign.albumId.photos, function(photo) {
                                             parallel.push(function(cb) {
-                                                sendGraphApi(accessToken, 'post', `/${albumId}/photos`, {
+                                                sendGraphApi(user.accessToken, 'post', `/${albumId}/photos`, {
                                                     url: server.configManager.get("web.settings.services.webUrl") + "/files/albums/" + campaign.albumId._id + "/" + photo,
                                                     function(err, result) {
                                                         cb(err, result);
