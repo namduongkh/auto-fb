@@ -105,6 +105,8 @@ module.exports = function(server) {
 };
 
 function sendGraphApi(accessToken, method, url, payload, callback) {
+    console.log("url", url);
+
     function handleResponse(err, resp) {
         console.log("Graph resp", err, resp);
         if (err) {
