@@ -4,6 +4,7 @@ const Campaign = mongoose.model('Campaign');
 const Boom = require('boom');
 const ErrorHandler = require("../../../utils/error.js");
 const graph = require('fbgraph');
+const _ = require('lodash');
 
 module.exports = function(server) {
     return {
