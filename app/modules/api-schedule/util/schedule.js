@@ -20,8 +20,8 @@ module.exports = function(server) {
                 runningJob['SCAN_RUNNING_SCHEDULE'].stop();
             }
             runningJob['SCAN_RUNNING_SCHEDULE'] = new CronJob({
-                // cronTime: `${second} * * * * *`,
-                cronTime: `*/3 * * * * *`,
+                cronTime: `${second} * * * * *`,
+                // cronTime: `*/3 * * * * *`,
                 onTick: function() {
                     Schedule.find({
                             running: true
@@ -30,8 +30,8 @@ module.exports = function(server) {
                         .then(function(schedules) {
                             // console.log("All schedule", schedules);
                             schedules.map(function(schedule) {
-                                // let cycleMinutes = schedule.cycleMinutes * 60 * 1000;
-                                let cycleMinutes = 10000;
+                                let cycleMinutes = schedule.cycleMinutes * 60 * 1000;
+                                // let cycleMinutes = 10000;
                                 let diff = new Date().getTime() - new Date(schedule.lastRun).getTime();
                                 // console.log("cycleMinutes", cycleMinutes);
                                 // console.log("diff", diff);

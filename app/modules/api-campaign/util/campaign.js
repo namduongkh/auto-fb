@@ -47,15 +47,49 @@ module.exports = function(server) {
                             }
                             let graphApiUrl;
                             let graphPayload;
+                            let realCallback;
                             if (campaign.postType == 'feed') {
                                 graphApiUrl = "/" + campaign.timelineId + "/feed";
                                 graphPayload = {
                                     message: campaign.feedId.message,
                                     link: campaign.feedId.link,
                                 };
+                                realCallback = callback;
+                            }
+                            if (campaign.postType == 'album') {
+                                graphApiUrl = "/" + campaign.timelineId + "/albums";
+                                graphPayload = {
+                                    message: campaign.albumId.message,
+                                    name: campaign.albumId.name,
+                                };
+                                realCallback = function(err, result) {
+                                    if (err) {
+                                        callback(err, result);
+                                    } else {
+                                        let albumId = result.id;
+                                        let parallel = [];
+                                        _.map(campaign.albumId.photos, function(photo) {
+                                            parallel.push(function(cb) {
+                                                sendGraphApi(accessToken, 'post', `/${albumId}/photos`, {
+                                                    url: server.configManager.get("web.settings.services.webUrl") + "/files/albums/" + campaign.albumId._id + "/" + photo,
+                                                    function(err, result) {
+                                                        cb(err, result);
+                                                    }
+                                                }, callback);
+                                            });
+                                        });
+                                        async.parallel(parallel, function(err, result) {
+                                            if (err) {
+                                                callback({ msg: "Chạy chiến dịch không thành công" });
+                                            } else {
+                                                callback(null, true);
+                                            }
+                                        });
+                                    }
+                                };
                             }
                             if (!options.debug) {
-                                sendGraphApi(user.accessToken, "post", graphApiUrl, graphPayload, callback);
+                                sendGraphApi(user.accessToken, "post", graphApiUrl, graphPayload, realCallback);
                             } else {
                                 callback(null, true);
                             }
