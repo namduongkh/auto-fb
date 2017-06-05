@@ -70,6 +70,7 @@ exports.saveSchedule = {
                         schedule.campaignId = campaignId || schedule.campaignId;
                         schedule.cycleMinutes = cycleMinutes || schedule.cycleMinutes;
                         schedule.runCounts = runCounts || schedule.runCounts;
+                        schedule.runTimes = 0;
                         schedule.endTime = endTime || schedule.endTime;
                         schedule.scheduleType = scheduleType || schedule.scheduleType;
                         schedule.modified = new Date();
