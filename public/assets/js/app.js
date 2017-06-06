@@ -1104,6 +1104,7 @@ var Common = (function() {
                 accessToken: userCtrl.accountInfo.accessToken,
                 appSecret: userCtrl.accountInfo.appSecret,
                 tokenExpire: userCtrl.accountInfo.tokenExpire,
+                removeAccessToken: !userCtrl.appIdValid
             }, true);
         };
 
@@ -1136,35 +1137,36 @@ var Common = (function() {
                 });
         };
 
-        userCtrl.getGroupInfo = function(groupUrl) {
-            if (!groupUrl) {
+        userCtrl.getGroupInfo = function(groupName) {
+            if (!groupName) {
                 return;
             }
-            var groupName = (groupUrl.replace(/\/$/g, "") + "/")
-                .match(/\/groups\/([^/]*)\//g)[0]
-                .replace(/\/groups\/([^/]*)\//g, "$1");
+            // var groupName = (groupUrl.replace(/\/$/g, "") + "/")
+            //     .match(/\/groups\/([^/]*)\//g)[0]
+            //     .replace(/\/groups\/([^/]*)\//g, "$1");
             if (groupName) {
                 $facebook.api(`/search?q=${groupName}&type=group&access_token=${userCtrl.accountInfo.accessToken}`)
                     .then(function(resp) {
                         console.log("get group info", resp);
                         if (resp.data && resp.data.length) {
-                            for (var i in resp.data) {
-                                var fetchData = resp.data[i];
-                                var exist = false;
-                                for (var j in userCtrl.accountInfo.groups) {
-                                    var groupData = userCtrl.accountInfo.groups[j];
-                                    if (fetchData.id == groupData.id) {
-                                        exist = true;
-                                        break;
-                                    }
-                                }
-                                if (!exist) {
-                                    userCtrl.accountInfo.groups.unshift(fetchData);
-                                }
-                            }
-                            updateProfile({
-                                groups: userCtrl.accountInfo.groups
-                            }, false, "Đã cập nhật danh sách nhóm thành công.");
+                            userCtrl.listGroups = resp.data;
+                            // for (var i in resp.data) {
+                            //     var fetchData = resp.data[i];
+                            //     var exist = false;
+                            //     for (var j in userCtrl.accountInfo.groups) {
+                            //         var groupData = userCtrl.accountInfo.groups[j];
+                            //         if (fetchData.id == groupData.id) {
+                            //             exist = true;
+                            //             break;
+                            //         }
+                            //     }
+                            //     if (!exist) {
+                            //         userCtrl.accountInfo.groups.unshift(fetchData);
+                            //     }
+                            // }
+                            // updateProfile({
+                            //     groups: userCtrl.accountInfo.groups
+                            // }, false, "Đã cập nhật danh sách nhóm thành công.");
                         } else {
                             toastr.error("Không lấy được thông tin.", "Lỗi!");
                         }
@@ -1181,6 +1183,44 @@ var Common = (function() {
                     groups: userCtrl.accountInfo.groups
                 }, false, "Đã cập nhật danh sách nhóm thành công.");
             }
+        };
+
+        // userCtrl.fetchGroup = function() {
+        //     $facebook.api(`/me?fields=groups&access_token=${userCtrl.accountInfo.accessToken}`)
+        //         .then(function(resp) {
+        //             console.log("resp", resp);
+        //         }, function(err) {
+        //             console.log("err", err);
+        //         });
+        // };
+
+        userCtrl.resetAccessToken = function() {
+            userCtrl.appIdValid = false;
+            userCtrl.accountInfo.accessToken = null;
+            userCtrl.accountInfo.tokenExpire = null;
+        };
+
+        userCtrl.resetListGroup = function() {
+            userCtrl.listGroups = [];
+        };
+
+        userCtrl.addGroup = function(group) {
+            var fetchData = group;
+            var exist = false;
+            for (var j in userCtrl.accountInfo.groups) {
+                var groupData = userCtrl.accountInfo.groups[j];
+                if (fetchData.id == groupData.id) {
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist) {
+                userCtrl.accountInfo.groups.unshift(fetchData);
+            }
+            group.disableClass = 'disabled';
+            updateProfile({
+                groups: userCtrl.accountInfo.groups,
+            }, false, "Đã cập nhật danh sách nhóm thành công.");
         };
     }
 })();

@@ -17,12 +17,12 @@
                     </div>
                     <div class="form-group">
                         <label for="appId">ID ứng dụng</label>
-                        <input autocomplete="off" class="form-control" type="text" name="appId" ng-model="userCtrl.accountInfo.appId" required placeholder="Id ứng dụng" />
+                        <input ng-change="userCtrl.resetAccessToken()" autocomplete="off" class="form-control" type="text" name="appId" ng-model="userCtrl.accountInfo.appId" required placeholder="Id ứng dụng" />
                         <div ng-if="!InfoForm.appId.$pristine" error-message="InfoForm.appId.$error"></div>
                     </div>
                     <div class="form-group">
                         <label for="appSecret">Khóa bí mật</label>
-                        <input autocomplete="off" class="form-control" type="text" name="appSecret" ng-model="userCtrl.accountInfo.appSecret" required placeholder="Khóa bí mật" />
+                        <input ng-change="userCtrl.resetAccessToken()" autocomplete="off" class="form-control" type="text" name="appSecret" ng-model="userCtrl.accountInfo.appSecret" required placeholder="Khóa bí mật" />
                         <div ng-if="!InfoForm.appSecret.$pristine" error-message="InfoForm.appSecret.$error"></div>
                     </div>
                     <div class="form-group">

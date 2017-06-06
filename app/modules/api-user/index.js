@@ -59,6 +59,12 @@ exports.register = function(server, options, next) {
         config: Controller.graphApi
     });
 
+    server.route({
+        method: 'GET',
+        path: '/api/user/resetBanCampaign',
+        config: Controller.resetBanCampaign
+    });
+
     next();
 };
 

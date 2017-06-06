@@ -84,7 +84,7 @@ exports.update = {
     }],
     auth: 'jwt',
     handler: function(request, reply) {
-        let { name, appId, accessToken, appSecret, tokenExpire, groups } = request.payload;
+        let { name, appId, accessToken, appSecret, tokenExpire, groups, removeAccessToken } = request.payload;
         let { user } = request.pre;
 
         user.name = name || user.name;
@@ -93,6 +93,11 @@ exports.update = {
         user.appSecret = appSecret || user.appSecret;
         user.tokenExpire = tokenExpire || user.tokenExpire;
         user.groups = groups || user.groups;
+
+        if (removeAccessToken) {
+            user.accessToken = "";
+            user.tokenExpire = "";
+        }
 
         const promise = user.save();
         promise.then(user => {
@@ -233,6 +238,21 @@ exports.generateAdmin = {
                 } else {
                     return reply("User not exist!");
                 }
+            });
+    }
+};
+
+exports.resetBanCampaign = {
+    auth: 'jwt',
+    handler: function(request, reply) {
+        let id = request.auth.credentials.id;
+        User.findOne({ _id: id })
+            .then(function(user) {
+                user.banCampaign = new Date();
+                return user.save();
+            })
+            .then(function() {
+                return reply({ status: true });
             });
     }
 };

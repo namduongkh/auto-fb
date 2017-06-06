@@ -17,7 +17,7 @@ if (window.location.port) {
 
             if (window.appId) {
                 $facebookProvider.setAppId(window.appId);
-                $facebookProvider.setPermissions("email,publish_actions,user_managed_groups,user_photos");
+                $facebookProvider.setPermissions("email,publish_actions,user_managed_groups,user_photos,pages_show_list");
             }
         })
         .run(function($window) {
