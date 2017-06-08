@@ -18,3 +18,13 @@
     border-top: 1px solid #9d9d9d;
     height: 0px;
 }
+
+.relative {
+    position: relative;
+}
+
+.absolute-error {
+    position: absolute;
+    bottom: -18px;
+    left: 0;
+}

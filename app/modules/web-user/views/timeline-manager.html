@@ -4,12 +4,13 @@
             <h3><span class="glyphicon glyphicon-cog"></span> Quản lý dòng thời gian</h3>
             <hr>
             <form role="form" name="TimelineForm" class="form-inline">
-                <div class="form-group">
+                <div class="form-group relative">
                     <input style="min-width:350px" class="form-control" type="text" name="timelineKeyword" ng-model="userCtrl.timelineKeyword" required placeholder="Từ khóa tìm kiếm..." />
-                    <div ng-if="!TimelineForm.timelineKeyword.$pristine" error-message="TimelineForm.timelineKeyword.$error"></div>
+                    <div class="absolute-error" ng-if="!TimelineForm.timelineKeyword.$pristine" error-message="TimelineForm.timelineKeyword.$error"></div>
                 </div>
                 <div class="form-group">
                     <select class="form-control" ng-model="userCtrl.timelineType" ng-change="userCtrl.resetListTimeline()">
+                        <option value="">-- Chọn 1 loại</option>
                         <option value="group">Nhóm</option>
                         <option value="page">Trang</option>
                     </select>

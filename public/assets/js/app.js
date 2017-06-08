@@ -1161,6 +1161,7 @@ var Common = (function() {
 
         userCtrl.getTimelineInfo = function(keyword, type) {
             if (!keyword || !type) {
+                toastr.error("Nhập từ khóa tìm kiếm và chọn 1 loại dòng thời gian", "Lỗi");
                 return;
             } else {
                 userCtrl.isLoading = true;
