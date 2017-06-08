@@ -2,6 +2,10 @@
 
 module.exports = {
     web: {
+        userSchedule: {
+            stopMinutes: 1,
+            debug: true
+        },
         settings: {
             services: {
                 apiUrl: 'http://localhost:3100',

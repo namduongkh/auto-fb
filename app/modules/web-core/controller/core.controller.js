@@ -278,7 +278,7 @@ exports.handleError = (request, reply) => {
         return reply.redirect(loginUrl);
     } else if (statusCode === 401) {
         request.log(['error', 'permission'], 'Missing authentication');
-        console.log("web");
+        // console.log("web");
         return reply.redirect(loginUrl);
     } else if (statusCode === 400) {
         return reply.continue();

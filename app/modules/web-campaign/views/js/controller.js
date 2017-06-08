@@ -57,7 +57,7 @@
                         }
                         $scope.CampaignForm.$setPristine();
                         campaignCtrl.campaign = resp.data;
-                        toastr.success("Lưu bài đăng thành công.", "Thành công!");
+                        toastr.success("Lưu chiến dịch thành công.", "Thành công!");
                     } else {
                         toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
                     }
@@ -72,7 +72,7 @@
                 CampaignService.removeCampaign(campaignId)
                     .then(function(resp) {
                         if (resp.status == 200 && resp.data) {
-                            toastr.success("Xóa bài đăng thành công.", "Thành công!");
+                            toastr.success("Xóa chiến dịch thành công.", "Thành công!");
                             campaignCtrl.listCampaigns.splice(index, 1);
                             campaignCtrl.resetCampaign();
                         } else {
@@ -106,6 +106,7 @@
             campaignCtrl.campaign = campaign;
             Common.scrollTo("#campaign-top", 'fast');
             campaignCtrl.postTypeChange();
+            campaignCtrl.filterTimeline();
         };
 
         campaignCtrl.resetCampaign = function() {
@@ -138,6 +139,16 @@
                         toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
                     });
             }
+        };
+
+        campaignCtrl.filterTimeline = function() {
+            campaignCtrl.timelineList = campaignCtrl.accountInfo.timelineId.filter(function(timeline) {
+                if (!campaignCtrl.campaign.timeline) {
+                    return timeline;
+                } else if (timeline.type == campaignCtrl.campaign.timeline) {
+                    return timeline;
+                }
+            });
         };
     }
 })();

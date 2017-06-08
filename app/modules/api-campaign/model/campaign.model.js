@@ -25,7 +25,7 @@ var CampaignSchema = new Schema({
     },
     timeline: {
         type: String,
-        enum: ['group']
+        enum: ['group', 'page', 'personal']
     },
     feedId: {
         type: Object,

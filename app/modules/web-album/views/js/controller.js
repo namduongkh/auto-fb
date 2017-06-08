@@ -90,7 +90,7 @@
                                 }
                             }
                             albumCtrl.album = resp.data;
-                            toastr.success("Lưu bài đăng thành công.", "Thành công!");
+                            toastr.success("Lưu album thành công.", "Thành công!");
                         });
                     } else {
                         toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
@@ -106,7 +106,7 @@
                 AlbumService.removeAlbum(albumId)
                     .then(function(resp) {
                         if (resp.status == 200 && resp.data) {
-                            toastr.success("Xóa bài đăng thành công.", "Thành công!");
+                            toastr.success("Xóa album thành công.", "Thành công!");
                             albumCtrl.listAlbums.splice(index, 1);
                             albumCtrl.resetAlbum();
                         } else {

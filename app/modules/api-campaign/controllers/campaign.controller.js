@@ -131,9 +131,10 @@ exports.runCampaign = {
         let { campaignId } = request.payload;
         let id = request.auth.credentials.id;
         let { runCampaign } = request.server.plugins['api-campaign'];
+        let stopMinutes = request.server.configManager.get("web.userSchedule.stopMinutes");
         runCampaign(campaignId, {
             checkBan: true,
-            // debug: true
+            debug: request.server.configManager.get("web.userSchedule.debug")
         }, function(err, result) {
             if (err) {
                 return reply(Boom.badRequest(err.msg));
@@ -142,12 +143,12 @@ exports.runCampaign = {
                         _id: id
                     })
                     .then(function(user) {
-                        user.banCampaign = new Date(new Date().getTime() + (10 * 60 * 1000)) // Cấm chạy chiến dịch 10 phút
+                        user.banCampaign = new Date(new Date().getTime() + (stopMinutes * 60 * 1000)) // Cấm chạy chiến dịch 10 phút
                         return user.save();
                     })
                     .then(function(user) {
                         // console.log("User", user);
-                        return reply({ msg: "Đã chạy chiến dịch thành công. Để tránh bị Facebook khóa tài khoản, bạn nên ngừng việc chạy chiến dịch trong 10 phút." });
+                        return reply({ msg: "Đã chạy chiến dịch thành công. Để tránh bị Facebook khóa tài khoản, bạn nên ngừng việc chạy chiến dịch trong " + stopMinutes + " phút." });
                     });
             }
         });

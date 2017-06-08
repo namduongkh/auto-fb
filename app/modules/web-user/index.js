@@ -25,8 +25,8 @@ exports.register = function(server, options, next) {
 
     server.route({
         method: 'GET',
-        path: '/quan-ly-nhom',
-        config: Controller.groupManager
+        path: '/quan-ly-dong-thoi-gian',
+        config: Controller.timelineManager
     });
 
     next();

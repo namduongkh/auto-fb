@@ -15,23 +15,25 @@
                         <input class="form-control" type="text" name="title" ng-model="campaignCtrl.campaign.title" required placeholder="Tiêu đề chiến dịch" />
                         <div ng-if="!CampaignForm.title.$pristine" error-message="CampaignForm.title.$error"></div>
                     </div>
-                </div>
-                <div class="col-md-6">
                     <div class="form-group">
                         <label for="timeline">Dòng thời gian</label>
-                        <select class="form-control" ng-model="campaignCtrl.campaign.timeline" required name="timeline">
+                        <select class="form-control" ng-model="campaignCtrl.campaign.timeline" required name="timeline" ng-change="campaignCtrl.filterTimeline()">
                             <option value="">-- Chọn 1 loại</option>
                             <option value="group">Nhóm</option>
+                            <option value="page">Trang</option>
+                            <option value="personal">Cá nhân</option>
                         </select>
                         <div ng-if="!CampaignForm.timeline.$pristine" error-message="CampaignForm.timeline.$error"></div>
                     </div>
-                    <div class="form-group" ng-if="campaignCtrl.campaign.timeline=='group'">
-                        <label for="group">ID dòng thời gian</label>
-                        <select name="timelineId" required placeholder="Chọn 1 nhóm" ng-model="campaignCtrl.campaign.timelineId" class="form-control" ng-options="group.id as group.name for group in campaignCtrl.accountInfo.groups">
-                            <option value="">-- Chọn 1 nhóm</option>
+                    <div class="form-group" ng-if="campaignCtrl.campaign.timeline">
+                        <label for="timelineId">ID dòng thời gian</label>
+                        <select name="timelineId" required placeholder="Chọn 1 mục" ng-model="campaignCtrl.campaign.timelineId" class="form-control" ng-options="timeline.id as timeline.name for timeline in campaignCtrl.timelineList">
+                            <option value="">-- Chọn 1 mục</option>
                         </select>
                         <div error-message="CampaignForm.timelineId.$error" ng-if="!CampaignForm.timelineId.$pristine"></div>
                     </div>
+                </div>
+                <div class="col-md-6">
                     <div class="form-group">
                         <label for="postType">Loại bài đăng</label>
                         <select class="form-control" ng-model="campaignCtrl.campaign.postType" required name="postType" ng-change="campaignCtrl.postTypeChange()">

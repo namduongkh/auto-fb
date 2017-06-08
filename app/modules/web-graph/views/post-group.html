@@ -13,14 +13,14 @@
             <label for="postType">Loại</label>
             <select class="form-control" name="postType" id="postType" ng-model="graphCtrl.postType">
                 <option value="">-- Chọn 1 loại</option>
-                <option value="0">Bài đăng</option>
+                <option value="0">Trạng thái</option>
                 <option value="1">Album</option>
             </select>
         </div>
         <div class="form-group" ng-if="graphCtrl.postType==0">
-            <label for="group">Bài đăng</label>
+            <label for="group">Trạng thái</label>
             <select name="feedId" required placeholder="Chọn 1 nhóm" ng-model="graphCtrl.feedId" class="form-control" ng-options="feed as feed.title for feed in graphCtrl.listFeeds">
-                <option value="">-- Chọn 1 bài đăng</option>
+                <option value="">-- Chọn 1 trạng thái</option>
             </select>
             <div error-message="PostForm.feedId.$error" ng-if="!PostForm.feedId.$pristine"></div>
         </div>

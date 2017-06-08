@@ -140,6 +140,7 @@
             updateProfile({
                 name: userCtrl.accountInfo.name,
                 appId: userCtrl.accountInfo.appId,
+                timelineId: userCtrl.accountInfo.timelineId,
                 accessToken: userCtrl.accountInfo.accessToken,
                 appSecret: userCtrl.accountInfo.appSecret,
                 tokenExpire: userCtrl.accountInfo.tokenExpire,
@@ -152,6 +153,11 @@
                 console.log("getAccessToken", resp);
                 if (resp.authResponse && resp.authResponse.accessToken) {
                     // userCtrl.accountInfo.accessToken = resp.authResponse.accessToken;
+                    userCtrl.accountInfo.timelineId.unshift({
+                        type: 'personal',
+                        id: resp.authResponse.userID,
+                        name: 'Dòng thời gian cá nhân'
+                    });
                     userCtrl.extendToken(resp.authResponse.accessToken);
                 }
             });
@@ -176,19 +182,16 @@
                 });
         };
 
-        userCtrl.getGroupInfo = function(groupName) {
-            if (!groupName) {
+        userCtrl.getTimelineInfo = function(keyword, type) {
+            if (!keyword || !type) {
                 return;
-            }
-            // var groupName = (groupUrl.replace(/\/$/g, "") + "/")
-            //     .match(/\/groups\/([^/]*)\//g)[0]
-            //     .replace(/\/groups\/([^/]*)\//g, "$1");
-            if (groupName) {
-                $facebook.api(`/search?q=${groupName}&type=group&access_token=${userCtrl.accountInfo.accessToken}`)
+            } else {
+                userCtrl.isLoading = true;
+                $facebook.api(`/search?q=${keyword}&type=${type}&access_token=${userCtrl.accountInfo.accessToken}`)
                     .then(function(resp) {
                         console.log("get group info", resp);
                         if (resp.data && resp.data.length) {
-                            userCtrl.listGroups = resp.data;
+                            userCtrl.listTimelines = resp.data;
                             // for (var i in resp.data) {
                             //     var fetchData = resp.data[i];
                             //     var exist = false;
@@ -209,17 +212,19 @@
                         } else {
                             toastr.error("Không lấy được thông tin.", "Lỗi!");
                         }
+                        userCtrl.isLoading = false;
                     }, function(err) {
-                        console.log("group info", err);
+                        console.log("timeline info", err);
+                        userCtrl.isLoading = false;
                     });
             }
         };
 
-        userCtrl.removeGroup = function(index) {
+        userCtrl.removeTimeline = function(index) {
             if (confirm("Bạn có chắc chắn muốn xóa?")) {
-                userCtrl.accountInfo.groups.splice(index, 1);
+                userCtrl.accountInfo.timelineId.splice(index, 1);
                 updateProfile({
-                    groups: userCtrl.accountInfo.groups
+                    timelineId: userCtrl.accountInfo.timelineId
                 }, false, "Đã cập nhật danh sách nhóm thành công.");
             }
         };
@@ -239,26 +244,30 @@
             userCtrl.accountInfo.tokenExpire = null;
         };
 
-        userCtrl.resetListGroup = function() {
-            userCtrl.listGroups = [];
+        userCtrl.resetListTimeline = function() {
+            userCtrl.listTimelines = [];
         };
 
-        userCtrl.addGroup = function(group) {
-            var fetchData = group;
+        userCtrl.addTimeline = function(timeline) {
+            var fetchData = timeline;
             var exist = false;
-            for (var j in userCtrl.accountInfo.groups) {
-                var groupData = userCtrl.accountInfo.groups[j];
-                if (fetchData.id == groupData.id) {
+            for (var j in userCtrl.accountInfo.timelineId) {
+                var timelineData = userCtrl.accountInfo.timelineId[j];
+                if (fetchData.id == timelineData.id) {
                     exist = true;
                     break;
                 }
             }
             if (!exist) {
-                userCtrl.accountInfo.groups.unshift(fetchData);
+                userCtrl.accountInfo.timelineId.unshift({
+                    type: userCtrl.timelineType,
+                    id: fetchData.id,
+                    name: fetchData.name
+                });
             }
-            group.disableClass = 'disabled';
+            timeline.disableClass = 'disabled';
             updateProfile({
-                groups: userCtrl.accountInfo.groups,
+                timelineId: userCtrl.accountInfo.timelineId,
             }, false, "Đã cập nhật danh sách nhóm thành công.");
         };
     }

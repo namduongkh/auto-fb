@@ -84,7 +84,7 @@ exports.update = {
     }],
     auth: 'jwt',
     handler: function(request, reply) {
-        let { name, appId, accessToken, appSecret, tokenExpire, groups, removeAccessToken } = request.payload;
+        let { name, appId, accessToken, appSecret, tokenExpire, removeAccessToken, timelineId } = request.payload;
         let { user } = request.pre;
 
         user.name = name || user.name;
@@ -92,7 +92,7 @@ exports.update = {
         user.accessToken = accessToken || user.accessToken;
         user.appSecret = appSecret || user.appSecret;
         user.tokenExpire = tokenExpire || user.tokenExpire;
-        user.groups = groups || user.groups;
+        user.timelineId = timelineId || user.timelineId;
 
         if (removeAccessToken) {
             user.accessToken = "";

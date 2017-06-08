@@ -46,9 +46,13 @@ var UserSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    groups: [{
-        name: { type: String },
-        id: { type: String }
+    timelineId: [{
+        type: {
+            type: String,
+            enum: ['personal', 'group', 'page']
+        },
+        id: { type: String },
+        name: { type: String }
     }],
     banCampaign: {
         type: Date

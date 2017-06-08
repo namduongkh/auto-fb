@@ -2,6 +2,10 @@
 
 module.exports = {
     web: {
+        userSchedule: {
+            stopMinutes: 3,
+            debug: false
+        },
         settings: {
             services: {
                 apiUrl: 'http://www.tudongxuatban.tk',

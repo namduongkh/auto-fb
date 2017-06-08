@@ -1,0 +1,55 @@
+<div ng-controller="UserController as userCtrl">
+    <div class="row">
+        <div class="col-md-12">
+            <h3><span class="glyphicon glyphicon-cog"></span> Quản lý dòng thời gian</h3>
+            <hr>
+            <form role="form" name="TimelineForm" class="form-inline">
+                <div class="form-group">
+                    <input style="min-width:350px" class="form-control" type="text" name="timelineKeyword" ng-model="userCtrl.timelineKeyword" required placeholder="Từ khóa tìm kiếm..." />
+                    <div ng-if="!TimelineForm.timelineKeyword.$pristine" error-message="TimelineForm.timelineKeyword.$error"></div>
+                </div>
+                <div class="form-group">
+                    <select class="form-control" ng-model="userCtrl.timelineType" ng-change="userCtrl.resetListTimeline()">
+                        <option value="group">Nhóm</option>
+                        <option value="page">Trang</option>
+                    </select>
+                </div>
+                <button ng-disabled="TimelineForm.$invalid || userCtrl.isLoading" class="btn btn-primary" type="button" ng-click="userCtrl.getTimelineInfo(userCtrl.timelineKeyword, userCtrl.timelineType)"><i class="fa fa-search" aria-hidden="true"></i> Tìm kiếm</button>
+                <button ng-click="userCtrl.resetListTimeline()" class="btn btn-info"><span class="glyphicon glyphicon-refresh"></span> Làm mới</button>
+            </form>
+            <!--<button type="button" class="btn btn-primary" ng-click="userCtrl.fetchtimeline()"><i class="fa fa-arrow-down" aria-hidden="true"></i> Lấy dữ liệu nhóm của bạn</button>-->
+        </div>
+        <div class="col-md-8" ng-if="userCtrl.listTimelines && userCtrl.listTimelines.length">
+            <hr>
+            <ul class="list-group">
+                <li class="list-group-item {[timeline.disableClass]}" ng-repeat="timeline in userCtrl.listTimelines">
+                    <i class="fa fa-pagelines" aria-hidden="true"></i>
+                    <a href="https://facebook.com/{[timeline.id]}" target="_blank">{[timeline.name]}</a>
+                    <button ng-disabled="timeline.disableClass" type="button" class="btn btn-xs btn-success pull-right" ng-click="userCtrl.addTimeline(timeline)"><i class="fa fa-plus"></i> Thêm</button>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-12">
+            <h3><span class="glyphicon glyphicon-th-list"></span> Danh sách các dòng thời gian đã lưu</h3>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Loại</th>
+                        <th>Hành động</th>
+                    </tr>
+                    <tr ng-repeat="timeline in userCtrl.accountInfo.timelineId track by $index">
+                        <td ng-bind="timeline.id"></td>
+                        <td ng-bind="timeline.name"></td>
+                        <td ng-bind="timeline.type"></td>
+                        <td>
+                            <a href="javascript:void(0);" class="btn btn-xs btn-danger" ng-click="userCtrl.removeTimeline($index)"><span class="glyphicon glyphicon-trash"></span> Xóa</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

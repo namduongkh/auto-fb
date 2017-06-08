@@ -74,7 +74,9 @@
                             }
                         }
                         scheduleCtrl.schedule = resp.data;
-                        $scope.ScheduleForm.$setPristine();
+                        $timeout(function() {
+                            $scope.ScheduleForm.$setPristine();
+                        }, 500);
                         toastr.success("Lưu trạng thái thành công.", "Thành công!");
                     } else {
                         toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
@@ -107,6 +109,9 @@
             scheduleCtrl.selectScheduleIndex = index;
             scheduleCtrl.schedule = schedule;
             Common.scrollTo("#schedule-top", 'fast');
+            $timeout(function() {
+                $scope.ScheduleForm.$setPristine();
+            }, 500);
         };
 
         scheduleCtrl.resetSchedule = function() {

@@ -39,14 +39,14 @@ exports.profile = {
     },
 };
 
-exports.groupManager = {
+exports.timelineManager = {
     auth: 'jwt',
     handler: function(request, reply) {
-        return reply.view('web-user/views/group-manager', {
+        return reply.view('web-user/views/timeline-manager', {
             meta: {
-                title: "Danh sách nhóm"
+                title: "Danh sách dòng thời gian"
             },
-            activeMenu: "groupManager"
+            activeMenu: "timelineManager"
         });
     },
 };

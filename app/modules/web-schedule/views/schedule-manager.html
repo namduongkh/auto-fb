@@ -26,7 +26,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cycleMinutes">Chu kỳ <span ng-if="scheduleCtrl.schedule.cycleMinutes">(Mỗi <span ng-bind="scheduleCtrl.schedule.cycleMinutes"></span> phút)</span></label>
-                        <input required class="form-control" type="number" min="15" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
+                        <input required class="form-control" type="number" min="1" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
                         <div ng-if="!ScheduleForm.cycleMinutes.$pristine" error-message="ScheduleForm.cycleMinutes.$error"></div>
                     </div>
                     <div class="form-group">
@@ -68,7 +68,7 @@
             </form>
         </div>
         <div class="col-md-12">
-            <h3><span class="glyphicon glyphicon-th-list"></span> Danh sách các bài đăng đã lưu</h3>
+            <h3><span class="glyphicon glyphicon-th-list"></span> Danh sách các lịch trình đã lưu</h3>
             <hr>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-striped">
