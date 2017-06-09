@@ -35,6 +35,10 @@ module.exports = function(server) {
                             callback({
                                 msg: "Không có ID của dòng thời gian.",
                             });
+                        } else if (!campaign.feedId && !campaign.albumId) {
+                            callback({
+                                msg: "Không tồn tại nội dung bài đăng. Kiểm tra lại album, trạng thái...",
+                            });
                         } else {
                             if (options.checkBan) {
                                 let banCampaign = new Date(user.banCampaign).getTime();
