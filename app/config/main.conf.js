@@ -3,7 +3,7 @@
 module.exports = {
     web: {
         app: {
-            title: "Auto Facebook"
+            title: "Tự Động Xuất Bản"
         },
         upload: {
             path: BASE_PATH + '/public/files',
