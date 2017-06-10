@@ -104,7 +104,7 @@
         };
 
         campaignCtrl.selectCampaign = function(campaign) {
-            campaignCtrl.campaign = campaign;
+            campaignCtrl.campaign = JSON.parse(JSON.stringify(campaign));
             Common.scrollTo("#campaign-top", 'fast');
             campaignCtrl.postTypeChange();
             campaignCtrl.filterTimeline();

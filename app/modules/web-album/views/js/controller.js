@@ -120,7 +120,7 @@
         };
 
         albumCtrl.selectAlbum = function(album) {
-            albumCtrl.album = album;
+            albumCtrl.album = JSON.parse(JSON.stringify(album));
             albumCtrl.defaultPhotos();
             Common.scrollTo("#album-top", 'fast');
         };

@@ -108,7 +108,7 @@
 
         scheduleCtrl.selectSchedule = function(schedule, index) {
             scheduleCtrl.selectScheduleIndex = index;
-            scheduleCtrl.schedule = schedule;
+            scheduleCtrl.schedule = JSON.parse(JSON.stringify(schedule));
             Common.scrollTo("#schedule-top", 'fast');
             $timeout(function() {
                 $scope.ScheduleForm.$setPristine();

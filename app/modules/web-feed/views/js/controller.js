@@ -85,7 +85,7 @@
         };
 
         feedCtrl.selectFeed = function(feed) {
-            feedCtrl.feed = feed;
+            feedCtrl.feed = JSON.parse(JSON.stringify(feed));
             Common.scrollTo("#feed-top", 'fast');
         };
 

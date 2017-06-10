@@ -130,7 +130,7 @@
         };
 
         albumCtrl.selectAlbum = function(album) {
-            albumCtrl.album = album;
+            albumCtrl.album = JSON.parse(JSON.stringify(album));
             albumCtrl.defaultPhotos();
             Common.scrollTo("#album-top", 'fast');
         };
@@ -303,7 +303,7 @@
         };
 
         campaignCtrl.selectCampaign = function(campaign) {
-            campaignCtrl.campaign = campaign;
+            campaignCtrl.campaign = JSON.parse(JSON.stringify(campaign));
             Common.scrollTo("#campaign-top", 'fast');
             campaignCtrl.postTypeChange();
             campaignCtrl.filterTimeline();
@@ -602,7 +602,7 @@ var Common = (function() {
         };
 
         feedCtrl.selectFeed = function(feed) {
-            feedCtrl.feed = feed;
+            feedCtrl.feed = JSON.parse(JSON.stringify(feed));
             Common.scrollTo("#feed-top", 'fast');
         };
 
@@ -907,7 +907,7 @@ var Common = (function() {
 
         scheduleCtrl.selectSchedule = function(schedule, index) {
             scheduleCtrl.selectScheduleIndex = index;
-            scheduleCtrl.schedule = schedule;
+            scheduleCtrl.schedule = JSON.parse(JSON.stringify(schedule));
             Common.scrollTo("#schedule-top", 'fast');
             $timeout(function() {
                 $scope.ScheduleForm.$setPristine();
