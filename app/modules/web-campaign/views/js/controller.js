@@ -7,6 +7,7 @@
     function CampaignController(UserService, CampaignService, FeedService, AlbumService, $cookies, $scope, $rootScope, toastr, $timeout, $facebook, $http) {
         var campaignCtrl = this;
         campaignCtrl.accountInfo = {};
+        campaignCtrl.generateTitle = {};
 
         campaignCtrl.getAccount = function() {
             UserService.account().then(function(resp) {

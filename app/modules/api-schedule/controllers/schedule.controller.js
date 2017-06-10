@@ -44,6 +44,7 @@ exports.saveSchedule = {
             runCounts,
             endTime,
             scheduleType,
+            description,
         } = request.payload;
 
         let id = request.auth.credentials.id;
@@ -73,6 +74,7 @@ exports.saveSchedule = {
                         schedule.runTimes = 0;
                         schedule.endTime = endTime || schedule.endTime;
                         schedule.scheduleType = scheduleType || schedule.scheduleType;
+                        schedule.description = description || schedule.description;
                         schedule.modified = new Date();
                         save(schedule);
                     } else {
@@ -87,6 +89,7 @@ exports.saveSchedule = {
                 runCounts,
                 endTime,
                 scheduleType,
+                description,
                 created_by: id
             });
             save(schedule);

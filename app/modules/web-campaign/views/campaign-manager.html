@@ -11,10 +11,18 @@
                         <div ng-if="!CampaignForm._id.$pristine" error-message="CampaignForm._id.$error"></div>
                     </div>
                     <div class="form-group">
-                        <label for="title">Tiêu đề chiến dịch</label>
-                        <input class="form-control" type="text" name="title" ng-model="campaignCtrl.campaign.title" required placeholder="Tiêu đề chiến dịch" />
+                        <label for="title">Tên chiến dịch</label>
+                        <input class="form-control" type="text" name="title" ng-model="campaignCtrl.campaign.title" required placeholder="Tên chiến dịch" />
                         <div ng-if="!CampaignForm.title.$pristine" error-message="CampaignForm.title.$error"></div>
                     </div>
+                    <div class="form-group">
+                        <label for="description">Mô tả</label>
+                        <textarea class="form-control" type="text" name="description" ng-model="campaignCtrl.campaign.description" placeholder="Mô tả gợi nhớ chiến dịch"></textarea>
+                        <div ng-if="!CampaignForm.description.$pristine" error-message="CampaignForm.description.$error"></div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
                     <div class="form-group">
                         <label for="timeline">Dòng thời gian</label>
                         <select class="form-control" ng-model="campaignCtrl.campaign.timeline" required name="timeline" ng-change="campaignCtrl.filterTimeline()">
@@ -32,8 +40,6 @@
                         </select>
                         <div error-message="CampaignForm.timelineId.$error" ng-if="!CampaignForm.timelineId.$pristine"></div>
                     </div>
-                </div>
-                <div class="col-md-6">
                     <div class="form-group">
                         <label for="postType">Loại bài đăng</label>
                         <select class="form-control" ng-model="campaignCtrl.campaign.postType" required name="postType" ng-change="campaignCtrl.postTypeChange()">
@@ -81,12 +87,16 @@
                 <table class="table table-bordered table-hover table-striped">
                     <tr>
                         <th>Tiêu đề</th>
+                        <th>Mô tả</th>
                         <th>Cập nhật</th>
                         <th>Hành động</th>
                     </tr>
                     <tr ng-repeat="campaign in campaignCtrl.listCampaigns track by $index">
                         <td>
-                            <strong ng-bind="campaign.title"></strong>
+                            <strong ng-bind="campaign.title | shortString:20"></strong>
+                        </td>
+                        <td>
+                            <strong ng-bind="campaign.description | shortString:40"></strong>
                         </td>
                         <td ng-bind="campaign.modified | date:'dd/MM/yyyy hh:mm a'"></td>
                         <td>

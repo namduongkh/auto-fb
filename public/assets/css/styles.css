@@ -1809,5 +1809,12 @@ ul.alert-dropdown {
   bottom: -18px;
   left: 0; }
 
+.text-one-line {
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden; }
+
 #page-content img {
   max-width: 650px; }

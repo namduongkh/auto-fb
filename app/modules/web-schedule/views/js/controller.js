@@ -65,6 +65,7 @@
                                 scheduleCtrl.listSchedules = [];
                             }
                             scheduleCtrl.listSchedules.unshift(resp.data);
+                            scheduleCtrl.selectScheduleIndex = 0;
                         } else {
                             for (var i in scheduleCtrl.listSchedules) {
                                 if (scheduleCtrl.listSchedules[i]._id == scheduleCtrl.schedule._id) {
@@ -154,6 +155,17 @@
                         toastr.error(err.message, "Lỗi!");
                     });
             }
+        };
+
+        scheduleCtrl.changeCampaign = function() {
+            scheduleCtrl.campaignDescription = "Không có mô tả";
+            for (var i in scheduleCtrl.listCampaigns) {
+                if (scheduleCtrl.listCampaigns[i]._id == scheduleCtrl.schedule.campaignId) {
+                    scheduleCtrl.campaignDescription = scheduleCtrl.listCampaigns[i].description || "Không có mô tả";
+                    break;
+                }
+            }
+            $('[data-toggle="popover"]').popover();
         };
     }
 })();

@@ -7,6 +7,9 @@ var ScheduleSchema = new Schema({
     name: {
         type: String
     },
+    description: {
+        type: String
+    },
     scheduleType: {
         type: String,
         enum: ['count', 'time']

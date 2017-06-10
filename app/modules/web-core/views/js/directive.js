@@ -13,11 +13,12 @@
             scope: {
                 errorMessage: "=",
                 matchTarget: "=",
-                typeContent: "="
+                typeContent: "=",
+                stepValue: "="
             },
             link: function(scope, elem, attr) {
                 function setMatchError() {
-                    if (scope.typeContent != scope.matchTarget) {
+                    if (scope.typeContent && scope.matchTarget && scope.typeContent != scope.matchTarget) {
                         scope.errorMessage.match = true;
                     } else {
                         scope.errorMessage.match = false;

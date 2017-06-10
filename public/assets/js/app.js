@@ -206,6 +206,7 @@
     function CampaignController(UserService, CampaignService, FeedService, AlbumService, $cookies, $scope, $rootScope, toastr, $timeout, $facebook, $http) {
         var campaignCtrl = this;
         campaignCtrl.accountInfo = {};
+        campaignCtrl.generateTitle = {};
 
         campaignCtrl.getAccount = function() {
             UserService.account().then(function(resp) {
@@ -415,11 +416,12 @@ var Common = (function() {
             scope: {
                 errorMessage: "=",
                 matchTarget: "=",
-                typeContent: "="
+                typeContent: "=",
+                stepValue: "="
             },
             link: function(scope, elem, attr) {
                 function setMatchError() {
-                    if (scope.typeContent != scope.matchTarget) {
+                    if (scope.typeContent && scope.matchTarget && scope.typeContent != scope.matchTarget) {
                         scope.errorMessage.match = true;
                     } else {
                         scope.errorMessage.match = false;
@@ -448,6 +450,22 @@ var Common = (function() {
                     }
                 });
             }
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module("Core")
+        .filter('shortString', shortString);
+
+    function shortString() {
+        return function(input, length) {
+            length = length || 50;
+            if (input && input.length > length) {
+                return input.substr(0, length) + "...";
+            }
+            return input;
         };
     }
 })();
@@ -846,6 +864,7 @@ var Common = (function() {
                                 scheduleCtrl.listSchedules = [];
                             }
                             scheduleCtrl.listSchedules.unshift(resp.data);
+                            scheduleCtrl.selectScheduleIndex = 0;
                         } else {
                             for (var i in scheduleCtrl.listSchedules) {
                                 if (scheduleCtrl.listSchedules[i]._id == scheduleCtrl.schedule._id) {
@@ -935,6 +954,17 @@ var Common = (function() {
                         toastr.error(err.message, "Lỗi!");
                     });
             }
+        };
+
+        scheduleCtrl.changeCampaign = function() {
+            scheduleCtrl.campaignDescription = "Không có mô tả";
+            for (var i in scheduleCtrl.listCampaigns) {
+                if (scheduleCtrl.listCampaigns[i]._id == scheduleCtrl.schedule.campaignId) {
+                    scheduleCtrl.campaignDescription = scheduleCtrl.listCampaigns[i].description || "Không có mô tả";
+                    break;
+                }
+            }
+            $('[data-toggle="popover"]').popover();
         };
     }
 })();

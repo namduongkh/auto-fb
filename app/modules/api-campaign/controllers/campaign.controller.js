@@ -45,6 +45,7 @@ exports.saveCampaign = {
             timelineId,
             feedId,
             albumId,
+            description,
             cycleMinutes
         } = request.payload;
 
@@ -74,6 +75,7 @@ exports.saveCampaign = {
                         campaign.timelineId = timelineId || campaign.timelineId;
                         campaign.feedId = feedId || campaign.feedId;
                         campaign.albumId = albumId || campaign.albumId;
+                        campaign.description = description || campaign.description;
                         campaign.modified = new Date()
                         save(campaign);
                     } else {
@@ -88,6 +90,7 @@ exports.saveCampaign = {
                 timelineId,
                 feedId,
                 albumId,
+                description,
                 created_by: id
             });
             save(campaign);

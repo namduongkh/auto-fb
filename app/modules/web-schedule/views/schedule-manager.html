@@ -16,8 +16,14 @@
                         <div ng-if="!ScheduleForm.name.$pristine" error-message="ScheduleForm.name.$error"></div>
                     </div>
                     <div class="form-group">
+                        <label for="description">Mô tả</label>
+                        <textarea class="form-control" type="text" name="description" ng-model="scheduleCtrl.schedule.description" placeholder="Mô tả gợi nhớ"></textarea>
+                        <div ng-if="!ScheduleForm.description.$pristine" error-message="ScheduleForm.description.$error"></div>
+                    </div>
+                    <div class="form-group">
                         <label for="group">Chiến dịch</label>
-                        <select name="campaignId" required placeholder="Chọn 1 nhóm" ng-model="scheduleCtrl.schedule.campaignId" class="form-control" ng-options="campaign._id as campaign.title for campaign in scheduleCtrl.listCampaigns">
+                        <a ng-show="scheduleCtrl.schedule.campaignId" href="javascript:void(0);" data-toggle="popover" title="Mô tả chiến dịch" data-content="{[scheduleCtrl.campaignDescription]}">(Xem mô tả)</a>
+                        <select name="campaignId" required placeholder="Chọn 1 nhóm" ng-model="scheduleCtrl.schedule.campaignId" class="form-control" ng-options="campaign._id as campaign.title for campaign in scheduleCtrl.listCampaigns" ng-change="scheduleCtrl.changeCampaign()">
                             <option value="">-- Chọn 1 chiến dịch</option>
                         </select>
                         <div error-message="ScheduleForm.campaignId.$error" ng-if="!ScheduleForm.campaignId.$pristine"></div>
@@ -26,8 +32,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cycleMinutes">Chu kỳ <span ng-if="scheduleCtrl.schedule.cycleMinutes">(Mỗi <span ng-bind="scheduleCtrl.schedule.cycleMinutes"></span> phút)</span></label>
-                        <input required class="form-control" type="number" min="1" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
-                        <div ng-if="!ScheduleForm.cycleMinutes.$pristine" error-message="ScheduleForm.cycleMinutes.$error"></div>
+                        <input required class="form-control" type="number" min="15" step="15" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
+                        <div ng-if="!ScheduleForm.cycleMinutes.$pristine" error-message="ScheduleForm.cycleMinutes.$error" step-value="15"></div>
                     </div>
                     <div class="form-group">
                         <label for="scheduleType">Kiểu lịch trình</label>
@@ -74,6 +80,7 @@
                 <table class="table table-bordered table-hover table-striped">
                     <tr>
                         <th>Tên</th>
+                        <th>Mô tả</th>
                         <th>Chu kỳ (phút)</th>
                         <th>Trạng thái</th>
                         <th>Cập nhật</th>
@@ -81,7 +88,10 @@
                     </tr>
                     <tr ng-repeat="schedule in scheduleCtrl.listSchedules track by $index">
                         <td>
-                            <strong ng-bind="schedule.name"></strong>
+                            <strong ng-bind="schedule.name | shortString:20"></strong>
+                        </td>
+                        <td>
+                            <strong ng-bind="schedule.description | shortString:30"></strong>
                         </td>
                         <td ng-bind="schedule.cycleMinutes"></td>
                         <td>

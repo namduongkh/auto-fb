@@ -7,6 +7,9 @@ var CampaignSchema = new Schema({
     title: {
         type: String
     },
+    description: {
+        type: String
+    },
     modified: {
         type: Date,
         default: Date.now
