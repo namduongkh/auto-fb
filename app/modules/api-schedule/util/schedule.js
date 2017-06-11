@@ -97,8 +97,6 @@ function scanScheduleByUser(server, user_id) {
 
                                         selectSchedule = schedule;
                                         break;
-
-
                                     } else {
                                         schedule.running = false;
                                         schedule.save();
@@ -113,15 +111,19 @@ function scanScheduleByUser(server, user_id) {
                                     // console.log("check running selectSchedule");
                                     // console.log(err, resp);
                                     if (err) {
+                                        console.log("err", err);
                                         selectSchedule.running = false;
                                     } else {
                                         selectSchedule.lastRun = new Date();
-                                        if (selectSchedule.selectScheduleType == 'count') {
-                                            if (!selectSchedule.runTimes) {
-                                                selectSchedule.runTimes = 0;
-                                            }
-                                            selectSchedule.runTimes++;
+                                        if (!selectSchedule.runTimes) {
+                                            selectSchedule.runTimes = 0;
                                         }
+                                        selectSchedule.runTimes++;
+                                    }
+                                    if ((schedule.scheduleType == 'count' && schedule.runTimes >= schedule.runCounts) ||
+                                        (schedule.scheduleType == 'time' && new Date(schedule.endTime) <= new Date())) {
+
+                                        schedule.running = false;
                                     }
                                     selectSchedule.save();
                                 });

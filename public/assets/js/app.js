@@ -932,7 +932,8 @@ var Common = (function() {
                         }
                     })
                     .catch(function(err) {
-                        toastr.error(err.message, "Lỗi!");
+                        console.log("err", err);
+                        toastr.error(err.data.message, "Lỗi!");
                     });
             }
         };

@@ -134,21 +134,38 @@ exports.runSchedule = {
                 _id: scheduleId,
                 created_by: id
             })
+            .populate({
+                path: "campaignId",
+                select: "albumId feedId",
+                populate: [{
+                    path: "albumId",
+                    select: "_id"
+                }, {
+                    path: "feedId",
+                    select: "_id"
+                }]
+            })
             .then(function(schedule) {
                 if (schedule) {
+                    if (!schedule.campaignId ||
+                        (!schedule.campaignId.albumId && !schedule.campaignId.feedId)) {
+                        return reply(Boom.badRequest("Không tồn tại nội dung bài đăng. Kiểm tra lại album, trạng thái..."));
+                    }
                     schedule.running = true;
                     schedule.runTimes = 0;
-                    return schedule.save();
+                    schedule
+                        .save()
+                        .then(function(schedule) {
+                            return reply({
+                                status: true,
+                                msg: "Đã khởi động lịch trình thành công",
+                                data: schedule
+                            });
+                        });
+                    return null;
                 } else {
                     return reply(Boom.badRequest("Không tìm thấy lịch trình."));
                 }
-            })
-            .then(function(schedule) {
-                return reply({
-                    status: true,
-                    msg: "Đã khởi động lịch trình thành công",
-                    data: schedule
-                });
             })
             .catch(function(err) {
                 return reply(Boom.badRequest(ErrorHandler.getErrorMessage(err)));

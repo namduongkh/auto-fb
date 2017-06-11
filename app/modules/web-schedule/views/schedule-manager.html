@@ -32,7 +32,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cycleMinutes">Chu kỳ <span ng-if="scheduleCtrl.schedule.cycleMinutes">(Mỗi <span ng-bind="scheduleCtrl.schedule.cycleMinutes"></span> phút)</span></label>
-                        <input required class="form-control" type="number" min="15" step="15" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
+                        <input required class="form-control" type="number" min="1" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
                         <div ng-if="!ScheduleForm.cycleMinutes.$pristine" error-message="ScheduleForm.cycleMinutes.$error" step-value="15"></div>
                     </div>
                     <div class="form-group">
@@ -82,6 +82,7 @@
                         <th>Tên</th>
                         <th>Mô tả</th>
                         <th>Chu kỳ (phút)</th>
+                        <th>Đã chạy</th>
                         <th>Trạng thái</th>
                         <th>Cập nhật</th>
                         <th>Hành động</th>
@@ -94,6 +95,7 @@
                             <strong ng-bind="schedule.description | shortString:30"></strong>
                         </td>
                         <td ng-bind="schedule.cycleMinutes"></td>
+                        <td ng-bind="schedule.runTimes + ' lần'"></td>
                         <td>
                             <span ng-if="!schedule.running" class="label label-danger"><i class="fa fa-stop"></i> Đang dừng</span>
                             <span ng-if="schedule.running" class="label label-success"><i class="fa fa-play"></i> Đang chạy</span>
