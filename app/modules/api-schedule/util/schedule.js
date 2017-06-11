@@ -120,10 +120,10 @@ function scanScheduleByUser(server, user_id) {
                                         }
                                         selectSchedule.runTimes++;
                                     }
-                                    if ((schedule.scheduleType == 'count' && schedule.runTimes >= schedule.runCounts) ||
-                                        (schedule.scheduleType == 'time' && new Date(schedule.endTime) <= new Date())) {
+                                    if ((selectSchedule.scheduleType == 'count' && selectSchedule.runTimes >= selectSchedule.runCounts) ||
+                                        (selectSchedule.scheduleType == 'time' && new Date(selectSchedule.endTime) <= new Date())) {
 
-                                        schedule.running = false;
+                                        selectSchedule.running = false;
                                     }
                                     selectSchedule.save();
                                 });
