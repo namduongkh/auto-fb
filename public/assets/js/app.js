@@ -379,132 +379,6 @@
         }
     }
 })();
-var Common = (function() {
-    'use strict';
-    return {
-        scrollTo: function(element, speed) {
-            element = element || 'html,body';
-            speed = speed || 'slow';
-            $('html,body').animate({
-                    scrollTop: $(element).offset().top
-                },
-                speed);
-        }
-    };
-})();
-(function() {
-    'use strict';
-
-    angular.module('Core', [])
-        .config(["$interpolateProvider", function($interpolateProvider) {
-            $interpolateProvider.startSymbol('{[');
-            $interpolateProvider.endSymbol(']}');
-        }]);
-})();
-(function() {
-    'use strict';
-
-    angular.module('Core')
-        .directive("errorMessage", errorMessage)
-        .directive("showLoading", showLoading);
-
-    function errorMessage() {
-        return {
-            restrict: "AE",
-            templateUrl: "modules/web-core/views/js/template/error-message.html",
-            replace: true,
-            scope: {
-                errorMessage: "=",
-                matchTarget: "=",
-                typeContent: "=",
-                stepValue: "="
-            },
-            link: function(scope, elem, attr) {
-                function setMatchError() {
-                    if (scope.typeContent && scope.matchTarget && scope.typeContent != scope.matchTarget) {
-                        scope.errorMessage.match = true;
-                    } else {
-                        scope.errorMessage.match = false;
-                    }
-                }
-                scope.$watch("typeContent", function(value) {
-                    setMatchError();
-                });
-                scope.$watch("matchTarget", function(value) {
-                    setMatchError();
-                });
-            }
-        }
-    }
-
-    function showLoading() {
-        return {
-            restrict: "A",
-            scope: {
-                showLoading: "="
-            },
-            link: function(scope, elem, attr) {
-                scope.$watch('showLoading', function(value) {
-                    if (value) {
-                        $(elem).fadeIn('fast');
-                    }
-                });
-            }
-        };
-    }
-})();
-(function() {
-    'use strict';
-
-    angular.module("Core")
-        .filter('shortString', shortString);
-
-    function shortString() {
-        return function(input, length) {
-            length = length || 50;
-            if (input && input.length > length) {
-                return input.substr(0, length) + "...";
-            }
-            return input;
-        };
-    }
-})();
-(function() {
-    'use strict';
-
-    PreResponse.$inject = ["$rootScope", "$timeout", "$q"];
-    angular.module('Core')
-        .factory('PreResponse', PreResponse)
-        .config(['$httpProvider', function($httpProvider) {
-            $httpProvider.interceptors.push('PreResponse');
-        }]);
-
-    function PreResponse($rootScope, $timeout, $q) {
-        return {
-            response: function(response) {
-                // console.log("Chạy vào đây");
-                if (response.status == 200) {
-                    if (response.data.noAccessToken) {
-                        $rootScope.$broadcast("NO_ACCESS_TOKEN_ERROR");
-                    }
-                    if (response.data.tokenHasExpired) {
-                        $rootScope.$broadcast("TOKEN_HAS_EXPIRED_ERROR");
-                    }
-                    if (response.data.rejectApi) {
-                        return $q.reject({
-                            status: false,
-                            data: {
-                                message: 'You have access token!'
-                            },
-                            handle: 'PreResponse'
-                        });
-                    }
-                }
-                return response;
-            },
-        }
-    };
-})();
 (function() {
     'use strict';
 
@@ -631,6 +505,132 @@ var Common = (function() {
             }
         }
     }
+})();
+var Common = (function() {
+    'use strict';
+    return {
+        scrollTo: function(element, speed) {
+            element = element || 'html,body';
+            speed = speed || 'slow';
+            $('html,body').animate({
+                    scrollTop: $(element).offset().top
+                },
+                speed);
+        }
+    };
+})();
+(function() {
+    'use strict';
+
+    angular.module('Core', [])
+        .config(["$interpolateProvider", function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+})();
+(function() {
+    'use strict';
+
+    angular.module('Core')
+        .directive("errorMessage", errorMessage)
+        .directive("showLoading", showLoading);
+
+    function errorMessage() {
+        return {
+            restrict: "AE",
+            templateUrl: "modules/web-core/views/js/template/error-message.html",
+            replace: true,
+            scope: {
+                errorMessage: "=",
+                matchTarget: "=",
+                typeContent: "=",
+                stepValue: "="
+            },
+            link: function(scope, elem, attr) {
+                function setMatchError() {
+                    if (scope.typeContent && scope.matchTarget && scope.typeContent != scope.matchTarget) {
+                        scope.errorMessage.match = true;
+                    } else {
+                        scope.errorMessage.match = false;
+                    }
+                }
+                scope.$watch("typeContent", function(value) {
+                    setMatchError();
+                });
+                scope.$watch("matchTarget", function(value) {
+                    setMatchError();
+                });
+            }
+        }
+    }
+
+    function showLoading() {
+        return {
+            restrict: "A",
+            scope: {
+                showLoading: "="
+            },
+            link: function(scope, elem, attr) {
+                scope.$watch('showLoading', function(value) {
+                    if (value) {
+                        $(elem).fadeIn('fast');
+                    }
+                });
+            }
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    angular.module("Core")
+        .filter('shortString', shortString);
+
+    function shortString() {
+        return function(input, length) {
+            length = length || 50;
+            if (input && input.length > length) {
+                return input.substr(0, length) + "...";
+            }
+            return input;
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    PreResponse.$inject = ["$rootScope", "$timeout", "$q"];
+    angular.module('Core')
+        .factory('PreResponse', PreResponse)
+        .config(['$httpProvider', function($httpProvider) {
+            $httpProvider.interceptors.push('PreResponse');
+        }]);
+
+    function PreResponse($rootScope, $timeout, $q) {
+        return {
+            response: function(response) {
+                // console.log("Chạy vào đây");
+                if (response.status == 200) {
+                    if (response.data.noAccessToken) {
+                        $rootScope.$broadcast("NO_ACCESS_TOKEN_ERROR");
+                    }
+                    if (response.data.tokenHasExpired) {
+                        $rootScope.$broadcast("TOKEN_HAS_EXPIRED_ERROR");
+                    }
+                    if (response.data.rejectApi) {
+                        return $q.reject({
+                            status: false,
+                            data: {
+                                message: 'You have access token!'
+                            },
+                            handle: 'PreResponse'
+                        });
+                    }
+                }
+                return response;
+            },
+        }
+    };
 })();
 (function() {
     'use strict';
@@ -1069,14 +1069,21 @@ var Common = (function() {
                     password: userCtrl.form.password,
                 })
                 .then(function(resp) {
-                    console.log("Resp", resp);
-                    $cookies.put('token', resp.data.token, {
-                        path: "/"
-                    });
-                    $cookies.put('appId', resp.data.appId, {
-                        path: "/"
-                    });
-                    window.location.reload();
+                    if (resp.status == 200) {
+                        console.log("Resp", resp);
+                        $cookies.put('token', resp.data.token, {
+                            path: "/"
+                        });
+                        $cookies.put('appId', resp.data.appId, {
+                            path: "/"
+                        });
+                        window.location.reload();
+                    } else {
+                        toastr.error("Đăng nhập không hợp lệ.", "Lỗi!");
+                    }
+                })
+                .catch(function(err) {
+                    toastr.error("Đăng nhập không hợp lệ.", "Lỗi!");
                 });
         };
 

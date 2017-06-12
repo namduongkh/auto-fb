@@ -61,14 +61,21 @@
                     password: userCtrl.form.password,
                 })
                 .then(function(resp) {
-                    console.log("Resp", resp);
-                    $cookies.put('token', resp.data.token, {
-                        path: "/"
-                    });
-                    $cookies.put('appId', resp.data.appId, {
-                        path: "/"
-                    });
-                    window.location.reload();
+                    if (resp.status == 200) {
+                        console.log("Resp", resp);
+                        $cookies.put('token', resp.data.token, {
+                            path: "/"
+                        });
+                        $cookies.put('appId', resp.data.appId, {
+                            path: "/"
+                        });
+                        window.location.reload();
+                    } else {
+                        toastr.error("Đăng nhập không hợp lệ.", "Lỗi!");
+                    }
+                })
+                .catch(function(err) {
+                    toastr.error("Đăng nhập không hợp lệ.", "Lỗi!");
                 });
         };
 

@@ -55,9 +55,9 @@ exports.login = {
                             .state("token", token, cookieOptions);
                     }
                 });
-
-            }).catch(err => {
-                return reply(false);
+            })
+            .catch(err => {
+                return reply(Boom.unauthorized(ErrorHandler.getErrorMessage(err)));
             });
     },
 };

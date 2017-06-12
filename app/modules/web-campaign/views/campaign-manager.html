@@ -16,14 +16,6 @@
                         <div ng-if="!CampaignForm.title.$pristine" error-message="CampaignForm.title.$error"></div>
                     </div>
                     <div class="form-group">
-                        <label for="description">Mô tả</label>
-                        <textarea disabled class="form-control" type="text" name="description" ng-model="campaignCtrl.campaign.description" placeholder="Mô tả gợi nhớ chiến dịch"></textarea>
-                        <div ng-if="!CampaignForm.description.$pristine" error-message="CampaignForm.description.$error"></div>
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
                         <label for="timeline">Dòng thời gian</label>
                         <select class="form-control" ng-model="campaignCtrl.campaign.timeline" required name="timeline" ng-change="campaignCtrl.filterTimeline()">
                             <option value="">-- Chọn 1 loại</option>
@@ -40,6 +32,8 @@
                         </select>
                         <div error-message="CampaignForm.timelineId.$error" ng-if="!CampaignForm.timelineId.$pristine"></div>
                     </div>
+                </div>
+                <div class="col-md-6">
                     <div class="form-group">
                         <label for="postType">Loại bài đăng</label>
                         <select class="form-control" ng-model="campaignCtrl.campaign.postType" required name="postType" ng-change="campaignCtrl.postTypeChange()">
@@ -62,6 +56,11 @@
                             <option value="">-- Chọn 1 album</option>
                         </select>
                         <div error-message="CampaignForm.albumId.$error" ng-if="!CampaignForm.albumId.$pristine"></div>
+                    </div>
+                    <div class="form-group" ng-if="campaignCtrl.campaign.description">
+                        <label for="description">Mô tả</label>
+                        <textarea disabled class="form-control" type="text" name="description" ng-model="campaignCtrl.campaign.description" placeholder="Mô tả gợi nhớ chiến dịch"></textarea>
+                        <div ng-if="!CampaignForm.description.$pristine" error-message="CampaignForm.description.$error"></div>
                     </div>
                 </div>
                 <div class="col-md-12">

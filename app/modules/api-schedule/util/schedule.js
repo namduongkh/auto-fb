@@ -24,6 +24,7 @@ module.exports = function(server) {
                 cronTime: `${second} * * * * *`,
                 // cronTime: `*/3 * * * * *`,
                 onTick: function() {
+                    console.log("-- Scan user running schedule");
                     Schedule.find({
                             running: true
                         })
@@ -72,7 +73,7 @@ function scanScheduleByUser(server, user_id) {
         cronTime: `${second} * * * * *`,
         // cronTime: `*/3 * * * * *`,
         onTick: function() {
-            console.log("Quét các schedule của user", user_id);
+            console.log("-- Quét các schedule của user", user_id);
             let banTime = 1000 * 60 * config.get("web.userSchedule.stopMinutes"); // 1 phút
             Schedule.find({
                     running: true,

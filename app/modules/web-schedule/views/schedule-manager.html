@@ -16,11 +16,6 @@
                         <div ng-if="!ScheduleForm.name.$pristine" error-message="ScheduleForm.name.$error"></div>
                     </div>
                     <div class="form-group">
-                        <label for="description">Mô tả</label>
-                        <textarea rows="3" disabled class="form-control" type="text" name="description" ng-model="scheduleCtrl.schedule.description" placeholder="Mô tả gợi nhớ"></textarea>
-                        <div ng-if="!ScheduleForm.description.$pristine" error-message="ScheduleForm.description.$error"></div>
-                    </div>
-                    <div class="form-group">
                         <label for="group">Chiến dịch</label>
                         <a href="javascript:void(0)" class="label label-info" ng-if="scheduleCtrl.schedule.campaignId && scheduleCtrl.campaignDescription" data-toggle="modal" data-target="#campaignDescription">
                             <i class="fa fa-info-circle"></i> Gợi nhớ
@@ -34,7 +29,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cycleMinutes">Chu kỳ <span ng-if="scheduleCtrl.schedule.cycleMinutes">(Mỗi <span ng-bind="scheduleCtrl.schedule.cycleMinutes"></span> phút)</span></label>
-                        <input required class="form-control" type="number" min="1" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
+                        <input required class="form-control" type="number" min="15" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
                         <div ng-if="!ScheduleForm.cycleMinutes.$pristine" error-message="ScheduleForm.cycleMinutes.$error" step-value="15"></div>
                     </div>
                     <div class="form-group">
@@ -54,6 +49,11 @@
                     <div class="form-group" ng-if="scheduleCtrl.schedule.scheduleType=='time'">
                         <label for="endTime">Thời điểm kết thúc</label>
                         <input required class="form-control" name="endTime" datetimepicker ng-model="scheduleCtrl.schedule.endTime" options="scheduleCtrl.dateOptions" />
+                    </div>
+                    <div class="form-group" ng-if="scheduleCtrl.schedule.description">
+                        <label for="description">Mô tả</label>
+                        <textarea rows="3" disabled class="form-control" type="text" name="description" ng-model="scheduleCtrl.schedule.description" placeholder="Mô tả gợi nhớ"></textarea>
+                        <div ng-if="!ScheduleForm.description.$pristine" error-message="ScheduleForm.description.$error"></div>
                     </div>
                 </div>
                 <div class="col-md-12">
