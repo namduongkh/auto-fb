@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const Schedule = mongoose.model('Schedule');
 const Boom = require('boom');
+const async = require('async');
 const ErrorHandler = require("../../../utils/error.js");
 const CampaignUtil = require('../../api-campaign/util/campaign.js');
 const CronJob = require('cron').CronJob;
@@ -25,6 +26,7 @@ module.exports = function(server) {
                 // cronTime: `*/3 * * * * *`,
                 onTick: function() {
                     console.log("-- Scan user running schedule");
+                    let userRunning = [];
                     Schedule.find({
                             running: true
                         })
@@ -34,15 +36,17 @@ module.exports = function(server) {
                             schedules.map(function(schedule) {
                                 if (!scanUserSchedule[schedule.created_by]) {
                                     scanUserSchedule[schedule.created_by] = schedule.created_by;
+                                    userRunning.push(schedule.created_by);
                                     scanScheduleByUser(server, schedule.created_by);
                                 }
                             });
-                        });
-                    Schedule.find({
-                            running: { $ne: true }
+                            return Schedule.find({
+                                    running: { $ne: true },
+                                    created_by: { $nin: userRunning }
+                                })
+                                .select("created_by")
+                                .lean();
                         })
-                        .select("created_by")
-                        .lean()
                         .then(function(schedules) {
                             schedules.map(function(schedule) {
                                 if (scanUserSchedule[schedule.created_by]) {
