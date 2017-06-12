@@ -52,7 +52,14 @@ exports.saveSchedule = {
         function save(schedule) {
             schedule.save()
                 .then(function(schedule) {
-                    return reply(schedule);
+                    generateScheduleDescription(schedule._id, function(err, schedule) {
+                        if (err) {
+                            return reply(Boom.badRequest(err));
+                        } else {
+                            return reply(schedule);
+                        }
+                    });
+                    return null;
                 })
                 .catch(function(err) {
                     console.log("SAVE FEEDS", err);
@@ -74,7 +81,7 @@ exports.saveSchedule = {
                         schedule.runTimes = 0;
                         schedule.endTime = endTime || schedule.endTime;
                         schedule.scheduleType = scheduleType || schedule.scheduleType;
-                        schedule.description = description || schedule.description;
+                        // schedule.description = description || schedule.description;
                         schedule.modified = new Date();
                         save(schedule);
                     } else {
@@ -89,7 +96,7 @@ exports.saveSchedule = {
                 runCounts,
                 endTime,
                 scheduleType,
-                description,
+                // description,
                 created_by: id
             });
             save(schedule);
@@ -202,3 +209,22 @@ exports.stopSchedule = {
             });
     }
 };
+
+function generateScheduleDescription(scheduleId, callback) {
+    callback = callback || function() {};
+    Schedule.findOne({
+            _id: scheduleId
+        })
+        .populate("campaignId")
+        .then(function(schedule) {
+            let description = "Lịch trình \"" + schedule.campaignId.description + "\" với chu kỳ mỗi " + schedule.cycleMinutes + " phút";
+            schedule.description = description;
+            return schedule.save();
+        })
+        .then(function(schedule) {
+            callback(null, schedule);
+        })
+        .catch(function(err) {
+            callback(ErrorHandler.getErrorMessage(err));
+        });
+}

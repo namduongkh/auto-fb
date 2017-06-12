@@ -15,11 +15,11 @@
                         <input class="form-control" type="text" name="name" ng-model="scheduleCtrl.schedule.name" required placeholder="Tên lịch trình" />
                         <div ng-if="!ScheduleForm.name.$pristine" error-message="ScheduleForm.name.$error"></div>
                     </div>
-                    <!--<div class="form-group">
+                    <div class="form-group">
                         <label for="description">Mô tả</label>
-                        <textarea class="form-control" type="text" name="description" ng-model="scheduleCtrl.schedule.description" placeholder="Mô tả gợi nhớ"></textarea>
+                        <textarea rows="3" disabled class="form-control" type="text" name="description" ng-model="scheduleCtrl.schedule.description" placeholder="Mô tả gợi nhớ"></textarea>
                         <div ng-if="!ScheduleForm.description.$pristine" error-message="ScheduleForm.description.$error"></div>
-                    </div>-->
+                    </div>
                     <div class="form-group">
                         <label for="group">Chiến dịch</label>
                         <a href="javascript:void(0)" class="label label-info" ng-if="scheduleCtrl.schedule.campaignId && scheduleCtrl.campaignDescription" data-toggle="modal" data-target="#campaignDescription">
