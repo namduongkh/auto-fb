@@ -217,7 +217,7 @@ function generateScheduleDescription(scheduleId, callback) {
         })
         .populate("campaignId")
         .then(function(schedule) {
-            let description = "Lịch trình \"" + schedule.campaignId.description + "\" với chu kỳ mỗi " + schedule.cycleMinutes + " phút";
+            let description = "Lịch trình \"" + (schedule.campaignId.description || schedule.campaignId.title) + "\" với chu kỳ mỗi " + schedule.cycleMinutes + " phút";
             schedule.description = description;
             return schedule.save();
         })
