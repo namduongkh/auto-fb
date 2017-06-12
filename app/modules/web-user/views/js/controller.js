@@ -223,9 +223,10 @@
 
         userCtrl.removeTimeline = function(index) {
             if (confirm("Bạn có chắc chắn muốn xóa?")) {
-                userCtrl.accountInfo.timelineId.splice(index, 1);
+                var timelineId = userCtrl.accountInfo.timelineId.splice(index, 1);
                 updateProfile({
-                    timelineId: userCtrl.accountInfo.timelineId
+                    timelineId: userCtrl.accountInfo.timelineId,
+                    removeTimelineId: timelineId
                 }, false, "Đã cập nhật danh sách nhóm thành công.");
             }
         };

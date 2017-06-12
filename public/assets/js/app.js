@@ -908,6 +908,7 @@ var Common = (function() {
         scheduleCtrl.selectSchedule = function(schedule, index) {
             scheduleCtrl.selectScheduleIndex = index;
             scheduleCtrl.schedule = JSON.parse(JSON.stringify(schedule));
+            scheduleCtrl.changeCampaign();
             Common.scrollTo("#schedule-top", 'fast');
             $timeout(function() {
                 $scope.ScheduleForm.$setPristine();
@@ -958,14 +959,13 @@ var Common = (function() {
         };
 
         scheduleCtrl.changeCampaign = function() {
-            scheduleCtrl.campaignDescription = "Không có mô tả";
+            scheduleCtrl.campaignDescription = undefined;
             for (var i in scheduleCtrl.listCampaigns) {
                 if (scheduleCtrl.listCampaigns[i]._id == scheduleCtrl.schedule.campaignId) {
-                    scheduleCtrl.campaignDescription = scheduleCtrl.listCampaigns[i].description || "Không có mô tả";
+                    scheduleCtrl.campaignDescription = scheduleCtrl.listCampaigns[i].description || undefined;
                     break;
                 }
             }
-            $('[data-toggle="popover"]').popover();
         };
     }
 })();
@@ -1231,9 +1231,10 @@ var Common = (function() {
 
         userCtrl.removeTimeline = function(index) {
             if (confirm("Bạn có chắc chắn muốn xóa?")) {
-                userCtrl.accountInfo.timelineId.splice(index, 1);
+                var timelineId = userCtrl.accountInfo.timelineId.splice(index, 1);
                 updateProfile({
-                    timelineId: userCtrl.accountInfo.timelineId
+                    timelineId: userCtrl.accountInfo.timelineId,
+                    removeTimelineId: timelineId
                 }, false, "Đã cập nhật danh sách nhóm thành công.");
             }
         };

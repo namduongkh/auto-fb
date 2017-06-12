@@ -109,6 +109,7 @@
         scheduleCtrl.selectSchedule = function(schedule, index) {
             scheduleCtrl.selectScheduleIndex = index;
             scheduleCtrl.schedule = JSON.parse(JSON.stringify(schedule));
+            scheduleCtrl.changeCampaign();
             Common.scrollTo("#schedule-top", 'fast');
             $timeout(function() {
                 $scope.ScheduleForm.$setPristine();
@@ -159,14 +160,13 @@
         };
 
         scheduleCtrl.changeCampaign = function() {
-            scheduleCtrl.campaignDescription = "Không có mô tả";
+            scheduleCtrl.campaignDescription = undefined;
             for (var i in scheduleCtrl.listCampaigns) {
                 if (scheduleCtrl.listCampaigns[i]._id == scheduleCtrl.schedule.campaignId) {
-                    scheduleCtrl.campaignDescription = scheduleCtrl.listCampaigns[i].description || "Không có mô tả";
+                    scheduleCtrl.campaignDescription = scheduleCtrl.listCampaigns[i].description || undefined;
                     break;
                 }
             }
-            $('[data-toggle="popover"]').popover();
         };
     }
 })();

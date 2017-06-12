@@ -2,10 +2,12 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const Album = mongoose.model('Album');
+const Campaign = mongoose.model('Campaign');
 const Boom = require('boom');
 const JWT = require('jsonwebtoken');
 const ErrorHandler = require("../../../utils/error.js");
 const graph = require('fbgraph');
+const _ = require('lodash');
 
 // Get list album
 exports.getAlbums = {
@@ -94,8 +96,19 @@ exports.removeAlbum = {
                 if (album) {
                     album.remove()
                         .then(function() {
+                            Campaign.find({
+                                    albumId: albumId
+                                })
+                                .then(function(campaigns) {
+                                    _.map(campaigns, function(campaign) {
+                                        campaign.feedId = undefined;
+                                        campaign.save();
+                                    });
+                                    return null;
+                                });
                             return reply(true);
-                        })
+                        });
+                    return null;
                 } else {
                     return reply(false);
                 }

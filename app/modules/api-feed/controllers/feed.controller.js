@@ -2,10 +2,12 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const Feed = mongoose.model('Feed');
+const Campaign = mongoose.model('Campaign');
 const Boom = require('boom');
 const JWT = require('jsonwebtoken');
 const ErrorHandler = require("../../../utils/error.js");
 const graph = require('fbgraph');
+const _ = require('lodash');
 
 // Get list feed
 exports.getFeeds = {
@@ -94,8 +96,19 @@ exports.removeFeed = {
                 if (feed) {
                     feed.remove()
                         .then(function() {
+                            Campaign.find({
+                                    feedId: feedId
+                                })
+                                .then(function(campaigns) {
+                                    _.map(campaigns, function(campaign) {
+                                        campaign.feedId = undefined;
+                                        campaign.save();
+                                    });
+                                    return null;
+                                });
                             return reply(true);
-                        })
+                        });
+                    return null;
                 } else {
                     return reply(false);
                 }

@@ -17,7 +17,7 @@
                     </div>
                     <div class="form-group">
                         <label for="description">Mô tả</label>
-                        <textarea class="form-control" type="text" name="description" ng-model="campaignCtrl.campaign.description" placeholder="Mô tả gợi nhớ chiến dịch"></textarea>
+                        <textarea disabled class="form-control" type="text" name="description" ng-model="campaignCtrl.campaign.description" placeholder="Mô tả gợi nhớ chiến dịch"></textarea>
                         <div ng-if="!CampaignForm.description.$pristine" error-message="CampaignForm.description.$error"></div>
                     </div>
 
@@ -57,7 +57,7 @@
                         <div error-message="CampaignForm.feedId.$error" ng-if="!CampaignForm.feedId.$pristine"></div>
                     </div>
                     <div class="form-group" ng-if="campaignCtrl.campaign.postType=='album'">
-                        <label for="group">Album</label>
+                        <label for="albumId">Album</label>
                         <select name="albumId" required placeholder="Chọn 1 nhóm" ng-model="campaignCtrl.campaign.albumId" class="form-control" ng-options="album._id as album.name for album in campaignCtrl.listAlbums">
                             <option value="">-- Chọn 1 album</option>
                         </select>

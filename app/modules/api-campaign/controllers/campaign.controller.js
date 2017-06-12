@@ -2,10 +2,12 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const Campaign = mongoose.model('Campaign');
+const Schedule = mongoose.model('Schedule');
 const Boom = require('boom');
 const JWT = require('jsonwebtoken');
 const ErrorHandler = require("../../../utils/error.js");
 const graph = require('fbgraph');
+const _ = require('lodash');
 const CronJob = require('cron').CronJob;
 
 // Get list campaign
@@ -54,7 +56,18 @@ exports.saveCampaign = {
         function save(campaign) {
             campaign.save()
                 .then(function(campaign) {
-                    return reply(campaign);
+                    // if (!campaign.description) {
+                    generateDescription(campaign._id, function(err, result) {
+                        if (err) {
+                            return reply(Boom.badRequest(err));
+                        } else {
+                            return reply(result);
+                        }
+                    });
+                    return null;
+                    // } else {
+                    //     return reply(campaign);
+                    // }
                 })
                 .catch(function(err) {
                     console.log("SAVE FEEDS", err);
@@ -75,7 +88,7 @@ exports.saveCampaign = {
                         campaign.timelineId = timelineId || campaign.timelineId;
                         campaign.feedId = feedId || campaign.feedId;
                         campaign.albumId = albumId || campaign.albumId;
-                        campaign.description = description || campaign.description;
+                        // campaign.description = description || campaign.description;
                         campaign.modified = new Date()
                         save(campaign);
                     } else {
@@ -90,7 +103,7 @@ exports.saveCampaign = {
                 timelineId,
                 feedId,
                 albumId,
-                description,
+                // description,
                 created_by: id
             });
             save(campaign);
@@ -113,8 +126,19 @@ exports.removeCampaign = {
                 if (campaign) {
                     campaign.remove()
                         .then(function() {
+                            Schedule.find({
+                                    campaignId: campaignId
+                                })
+                                .then(function(schedules) {
+                                    _.map(schedules, function(schedule) {
+                                        schedule.campaignId = undefined;
+                                        schedule.running = false;
+                                        schedule.save();
+                                    });
+                                });
                             return reply(true);
-                        })
+                        });
+                    return null;
                 } else {
                     return reply(false);
                 }
@@ -157,3 +181,71 @@ exports.runCampaign = {
         });
     }
 };
+
+function generateDescription(campaignId, callback) {
+    callback = callback || function() {};
+    let timelineName;
+    let campaign;
+    let desc = {};
+    let generate;
+    Campaign.findOne({
+            _id: campaignId
+        })
+        .populate("feedId", "title")
+        .populate("albumId", "name")
+        .then(function(result) {
+            campaign = result;
+            desc.postType = campaign.albumId ? 'album' : 'trạng thái';
+            if (campaign.albumId) {
+                desc.postName = campaign.albumId ? campaign.albumId.name : undefined;
+            } else {
+                desc.postName = campaign.feedId ? campaign.feedId.title : undefined;
+            }
+            switch (campaign.timeline) {
+                case 'personal':
+                    desc.timelineType = "cá nhân";
+                    break;
+                case 'group':
+                    desc.timelineType = "nhóm";
+                    break;
+                case 'page':
+                    desc.timelineType = "trang";
+                    break;
+            }
+            return User.findOne({
+                    _id: campaign.created_by,
+                })
+                .lean()
+                .select("timelineId")
+
+        })
+        .then(function(user) {
+            for (var i in user.timelineId) {
+                if (user.timelineId[i].id == campaign.timelineId) {
+                    if (user.timelineId[i].type != 'personal') {
+                        desc.timelineName = user.timelineId[i].name;
+                    } else {
+                        desc.timelineName = "";
+                    }
+                    break;
+                }
+            }
+            generate = `Xuất bản ${desc.postType} ${desc.postName} lên dòng thời gian ${desc.timelineType} ${desc.timelineName}`;
+            campaign.description = generate;
+            return campaign.save();
+        })
+        .then(function(result) {
+            if (result.feedId) {
+                result.feedId = result.feedId._id;
+            }
+            if (result.albumId) {
+                result.albumId = result.albumId._id;
+            }
+            // console.log("result", result);
+            callback(null, result);
+        })
+        .catch(function(err) {
+            console.log("err", err);
+            callback(ErrorHandler.getErrorMessage(err));
+        });
+}

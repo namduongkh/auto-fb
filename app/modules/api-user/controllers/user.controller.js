@@ -1,10 +1,12 @@
 'use strict';
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
+const Campaign = mongoose.model('Campaign');
 const Boom = require('boom');
 const JWT = require('jsonwebtoken');
 const ErrorHandler = require("../../../utils/error.js");
 const graph = require('fbgraph');
+const _ = require('lodash');
 
 exports.index = {
     handler: function(request, reply) {
@@ -84,7 +86,7 @@ exports.update = {
     }],
     auth: 'jwt',
     handler: function(request, reply) {
-        let { name, appId, accessToken, appSecret, tokenExpire, removeAccessToken, timelineId } = request.payload;
+        let { name, appId, accessToken, appSecret, tokenExpire, removeAccessToken, timelineId, removeTimelineId } = request.payload;
         let { user } = request.pre;
 
         user.name = name || user.name;
@@ -101,6 +103,18 @@ exports.update = {
 
         const promise = user.save();
         promise.then(user => {
+                if (removeTimelineId) {
+                    Campaign.find({
+                            timelineId: removeTimelineId
+                        })
+                        .then(function(campaigns) {
+                            _.map(campaigns, function(campaign) {
+                                campaign.timelineId = undefined;
+                                campaign.save();
+                            });
+                            return null;
+                        });
+                }
                 return reply(user)
                     .state("appId", user.appId, request.server.configManager.get("web.cookieOptions"))
                     .state("accessToken", user.accessToken, request.server.configManager.get("web.cookieOptions"))
