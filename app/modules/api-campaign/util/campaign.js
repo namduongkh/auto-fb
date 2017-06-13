@@ -58,7 +58,7 @@ module.exports = function(server) {
                             if (!campaign.lastTimelineRun && campaign.lastTimelineRun != 0) {
                                 campaign.lastTimelineRun = 0;
                             }
-                            let campaignTimelineId = campaign.timelineId[campaign.lastTimelineRun];
+                            let campaignTimelineId = campaign.timelineId[campaign.lastTimelineRun].id;
                             if (campaign.postType == 'feed') {
                                 graphApiUrl = "/" + campaignTimelineId + "/feed";
                                 graphPayload = {
