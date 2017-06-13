@@ -1817,4 +1817,5 @@ ul.alert-dropdown {
   overflow: hidden; }
 
 #page-content img {
-  max-width: 650px; }
+  max-width: 650px;
+  width: 100%; }
