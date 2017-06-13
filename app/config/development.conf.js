@@ -35,6 +35,8 @@ module.exports = {
                     '/libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
                     '/libs/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
                     '/libs/angular-ui-select/dist/select.min.js',
+                    '/libs/tinymce/tinymce.min.js',
+                    '/libs/angular-ui-tinymce/dist/tinymce.min.js',
 
                     '/assets/js/app.js',
                     '/assets/js/config.js',
@@ -55,7 +57,6 @@ module.exports = {
             },
             admin: {
                 js: [
-                    'https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js',
                     '/libs/jquery/dist/jquery.min.js',
                     '/libs/bootstrap/dist/js/bootstrap.min.js',
                     '/libs/AdminLTE/dist/js/app.min.js',
@@ -69,6 +70,8 @@ module.exports = {
                     '/libs/AdminLTE/plugins/select2/select2.min.js',
                     '/libs/angular-messages/angular-messages.min.js',
                     '/libs/ng-file-upload/ng-file-upload.min.js',
+                    '/libs/tinymce/tinymce.min.js',
+                    '/libs/angular-ui-tinymce/dist/tinymce.min.js',
 
                     '/assets/js/app-admin.js',
                 ],

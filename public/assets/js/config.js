@@ -7,7 +7,7 @@ if (window.location.port) {
     'use strict';
 
     const dependencyModules = ["User", "Core", "Feed", "Graph", "Album", "Campaign", "Schedule",
-        "ngCookies", "ngAnimate", "toastr", "angular-loading-bar", "ngMessages", "ngFacebook", "ngFileUpload", "ae-datetimepicker", "ui.select"
+        "ngCookies", "ngAnimate", "toastr", "angular-loading-bar", "ngMessages", "ngFacebook", "ngFileUpload", "ae-datetimepicker", "ui.select", "ui.tinymce"
     ];
 
     angular

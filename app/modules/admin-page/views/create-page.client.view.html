@@ -33,7 +33,7 @@
                                     <div ng-message="required">You did not enter a field</div>
                                 </div>
                             </div>
-                          <!--   <div class="form-group">
+                            <!--   <div class="form-group">
                                 <label class="control-label" for="slug">Slug</label>
                                 <div class="controls">
                                     <input type="text" data-ng-model="slug" name="slug" id="slug" class="form-control" placeholder="Slug" required>
@@ -63,7 +63,7 @@
                             <div class="form-group">
                                 <label class="control-label" for="content">Content</label>
                                 <div class="controls">
-                                    <textarea class="form-control ck-editor" required name="content" data-ng-model="content" rows="3"></textarea>
+                                    <textarea class="form-control" ui-tinymce="tinyMceOptions" required name="content" data-ng-model="content" rows="10"></textarea>
                                 </div>
                                 <div class="error-messages message" ng-messages="PageForm.content.$error" ng-messages-multiple ng-if="submitted">
                                     <div ng-message="required">You did not enter a field</div>

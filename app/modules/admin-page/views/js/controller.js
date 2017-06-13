@@ -13,6 +13,15 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
             $location.path('pages');
         }
 
+        $scope.tinyMceOptions = {
+            // menubar: false,
+            plugins: "advlist code",
+            // toolbar: 'formatselect | fontselect | fontsizeselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | code',
+            // font_formats: 'Arial=arial,helvetica,sans-serif;Courier New=courier new,courier,monospace;AkrutiKndPadmini=Akpdmi-n',
+            // fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
+            // block_formats: 'Paragraph=p;Header 1=h1;Header 2=h2;Header 3=h3',
+        };
+
         // Create new Page
         $scope.create = function(isValid, gotoList) {
             var gotoList = typeof gotoList !== 'undefined' ? gotoList : null;

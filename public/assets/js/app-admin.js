@@ -6,7 +6,7 @@ var ApplicationConfiguration = (function() {
     // Init module configuration options
     var applicationModuleName = 'mean';
     var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ui.router', 'ngSanitize',
-        'ngMessages', 'ngFileUpload', 'ngCookies', 'LocalStorageModule'
+        'ngMessages', 'ngFileUpload', 'ngCookies', 'LocalStorageModule', 'ui.tinymce'
     ];
 
     // Add a new vertical module
@@ -816,6 +816,15 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
         $scope.gotoList = function() {
             $location.path('pages');
         }
+
+        $scope.tinyMceOptions = {
+            // menubar: false,
+            plugins: "advlist code",
+            // toolbar: 'formatselect | fontselect | fontsizeselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | code',
+            // font_formats: 'Arial=arial,helvetica,sans-serif;Courier New=courier new,courier,monospace;AkrutiKndPadmini=Akpdmi-n',
+            // fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
+            // block_formats: 'Paragraph=p;Header 1=h1;Header 2=h2;Header 3=h3',
+        };
 
         // Create new Page
         $scope.create = function(isValid, gotoList) {
