@@ -158,17 +158,20 @@ exports.runSchedule = {
                         (!schedule.campaignId.albumId && !schedule.campaignId.feedId)) {
                         return reply(Boom.badRequest("Không tồn tại nội dung bài đăng. Kiểm tra lại album, trạng thái..."));
                     }
-                    schedule.running = true;
-                    schedule.runTimes = 0;
-                    schedule
-                        .save()
-                        .then(function(schedule) {
-                            return reply({
-                                status: true,
-                                msg: "Đã khởi động lịch trình thành công",
-                                data: schedule
+                    let { changeLastTimelineRun } = request.server.plugins['api-campaign'];
+                    changeLastTimelineRun(schedule.campaignId, function(err, resp) {
+                        schedule.running = true;
+                        schedule.runTimes = 0;
+                        schedule
+                            .save()
+                            .then(function(schedule) {
+                                return reply({
+                                    status: true,
+                                    msg: "Đã khởi động lịch trình thành công",
+                                    data: schedule
+                                });
                             });
-                        });
+                    });
                     return null;
                 } else {
                     return reply(Boom.badRequest("Không tìm thấy lịch trình."));

@@ -29,7 +29,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cycleMinutes">Chu kỳ <span ng-if="scheduleCtrl.schedule.cycleMinutes">(Mỗi <span ng-bind="scheduleCtrl.schedule.cycleMinutes"></span> phút)</span></label>
-                        <input required class="form-control" type="number" min="15" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
+                        <input required class="form-control" type="number" min="{[scheduleCtrl.minCycle]}" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
                         <div ng-if="!ScheduleForm.cycleMinutes.$pristine" error-message="ScheduleForm.cycleMinutes.$error" step-value="15"></div>
                     </div>
                     <div class="form-group">
@@ -50,13 +50,14 @@
                         <label for="endTime">Thời điểm kết thúc</label>
                         <input required class="form-control" name="endTime" datetimepicker ng-model="scheduleCtrl.schedule.endTime" options="scheduleCtrl.dateOptions" />
                     </div>
-                    <div class="form-group" ng-if="scheduleCtrl.schedule.description">
+                    <div class="form-group" ng-if="ScheduleForm.$pristine && scheduleCtrl.schedule.description">
                         <label for="description">Mô tả</label>
                         <textarea rows="3" disabled class="form-control" type="text" name="description" ng-model="scheduleCtrl.schedule.description" placeholder="Mô tả gợi nhớ"></textarea>
                         <div ng-if="!ScheduleForm.description.$pristine" error-message="ScheduleForm.description.$error"></div>
                     </div>
                 </div>
                 <div class="col-md-12">
+                    <p class="text-danger" ng-if="!ScheduleForm.$pristine"><i>Lịch trình chưa được lưu</i></p>
                     <button ng-disabled="ScheduleForm.$invalid" class="btn btn-primary" type="button" ng-click="scheduleCtrl.saveSchedule(ScheduleForm.$valid)">
                         <span class="glyphicon glyphicon-floppy-saved"></span> Lưu lịch trình
                     </button>
@@ -83,7 +84,7 @@
                     <tr>
                         <th>Tên</th>
                         <th>Mô tả</th>
-                        <th>Chu kỳ (phút)</th>
+                        <th>Chu kỳ</th>
                         <th>Đã chạy</th>
                         <th>Trạng thái</th>
                         <th>Cập nhật</th>
@@ -93,16 +94,15 @@
                         <td>
                             <strong ng-bind="schedule.name | shortString:20"></strong>
                         </td>
-                        <td>
-                            <strong ng-bind="schedule.description | shortString:30"></strong>
+                        <td ng-bind="schedule.description | shortString:30">
                         </td>
-                        <td ng-bind="schedule.cycleMinutes"></td>
-                        <td ng-bind="schedule.runTimes + ' lần'"></td>
+                        <td ng-bind="schedule.cycleMinutes + ' phút'"></td>
+                        <td ng-bind="schedule.runTimes + ' lần '"></td>
                         <td>
                             <span ng-if="!schedule.running" class="label label-danger"><i class="fa fa-stop"></i> Đang dừng</span>
                             <span ng-if="schedule.running" class="label label-success"><i class="fa fa-play"></i> Đang chạy</span>
                         </td>
-                        <td ng-bind="schedule.modified | date:'dd/MM/yyyy hh:mm a'"></td>
+                        <td ng-bind="schedule.modified | date:'dd/MM/yyyy hh:mm a '"></td>
                         <td>
                             <a href="javascript:void(0);" class="btn btn-xs btn-info" ng-click="scheduleCtrl.selectSchedule(schedule, $index)"><span class="glyphicon glyphicon-edit"></span> Xem</a>
                             <a href="javascript:void(0);" class="btn btn-xs btn-danger" ng-click="scheduleCtrl.removeSchedule(schedule._id, $index)"><span class="glyphicon glyphicon-trash"></span> Xóa</a>

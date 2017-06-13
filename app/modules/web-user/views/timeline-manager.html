@@ -46,7 +46,7 @@
                         <td ng-bind="timeline.name"></td>
                         <td ng-bind="timeline.type"></td>
                         <td>
-                            <a href="javascript:void(0);" class="btn btn-xs btn-danger" ng-click="userCtrl.removeTimeline($index)"><span class="glyphicon glyphicon-trash"></span> Xóa</a>
+                            <button type="button" ng-disabled="timeline.type=='personal'" class="btn btn-xs btn-danger" ng-click="userCtrl.removeTimeline($index)"><span class="glyphicon glyphicon-trash"></span> Xóa</button>
                         </td>
                     </tr>
                 </table>

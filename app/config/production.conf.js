@@ -2,6 +2,7 @@
 
 module.exports = {
     web: {
+        minCycle: 15,
         userSchedule: {
             stopMinutes: 3,
             debug: false
@@ -33,6 +34,7 @@ module.exports = {
                     '/libs/moment/locale/vi.js',
                     '/libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
                     '/libs/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
+                    '/libs/angular-ui-select/dist/select.min.js',
 
                     // '/assets/js/app.js',
                     // '/assets/js/config.js',
@@ -45,6 +47,7 @@ module.exports = {
                     '/libs/angular-loading-bar/build/loading-bar.min.css',
                     '/libs/angular-toastr/dist/angular-toastr.min.css',
                     '/libs/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
+                    '/libs/angular-ui-select/dist/select.min.css',
 
                     // '/assets/css/styles.css',
                     '/assets/min/app.min.css',

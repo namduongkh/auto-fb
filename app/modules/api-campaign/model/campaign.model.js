@@ -26,10 +26,6 @@ var CampaignSchema = new Schema({
         type: String,
         enum: ['feed', 'album']
     },
-    timeline: {
-        type: String,
-        enum: ['group', 'page', 'personal']
-    },
     feedId: {
         type: Object,
         ref: 'Feed'
@@ -38,9 +34,17 @@ var CampaignSchema = new Schema({
         type: Object,
         ref: 'Album'
     },
-    timelineId: {
-        type: String,
-    },
+    timelineId: [{
+        type: {
+            type: String,
+            enum: ['personal', 'group', 'page']
+        },
+        id: { type: String },
+        name: { type: String }
+    }],
+    lastTimelineRun: {
+        type: Number
+    }
 }, {
     collection: 'campaigns'
 });

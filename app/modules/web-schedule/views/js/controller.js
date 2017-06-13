@@ -14,6 +14,7 @@
             maxDate: new Date(new Date().getTime() + (25 * 60 * 60 * 1000)),
             sideBySide: true
         };
+        scheduleCtrl.minCycle = window.minCycle || 15;
 
         scheduleCtrl.getAccount = function() {
             UserService.account().then(function(resp) {

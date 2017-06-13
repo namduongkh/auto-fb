@@ -15,7 +15,7 @@
                         <input class="form-control" type="text" name="title" ng-model="campaignCtrl.campaign.title" required placeholder="Tên chiến dịch" />
                         <div ng-if="!CampaignForm.title.$pristine" error-message="CampaignForm.title.$error"></div>
                     </div>
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label for="timeline">Dòng thời gian</label>
                         <select class="form-control" ng-model="campaignCtrl.campaign.timeline" required name="timeline" ng-change="campaignCtrl.filterTimeline()">
                             <option value="">-- Chọn 1 loại</option>
@@ -30,6 +30,20 @@
                         <select name="timelineId" required placeholder="Chọn 1 mục" ng-model="campaignCtrl.campaign.timelineId" class="form-control" ng-options="timeline.id as timeline.name for timeline in campaignCtrl.timelineList">
                             <option value="">-- Chọn 1 mục</option>
                         </select>
+                        <div error-message="CampaignForm.timelineId.$error" ng-if="!CampaignForm.timelineId.$pristine"></div>
+                    </div>-->
+                    <!--<div class="form-group">
+                        <label for="timelineId">Dòng thời gian</label>
+                        <select class="form-control" name="timelineId" id="timelineId" required multiple ng-model="campaignCtrl.campaign.timelineId" ng-options="timeline as timeline.name for timeline in campaignCtrl.accountInfo.timelineId"></select>
+                    </div>-->
+                    <div class="form-group">
+                        <label for="timelineId">Dòng thời gian</label>
+                        <ui-select id="timelineId" name="timelineId" required class="form-control" multiple ng-model="campaignCtrl.campaign.timelineId" theme="bootstrap" title="Chọn dòng thời gian">
+                            <ui-select-match placeholder="Chọn dòng thời gian">{[$item.name]}</ui-select-match>
+                            <ui-select-choices group-by="campaignCtrl.groupTimeline" repeat="timeline in campaignCtrl.accountInfo.timelineId">
+                                <div ng-bind="timeline.name"></div>
+                            </ui-select-choices>
+                        </ui-select>
                         <div error-message="CampaignForm.timelineId.$error" ng-if="!CampaignForm.timelineId.$pristine"></div>
                     </div>
                 </div>
@@ -57,13 +71,14 @@
                         </select>
                         <div error-message="CampaignForm.albumId.$error" ng-if="!CampaignForm.albumId.$pristine"></div>
                     </div>
-                    <div class="form-group" ng-if="campaignCtrl.campaign.description">
+                    <div class="form-group" ng-if="CampaignForm.$pristine && campaignCtrl.campaign.description">
                         <label for="description">Mô tả</label>
                         <textarea disabled class="form-control" type="text" name="description" ng-model="campaignCtrl.campaign.description" placeholder="Mô tả gợi nhớ chiến dịch"></textarea>
                         <div ng-if="!CampaignForm.description.$pristine" error-message="CampaignForm.description.$error"></div>
                     </div>
                 </div>
                 <div class="col-md-12">
+                    <p class="text-danger" ng-if="!CampaignForm.$pristine"><i>Chiến dịch chưa được lưu</i></p>
                     <button ng-disabled="CampaignForm.$invalid" class="btn btn-primary" type="button" ng-click="campaignCtrl.saveCampaign(CampaignForm.$valid)">
                         <span class="glyphicon glyphicon-floppy-saved"></span> Lưu chiến dịch
                     </button>
@@ -73,7 +88,7 @@
                 </div>
                 <div class="col-md-12" ng-if="campaignCtrl.campaign._id">
                     <div class="spacing-10"></div>
-                    <button ng-disabled="!CampaignForm.$pristine" class="btn btn-success" type="button" ng-click="campaignCtrl.runCampaign(campaignCtrl.campaign._id)">
+                    <button ng-disabled="CampaignForm.$invalid" class="btn btn-success" type="button" ng-click="campaignCtrl.runCampaign(campaignCtrl.campaign._id)">
                         <span class="glyphicon glyphicon-play"></span> Chạy chiến dịch
                     </button>
                 </div>
@@ -94,9 +109,7 @@
                         <td>
                             <strong ng-bind="campaign.title | shortString:20"></strong>
                         </td>
-                        <td>
-                            <strong ng-bind="campaign.description | shortString:40"></strong>
-                        </td>
+                        <td ng-bind="campaign.description | shortString:40"></td>
                         <td ng-bind="campaign.modified | date:'dd/MM/yyyy hh:mm a'"></td>
                         <td>
                             <a href="javascript:void(0);" class="btn btn-xs btn-info" ng-click="campaignCtrl.selectCampaign(campaign)"><span class="glyphicon glyphicon-edit"></span> Xem</a>

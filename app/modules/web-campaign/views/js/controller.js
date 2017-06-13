@@ -87,6 +87,10 @@
         };
 
         campaignCtrl.runCampaign = function(campaignId) {
+            if (!campaignCtrl.campaign.timelineId || campaignCtrl.campaign.timelineId.length !== 1) {
+                toastr.error("Để chạy chiến dịch 1 lần, bạn chỉ được chọn 1 mục trong dữ liệu dòng thời gian.", "Lỗi!");
+                return;
+            }
             if (confirm("Bạn chắc chắn muốn chạy chiến dịch này?")) {
                 CampaignService.runCampaign(campaignId)
                     .then(function(resp) {
@@ -107,7 +111,6 @@
             campaignCtrl.campaign = JSON.parse(JSON.stringify(campaign));
             Common.scrollTo("#campaign-top", 'fast');
             campaignCtrl.postTypeChange();
-            campaignCtrl.filterTimeline();
         };
 
         campaignCtrl.resetCampaign = function() {
@@ -142,14 +145,15 @@
             }
         };
 
-        campaignCtrl.filterTimeline = function() {
-            campaignCtrl.timelineList = campaignCtrl.accountInfo.timelineId.filter(function(timeline) {
-                if (!campaignCtrl.campaign.timeline) {
-                    return timeline;
-                } else if (timeline.type == campaignCtrl.campaign.timeline) {
-                    return timeline;
-                }
-            });
+        campaignCtrl.groupTimeline = function(item) {
+            switch (item.type) {
+                case 'personal':
+                    return 'Cá nhân';
+                case 'group':
+                    return 'Nhóm';
+                case 'page':
+                    return 'Trang';
+            }
         };
     }
 })();

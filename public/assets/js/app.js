@@ -286,6 +286,10 @@
         };
 
         campaignCtrl.runCampaign = function(campaignId) {
+            if (!campaignCtrl.campaign.timelineId || campaignCtrl.campaign.timelineId.length !== 1) {
+                toastr.error("Để chạy chiến dịch 1 lần, bạn chỉ được chọn 1 mục trong dữ liệu dòng thời gian.", "Lỗi!");
+                return;
+            }
             if (confirm("Bạn chắc chắn muốn chạy chiến dịch này?")) {
                 CampaignService.runCampaign(campaignId)
                     .then(function(resp) {
@@ -306,7 +310,6 @@
             campaignCtrl.campaign = JSON.parse(JSON.stringify(campaign));
             Common.scrollTo("#campaign-top", 'fast');
             campaignCtrl.postTypeChange();
-            campaignCtrl.filterTimeline();
         };
 
         campaignCtrl.resetCampaign = function() {
@@ -341,14 +344,15 @@
             }
         };
 
-        campaignCtrl.filterTimeline = function() {
-            campaignCtrl.timelineList = campaignCtrl.accountInfo.timelineId.filter(function(timeline) {
-                if (!campaignCtrl.campaign.timeline) {
-                    return timeline;
-                } else if (timeline.type == campaignCtrl.campaign.timeline) {
-                    return timeline;
-                }
-            });
+        campaignCtrl.groupTimeline = function(item) {
+            switch (item.type) {
+                case 'personal':
+                    return 'Cá nhân';
+                case 'group':
+                    return 'Nhóm';
+                case 'page':
+                    return 'Trang';
+            }
         };
     }
 })();
@@ -376,133 +380,6 @@
             stopCampaign: function(id) {
                 return $http.post(apiPath + "/api/campaign/stopCampaign", { campaignId: id });
             },
-        }
-    }
-})();
-(function() {
-    'use strict';
-
-    angular.module('Feed', [])
-        .config(["$interpolateProvider", function($interpolateProvider) {
-            $interpolateProvider.startSymbol('{[');
-            $interpolateProvider.endSymbol(']}');
-        }]);
-})();
-(function() {
-    'use strict';
-
-    FeedController.$inject = ["UserService", "FeedService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http"];
-    angular.module("Feed")
-        .controller("FeedController", FeedController);
-
-    function FeedController(UserService, FeedService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
-        var feedCtrl = this;
-        feedCtrl.accountInfo = {};
-
-        feedCtrl.getAccount = function() {
-            UserService.account().then(function(resp) {
-                if (resp.status == 200) {
-                    feedCtrl.accountInfo = resp.data;
-                    if (new Date(feedCtrl.accountInfo.tokenExpire) < new Date()) {
-                        feedCtrl.accountInfo.accessToken = "";
-                    }
-                }
-            });
-        };
-
-        feedCtrl.init = function() {
-            feedCtrl.getAccount();
-            FeedService.getFeeds()
-                .then(function(resp) {
-                    if (resp.status == 200) {
-                        feedCtrl.listFeeds = resp.data;
-                    } else {
-                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                    }
-                })
-                .catch(function() {
-                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                });
-        };
-
-        feedCtrl.saveFeed = function(valid) {
-            if (!valid) {
-                toastr.error("Kiểm tra lại dữ liệu và thử lại.", "Lỗi!");
-                return;
-            }
-            FeedService.saveFeed(feedCtrl.feed)
-                .then(function(resp) {
-                    if (resp.status == 200) {
-                        if (!feedCtrl.feed._id) {
-                            if (!feedCtrl.listFeeds) {
-                                feedCtrl.listFeeds = [];
-                            }
-                            feedCtrl.listFeeds.unshift(resp.data);
-                        } else {
-                            for (var i in feedCtrl.listFeeds) {
-                                if (feedCtrl.listFeeds[i]._id == feedCtrl.feed._id) {
-                                    feedCtrl.listFeeds[i] = resp.data;
-                                    break;
-                                }
-                            }
-                        }
-                        feedCtrl.feed = resp.data;
-                        toastr.success("Lưu trạng thái thành công.", "Thành công!");
-                    } else {
-                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                    }
-                })
-                .catch(function(err) {
-                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                });
-        };
-
-        feedCtrl.removeFeed = function(feedId, index) {
-            if (confirm("Bạn có chắc chắn muốn xóa?")) {
-                FeedService.removeFeed(feedId)
-                    .then(function(resp) {
-                        if (resp.status == 200 && resp.data) {
-                            toastr.success("Xóa trạng thái thành công.", "Thành công!");
-                            feedCtrl.listFeeds.splice(index, 1);
-                            feedCtrl.resetFeed();
-                        } else {
-                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                        }
-                    })
-                    .catch(function(err) {
-                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                    });
-            }
-        };
-
-        feedCtrl.selectFeed = function(feed) {
-            feedCtrl.feed = JSON.parse(JSON.stringify(feed));
-            Common.scrollTo("#feed-top", 'fast');
-        };
-
-        feedCtrl.resetFeed = function() {
-            feedCtrl.feed = {};
-        };
-    }
-})();
-(function() {
-    'use strict';
-
-    FeedService.$inject = ["$http"];
-    angular.module("Feed")
-        .service("FeedService", FeedService);
-
-    function FeedService($http) {
-        return {
-            getFeeds: function() {
-                return $http.get(apiPath + "/api/feed/getFeeds");
-            },
-            saveFeed: function(data) {
-                return $http.post(apiPath + "/api/feed/saveFeed", data);
-            },
-            removeFeed: function(id) {
-                return $http.post(apiPath + "/api/feed/removeFeed", { feedId: id });
-            }
         }
     }
 })();
@@ -631,6 +508,133 @@ var Common = (function() {
             },
         }
     };
+})();
+(function() {
+    'use strict';
+
+    angular.module('Feed', [])
+        .config(["$interpolateProvider", function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[');
+            $interpolateProvider.endSymbol(']}');
+        }]);
+})();
+(function() {
+    'use strict';
+
+    FeedController.$inject = ["UserService", "FeedService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http"];
+    angular.module("Feed")
+        .controller("FeedController", FeedController);
+
+    function FeedController(UserService, FeedService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
+        var feedCtrl = this;
+        feedCtrl.accountInfo = {};
+
+        feedCtrl.getAccount = function() {
+            UserService.account().then(function(resp) {
+                if (resp.status == 200) {
+                    feedCtrl.accountInfo = resp.data;
+                    if (new Date(feedCtrl.accountInfo.tokenExpire) < new Date()) {
+                        feedCtrl.accountInfo.accessToken = "";
+                    }
+                }
+            });
+        };
+
+        feedCtrl.init = function() {
+            feedCtrl.getAccount();
+            FeedService.getFeeds()
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        feedCtrl.listFeeds = resp.data;
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function() {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        feedCtrl.saveFeed = function(valid) {
+            if (!valid) {
+                toastr.error("Kiểm tra lại dữ liệu và thử lại.", "Lỗi!");
+                return;
+            }
+            FeedService.saveFeed(feedCtrl.feed)
+                .then(function(resp) {
+                    if (resp.status == 200) {
+                        if (!feedCtrl.feed._id) {
+                            if (!feedCtrl.listFeeds) {
+                                feedCtrl.listFeeds = [];
+                            }
+                            feedCtrl.listFeeds.unshift(resp.data);
+                        } else {
+                            for (var i in feedCtrl.listFeeds) {
+                                if (feedCtrl.listFeeds[i]._id == feedCtrl.feed._id) {
+                                    feedCtrl.listFeeds[i] = resp.data;
+                                    break;
+                                }
+                            }
+                        }
+                        feedCtrl.feed = resp.data;
+                        toastr.success("Lưu trạng thái thành công.", "Thành công!");
+                    } else {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    }
+                })
+                .catch(function(err) {
+                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                });
+        };
+
+        feedCtrl.removeFeed = function(feedId, index) {
+            if (confirm("Bạn có chắc chắn muốn xóa?")) {
+                FeedService.removeFeed(feedId)
+                    .then(function(resp) {
+                        if (resp.status == 200 && resp.data) {
+                            toastr.success("Xóa trạng thái thành công.", "Thành công!");
+                            feedCtrl.listFeeds.splice(index, 1);
+                            feedCtrl.resetFeed();
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function(err) {
+                        toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                    });
+            }
+        };
+
+        feedCtrl.selectFeed = function(feed) {
+            feedCtrl.feed = JSON.parse(JSON.stringify(feed));
+            Common.scrollTo("#feed-top", 'fast');
+        };
+
+        feedCtrl.resetFeed = function() {
+            feedCtrl.feed = {};
+        };
+    }
+})();
+(function() {
+    'use strict';
+
+    FeedService.$inject = ["$http"];
+    angular.module("Feed")
+        .service("FeedService", FeedService);
+
+    function FeedService($http) {
+        return {
+            getFeeds: function() {
+                return $http.get(apiPath + "/api/feed/getFeeds");
+            },
+            saveFeed: function(data) {
+                return $http.post(apiPath + "/api/feed/saveFeed", data);
+            },
+            removeFeed: function(id) {
+                return $http.post(apiPath + "/api/feed/removeFeed", { feedId: id });
+            }
+        }
+    }
 })();
 (function() {
     'use strict';
@@ -813,6 +817,7 @@ var Common = (function() {
             maxDate: new Date(new Date().getTime() + (25 * 60 * 60 * 1000)),
             sideBySide: true
         };
+        scheduleCtrl.minCycle = window.minCycle || 15;
 
         scheduleCtrl.getAccount = function() {
             UserService.account().then(function(resp) {

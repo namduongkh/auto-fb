@@ -9,6 +9,7 @@ const async = require('async');
 
 module.exports = function(server) {
     return {
+        changeLastTimelineRun: changeLastTimelineRun,
         runCampaign: function(campaignId, options, callback) {
             callback = callback ? callback : function() {};
             Campaign.findOne({
@@ -31,7 +32,7 @@ module.exports = function(server) {
                                 msg: "Mã truy cập đã hết hạn.",
                                 tokenHasExpired: true
                             });
-                        } else if (!campaign.timelineId) {
+                        } else if (!campaign.timelineId || !campaign.timelineId.length) {
                             callback({
                                 msg: "Không có ID của dòng thời gian.",
                             });
@@ -54,8 +55,12 @@ module.exports = function(server) {
                             let graphApiUrl;
                             let graphPayload;
                             let realCallback;
+                            if (!campaign.lastTimelineRun && campaign.lastTimelineRun != 0) {
+                                campaign.lastTimelineRun = 0;
+                            }
+                            let campaignTimelineId = campaign.timelineId[campaign.lastTimelineRun];
                             if (campaign.postType == 'feed') {
-                                graphApiUrl = "/" + campaign.timelineId + "/feed";
+                                graphApiUrl = "/" + campaignTimelineId + "/feed";
                                 graphPayload = {
                                     message: campaign.feedId.message,
                                     link: campaign.feedId.link,
@@ -63,7 +68,7 @@ module.exports = function(server) {
                                 realCallback = callback;
                             }
                             if (campaign.postType == 'album') {
-                                graphApiUrl = "/" + campaign.timelineId + "/albums";
+                                graphApiUrl = "/" + campaignTimelineId + "/albums";
                                 graphPayload = {
                                     message: campaign.albumId.message,
                                     name: campaign.albumId.name,
@@ -96,9 +101,15 @@ module.exports = function(server) {
                                 };
                             }
                             if (!options.debug) {
-                                sendGraphApi(user.accessToken, "post", graphApiUrl, graphPayload, realCallback);
+                                sendGraphApi(user.accessToken, "post", graphApiUrl, graphPayload, function(err, resp) {
+                                    changeLastTimelineRun(campaign._id, function() {
+                                        realCallback(err, resp);
+                                    });
+                                });
                             } else {
-                                callback(null, true);
+                                changeLastTimelineRun(campaign._id, function() {
+                                    callback(null, true);
+                                });
                             }
                         }
                     } else {
@@ -134,4 +145,31 @@ function handleNumber(number) {
         number = "0" + number;
     }
     return number;
+}
+
+function changeLastTimelineRun(campaignId, callback) {
+    callback = callback || function() {};
+    Campaign.findOne({
+            _id: campaignId
+        })
+        .select("lastTimelineRun timelineId")
+        .then(function(campaign) {
+            if (!campaign.lastTimelineRun && campaign.lastTimelineRun !== 0) {
+                campaign.lastTimelineRun = 0;
+            } else {
+                campaign.lastTimelineRun++;
+                if (campaign.lastTimelineRun >= campaign.timelineId.length) {
+                    campaign.lastTimelineRun = 0;
+                }
+            }
+            return campaign.save();
+        })
+        .then(function(campaign) {
+            callback(null, campaign);
+            return null;
+        })
+        .catch(function() {
+            callback(err);
+            return null;
+        });
 }

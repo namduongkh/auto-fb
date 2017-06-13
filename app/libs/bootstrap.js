@@ -38,6 +38,7 @@ module.exports = function(server) {
                 return 'web/layout';
             }(),
             context: {
+                minCycle: config.get("web.minCycle"),
                 settings: config.get("web.settings"),
                 assets: config.get("web.assets"),
                 meta: {

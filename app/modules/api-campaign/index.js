@@ -31,6 +31,7 @@ exports.register = function(server, options, next) {
 
     let helper = require('./util/campaign')(server, options);
     server.expose('runCampaign', helper.runCampaign);
+    server.expose('changeLastTimelineRun', helper.changeLastTimelineRun);
 
     next();
 };

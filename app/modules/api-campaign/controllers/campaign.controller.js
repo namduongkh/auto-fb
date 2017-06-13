@@ -88,6 +88,7 @@ exports.saveCampaign = {
                         campaign.timelineId = timelineId || campaign.timelineId;
                         campaign.feedId = feedId || campaign.feedId;
                         campaign.albumId = albumId || campaign.albumId;
+                        campaign.lastTimelineRun = 0;
                         // campaign.description = description || campaign.description;
                         campaign.modified = new Date()
                         save(campaign);
@@ -201,36 +202,20 @@ function generateDescription(campaignId, callback) {
             } else {
                 desc.postName = campaign.feedId ? campaign.feedId.title : undefined;
             }
-            switch (campaign.timeline) {
-                case 'personal':
-                    desc.timelineType = "cá nhân";
-                    break;
-                case 'group':
-                    desc.timelineType = "nhóm";
-                    break;
-                case 'page':
-                    desc.timelineType = "trang";
-                    break;
-            }
-            return User.findOne({
-                    _id: campaign.created_by,
-                })
-                .lean()
-                .select("timelineId")
-
-        })
-        .then(function(user) {
-            for (var i in user.timelineId) {
-                if (user.timelineId[i].id == campaign.timelineId) {
-                    if (user.timelineId[i].type != 'personal') {
-                        desc.timelineName = user.timelineId[i].name;
-                    } else {
-                        desc.timelineName = "";
+            let timelineName = _.map(campaign.timelineId, function(item) {
+                let type = function() {
+                    switch (item.type) {
+                        case 'group':
+                            return 'nhóm';
+                        case 'page':
+                            return 'trang';
+                        default:
+                            return '';
                     }
-                    break;
-                }
-            }
-            generate = `Xuất bản ${desc.postType} ${desc.postName} lên dòng thời gian ${desc.timelineType} ${desc.timelineName}`;
+                }();
+                return type + " " + item.name;
+            }).join(", ");
+            generate = `Xuất bản ${desc.postType} ${desc.postName} vào ${timelineName}`;
             campaign.description = generate;
             return campaign.save();
         })

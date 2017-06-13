@@ -36,6 +36,7 @@
     "angular-sanitize": "^1.6.4",
     "angular-resource": "^1.6.4",
     "angular-local-storage": "^0.6.0",
-    "Ionicons": "ionicons#^2.0.1"
+    "Ionicons": "ionicons#^2.0.1",
+    "angular-ui-select": "^0.19.8"
   }
 }
