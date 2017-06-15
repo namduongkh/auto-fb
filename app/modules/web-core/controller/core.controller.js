@@ -151,14 +151,16 @@ exports.getMeta = function(request, reply) {
     let response = request.response;
     if (response.variety === 'view') {
         let config = request.server.configManager;
-        let app = config.get('web.app');
-        if (response.source.context.meta && response.source.context.meta.title) {
-
+        let app = config.get('web.context.app');
+        if (response.source.context.meta) {
             if (response.source.context.meta.title) {
-                response.source.context.meta.title = response.source.context.meta.title + ' - ' + app.title
+                response.source.context.meta.title = response.source.context.meta.title + ' - ' + app.title;
+            }
+            if (!response.source.context.meta.description) {
+                response.source.context.meta.description = app.description;
             }
         } else {
-            response.source.context.meta = app
+            response.source.context.meta = app;
         }
     }
     reply.continue();

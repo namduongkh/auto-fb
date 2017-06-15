@@ -864,6 +864,7 @@ var Common = (function() {
             ScheduleService.saveSchedule(scheduleCtrl.schedule)
                 .then(function(resp) {
                     if (resp.status == 200) {
+                        resp.data.campaignId = resp.data.campaignId._id || resp.data.campaignId;
                         if (!scheduleCtrl.schedule._id) {
                             if (!scheduleCtrl.listSchedules) {
                                 scheduleCtrl.listSchedules = [];
@@ -878,11 +879,11 @@ var Common = (function() {
                                 }
                             }
                         }
-                        scheduleCtrl.schedule = resp.data;
+                        scheduleCtrl.schedule = JSON.parse(JSON.stringify(resp.data));
                         $timeout(function() {
                             $scope.ScheduleForm.$setPristine();
                         }, 500);
-                        toastr.success("Lưu trạng thái thành công.", "Thành công!");
+                        toastr.success("Lưu lịch trình thành công.", "Thành công!");
                     } else {
                         toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
                     }
@@ -897,7 +898,7 @@ var Common = (function() {
                 ScheduleService.removeSchedule(scheduleId)
                     .then(function(resp) {
                         if (resp.status == 200 && resp.data) {
-                            toastr.success("Xóa trạng thái thành công.", "Thành công!");
+                            toastr.success("Xóa lịch trình thành công.", "Thành công!");
                             scheduleCtrl.listSchedules.splice(index, 1);
                             scheduleCtrl.resetSchedule();
                         } else {

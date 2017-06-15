@@ -37,15 +37,7 @@ module.exports = function(server) {
             layout: function() {
                 return 'web/layout';
             }(),
-            context: {
-                minCycle: config.get("web.minCycle"),
-                settings: config.get("web.settings"),
-                assets: config.get("web.assets"),
-                meta: {
-                    title: config.get("web.app.title"),
-                    description: config.get("web.app.description")
-                }
-            }
+            context: config.get("web.context")
         });
 
         // Load các model trong các module

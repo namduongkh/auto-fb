@@ -82,7 +82,7 @@ module.exports = function(server) {
                                         _.map(campaign.albumId.photos, function(photo) {
                                             parallel.push(function(cb) {
                                                 // let imageUrl = "https://image.ibb.co/fSEL0v/tao_dep.jpg";
-                                                let imageUrl = server.configManager.get("web.settings.services.webUrl") + "/files/albums/" + campaign.albumId._id + "/" + photo;
+                                                let imageUrl = server.configManager.get("web.context.settings.services.webUrl") + "/files/albums/" + campaign.albumId._id + "/" + photo;
                                                 sendGraphApi(user.accessToken, 'post', `/${albumId}/photos`, {
                                                     url: imageUrl,
                                                 }, function(err, result) {

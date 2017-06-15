@@ -55,7 +55,7 @@ exports.getMeta = function(request, reply) {
     let response = request.response;
     if (response.variety === 'view') {
         let config = request.server.configManager;
-        let app = config.get('web.app');
+        let app = config.get('web.context.app');
         if (response.source.context.meta && response.source.context.meta.title) {
 
             if (response.source.context.meta.title) {
@@ -76,7 +76,7 @@ exports.handleError = function(request, reply) {
     let config = request.server.configManager;
     // let loginUrl = config.get('web.error.web.login');
 
-    let loginUrl = config.get("web.settings.services.webUrl") + config.get('web.error.web.login');
+    let loginUrl = config.get("web.context.settings.services.webUrl") + config.get('web.error.web.login');
 
     const error = response;
     const statusCode = error.output.statusCode;
@@ -90,7 +90,7 @@ exports.handleError = function(request, reply) {
     } else if (statusCode === 403 || statusCode === 401) {
         request.log(['error', 'permission'], 'You have not permission to access this page');
         if (statusCode === 403) {
-            return reply.redirect(config.get("web.settings.services.webUrl"));
+            return reply.redirect(config.get("web.context.settings.services.webUrl"));
         }
         // console.log("admin");
         return reply.redirect(loginUrl);

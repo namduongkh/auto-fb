@@ -159,10 +159,10 @@ exports.runCampaign = {
         let { campaignId } = request.payload;
         let id = request.auth.credentials.id;
         let { runCampaign } = request.server.plugins['api-campaign'];
-        let stopMinutes = request.server.configManager.get("web.userSchedule.stopMinutes");
+        let stopMinutes = request.server.configManager.get("web.context.userSchedule.stopMinutes");
         runCampaign(campaignId, {
             checkBan: true,
-            debug: request.server.configManager.get("web.userSchedule.debug")
+            debug: request.server.configManager.get("web.context.userSchedule.debug")
         }, function(err, result) {
             if (err) {
                 return reply(Boom.badRequest(err.msg));

@@ -78,7 +78,7 @@ function scanScheduleByUser(server, user_id) {
         // cronTime: `*/3 * * * * *`,
         onTick: function() {
             console.log("-- Quét các schedule của user", user_id);
-            let banTime = 1000 * 60 * config.get("web.userSchedule.stopMinutes"); // 1 phút
+            let banTime = 1000 * 60 * config.get("web.context.userSchedule.stopMinutes"); // 1 phút
             Schedule.find({
                     running: true,
                     created_by: user_id
@@ -111,7 +111,7 @@ function scanScheduleByUser(server, user_id) {
                             if (selectSchedule) {
                                 console.log("Sẽ chạy schedule", selectSchedule.name);
                                 CampaignUtil(server).runCampaign(selectSchedule.campaignId, {
-                                    debug: config.get("web.userSchedule.debug")
+                                    debug: config.get("web.context.userSchedule.debug")
                                 }, function(err, resp) {
                                     // console.log("check running selectSchedule");
                                     // console.log(err, resp);
