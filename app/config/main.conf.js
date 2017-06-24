@@ -73,8 +73,8 @@ module.exports = {
         },
         context: {
             app: {
-                title: "Tự Động Xuất Bản",
-                description: "Dịch vụ tự động xuất bản bài đăng (trạng thái, album ảnh...) vào dòng thời gian nhóm, trang, cá nhân... Giải pháp tối ưu hóa công việc, tiết kiệm thời gian"
+                title: "Dịch vụ Tự Động Xuất Bản bài đăng Facebook",
+                description: "Dịch vụ tự động xuất bản bài đăng (trạng thái, album ảnh...) vào dòng thời gian Facebook nhóm, trang, cá nhân... Chức năng tự động xuất bản theo lịch trình. Giải pháp tối ưu hóa công việc, tiết kiệm thời gian."
             },
         }
     }
