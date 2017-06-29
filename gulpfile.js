@@ -19,12 +19,16 @@ const minDir = './public/assets/min';
 const cssDir = './public/assets/css';
 const jsDir = './public/assets/js';
 const libDir = './public/libs';
+const publicDir = './public';
+
+const assets = require('./app/views/assets.conf');
 
 gulp.task('minjs', () => {
     gulp
         .src([
-            jsDir + '/app.js',
-            jsDir + '/config.js',
+            ...assets.web.js.build.map(function(file) {
+                return publicDir + file;
+            })
         ])
         .pipe($.plumber({
             errorHandler: function(error) {
@@ -38,11 +42,36 @@ gulp.task('minjs', () => {
         .pipe(babel({ presets: ['es2015'], compact: false }))
         .pipe(purgeSourcemaps())
         .pipe(uglify())
-        // .pipe(stripDebug())
+        .pipe(stripDebug())
         .pipe(gulp.dest(minDir));
     gulp
         .src([
-            jsDir + '/app-admin.js',
+            ...assets.web.js.concat.map(function(file) {
+                return publicDir + file;
+            })
+        ])
+        .pipe($.plumber({
+            errorHandler: function(error) {
+                console.log(error);
+                this.emit('end');
+            }
+        }))
+        .pipe(ngAnnotate())
+        .pipe(concat('app.concat.min.js'))
+        .pipe(gulp.dest(minDir))
+        // .pipe(babel({ presets: ['es2015'], compact: false }))
+        .pipe(purgeSourcemaps())
+        // .pipe(uglify())
+        // .pipe(stripDebug())
+        .pipe(gulp.dest(minDir));
+});
+
+gulp.task('minjsAdmin', () => {
+    gulp
+        .src([
+            ...assets.admin.js.build.map(function(file) {
+                return publicDir + file;
+            })
         ])
         .pipe($.plumber({
             errorHandler: function(error) {
@@ -56,21 +85,47 @@ gulp.task('minjs', () => {
         .pipe(babel({ presets: ['es2015'], compact: false }))
         .pipe(purgeSourcemaps())
         .pipe(uglify())
+        .pipe(stripDebug())
+        .pipe(gulp.dest(minDir));
+    gulp
+        .src([
+            ...assets.admin.js.concat.map(function(file) {
+                return publicDir + file;
+            })
+        ])
+        .pipe($.plumber({
+            errorHandler: function(error) {
+                console.log(error);
+                this.emit('end');
+            }
+        }))
+        .pipe(ngAnnotate())
+        .pipe(concat('app-admin.concat.min.js'))
+        .pipe(gulp.dest(minDir))
+        // .pipe(babel({ presets: ['es2015'], compact: false }))
+        .pipe(purgeSourcemaps())
+        // .pipe(uglify())
         // .pipe(stripDebug())
         .pipe(gulp.dest(minDir));
 });
 
 gulp.task('mincss', function() {
     gulp.src([
-            cssDir + '/styles.css'
+            ...assets.web.css.map(function(file) {
+                return publicDir + file;
+            })
         ])
         .pipe(concatCss('app.min.css'))
         .pipe(gulp.dest(minDir))
         .pipe(cleanCSS())
         .pipe(gulp.dest(minDir));
+});
 
+gulp.task('mincssAdmin', function() {
     gulp.src([
-            cssDir + '/styles-admin.css'
+            ...assets.admin.css.map(function(file) {
+                return publicDir + file;
+            })
         ])
         .pipe(concatCss('app-admin.min.css'))
         .pipe(gulp.dest(minDir))
@@ -131,7 +186,7 @@ gulp.task('javascripts', () => {
         .pipe(gulp.dest(jsDir));
 });
 
-gulp.task('build', ['minjs', 'mincss']);
+gulp.task('build', ['minjs', 'mincss', 'minjsAdmin', 'mincssAdmin']);
 // gulp.task('build_portal', ['minjs_portal', 'mincss_portal']);
 
 gulp.task('default', ['nodemon', 'browser-sync', 'styles', 'javascripts'], function() {
