@@ -6,12 +6,16 @@ exports.getIndentity = {
         let config = request.server.configManager;
         let notFoundUrl = config.get('web.error.notfound.url');
         let indentity = request.params.indentity;
-        var {
-            mongoCache
-        } = request.server.plugins['web-core'];
-        mongoCache.get('Page', {
+        // var {
+        //     mongoCache
+        // } = request.server.plugins['web-core'];
+        // mongoCache.get('Page', {
+        //         'identity': indentity
+        //     })
+        Page.findOne({
                 'identity': indentity
             })
+            .lean()
             .then(function(page) {
                 if (!page) {
                     return reply.redirect(notFoundUrl);

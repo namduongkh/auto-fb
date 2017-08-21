@@ -103,9 +103,9 @@ exports.update = {
         assign: 'page'
     }],
     handler: function(request, reply) {
-        var {
-            mongoCache
-        } = request.server.plugins['web-core'];
+        // var {
+        //     mongoCache
+        // } = request.server.plugins['web-core'];
         let page = request.pre.page;
         delete request.payload.id;
         delete request.payload._id;
@@ -116,7 +116,7 @@ exports.update = {
         page = _.extend(page, request.payload);
         let promise = page.save();
         promise.then(function(page) {
-            mongoCache.directDelete(`Page:${identity}`);
+            // mongoCache.directDelete(`Page:${identity}`);
             reply(page);
         }).catch(function(err) {
             reply(Boom.badRequest(ErrorHandler.getErrorMessage(err)));

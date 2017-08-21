@@ -18,8 +18,8 @@ exports.register = function(server, options, next) {
     server.ext('onPreResponse', CoreController.handleError);
     // server.ext('onPreHandler', CoreController.getPushToken);
 
-    let mongoCache = require('./util/mongoCache')(server, options);
-    server.expose('mongoCache', mongoCache);
+    // let mongoCache = require('./util/mongoCache')(server, options);
+    // server.expose('mongoCache', mongoCache);
 
     server.route({
         method: 'GET',
