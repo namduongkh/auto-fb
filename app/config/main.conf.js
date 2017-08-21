@@ -2,6 +2,13 @@
 
 module.exports = {
     web: {
+        db: {
+            uri: 'mongodb://auto-publish:phongnguyen.94@ds145010.mlab.com:45010/heroku_827fksjq',
+            options: {
+                user: '',
+                pass: ''
+            }
+        },
         connections: [{
                 port: process.env.WEB_PORT || 3000,
                 labels: 'web',
@@ -38,13 +45,6 @@ module.exports = {
         ],
         upload: {
             path: BASE_PATH + '/public/files',
-        },
-        db: {
-            uri: 'mongodb://localhost/db_auto_fb',
-            options: {
-                user: '',
-                pass: ''
-            }
         },
         paging: {
             defaultPageSize: 25,

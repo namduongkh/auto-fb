@@ -3,6 +3,13 @@ const assets = require('../views/assets.conf');
 
 module.exports = {
     web: {
+        db: {
+            uri: 'mongodb://localhost/db_auto_fb',
+            options: {
+                user: '',
+                pass: ''
+            }
+        },
         context: {
             minCycle: 1,
             userSchedule: {
