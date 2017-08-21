@@ -4,7 +4,7 @@
     "description": "Hapi project.",
     "main": "index.js",
     "scripts": {
-        "start": "node app.js --production",
+        // "start": "node app.js --production",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Phong Nguyễn",

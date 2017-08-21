@@ -10,14 +10,7 @@ if (argv.includes("--production")) {
 }
 // process.env.NODE_ENV = 'production-test';
 // Tạo server hapi
-const server = new Hapi.Server({
-    cache: [{
-        name: 'mongoCache',
-        engine: require('catbox-mongodb'),
-        host: '127.0.0.1',
-        partition: 'db_auto_fb'
-    }]
-});
+const server = new Hapi.Server();
 
 // Module hapi-kea-config: 
 // Cần tồn tại 3 file trong thư mục /app/config 
@@ -30,7 +23,15 @@ server.register({
     }
 });
 
-var config = server.plugins['hapi-kea-config'];
+const config = server.plugins['hapi-kea-config'];
+
+let caches = config.get('web.caches');
+caches.forEach(function(cache) {
+    cache.engine = require(cache.engine);
+    server.cache.provision(cache, function(err) {
+        // console.log("err", err);
+    });
+});
 
 var connections = config.get("web.connections")
 

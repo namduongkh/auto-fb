@@ -10,6 +10,12 @@ module.exports = {
                 pass: ''
             }
         },
+        caches: [{
+            name: 'mongoCache',
+            engine: 'catbox-mongodb',
+            host: '127.0.0.1',
+            partition: 'db_auto_fb'
+        }],
         context: {
             minCycle: 1,
             userSchedule: {

@@ -9,6 +9,12 @@ module.exports = {
                 pass: ''
             }
         },
+        caches: [{
+            name: 'mongoCache',
+            engine: 'catbox-mongodb',
+            host: 'auto-publish:phongnguyen.94@ds145010.mlab.com:45010',
+            partition: 'heroku_827fksjq'
+        }],
         connections: [{
                 port: process.env.WEB_PORT || 3000,
                 labels: 'web',
