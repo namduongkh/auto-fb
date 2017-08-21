@@ -29,7 +29,7 @@ module.exports = {
                 }
             },
             {
-                port: process.env.API_PORT || 3000,
+                port: process.env.API_PORT || 3100,
                 labels: 'api',
                 routes: {
                     cors: {
