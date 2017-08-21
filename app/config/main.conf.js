@@ -28,16 +28,16 @@ module.exports = {
                     stripTrailingSlash: false
                 }
             },
-            {
-                port: process.env.API_PORT || 3100,
-                labels: 'api',
-                routes: {
-                    cors: {
-                        origin: ['*'],
-                        credentials: true
-                    }
-                }
-            },
+            // {
+            //     port: process.env.API_PORT || 3100,
+            //     labels: 'api',
+            //     routes: {
+            //         cors: {
+            //             origin: ['*'],
+            //             credentials: true
+            //         }
+            //     }
+            // },
             // {
             //     port: process.env.CMS_PORT || 3200,
             //     labels: 'admin',
