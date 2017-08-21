@@ -4,7 +4,11 @@ const Hapi = require('hapi');
 const Path = require('path');
 
 global.BASE_PATH = __dirname;
-process.env.NODE_ENV = 'production-test';
+let argv = process.argv;
+if (argv.includes("--production")) {
+    process.env.NODE_ENV = 'production';
+}
+// process.env.NODE_ENV = 'production-test';
 // Tạo server hapi
 const server = new Hapi.Server({
     cache: [{
