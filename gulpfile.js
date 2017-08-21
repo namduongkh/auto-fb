@@ -134,6 +134,10 @@ gulp.task('mincssAdmin', function() {
 });
 
 gulp.task('browser-sync', ['nodemon'], function() {
+    let argv = process.argv;
+    if (argv.includes("--production")) {
+        process.env.NODE_ENV = 'production';
+    }
     browserSync.init(null, {
         proxy: "http://localhost:3000",
         files: ["public/**/*.*", "app/**/*.*"],
