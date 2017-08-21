@@ -10,9 +10,9 @@ module.exports = {
             },
             settings: {
                 services: {
-                    apiUrl: 'http://www.tudongxuatban.tk',
-                    webUrl: 'http://www.tudongxuatban.tk',
-                    adminUrl: 'http://www.tudongxuatban.tk:3200',
+                    apiUrl: 'https://auto-publish.herokuapp.com',
+                    webUrl: 'https://auto-publish.herokuapp.com',
+                    adminUrl: 'https://auto-publish.herokuapp.com:3200',
                 },
             },
             assets: {
