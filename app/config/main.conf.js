@@ -1,9 +1,12 @@
 'use strict';
 
+let host = "root:phongnguyen.94@ds159033.mlab.com:59033";
+let dbName = "db_auto_fb";
+
 module.exports = {
     web: {
         db: {
-            uri: 'mongodb://root:phongnguyen.94@ds159033.mlab.com:59033/db_auto_fb',
+            uri: `mongodb://${host}/${dbName}`,
             options: {
                 user: '',
                 pass: ''
@@ -12,8 +15,8 @@ module.exports = {
         caches: [{
             name: 'mongoCache',
             engine: 'catbox-mongodb',
-            host: 'auto-publish:phongnguyen.94@ds145010.mlab.com:45010',
-            partition: 'heroku_827fksjq'
+            host: host,
+            partition: dbName
         }],
         connections: [{
                 port: process.env.WEB_PORT || 3000,

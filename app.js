@@ -8,7 +8,7 @@ let argv = process.argv;
 if (argv.includes("--production")) {
     process.env.NODE_ENV = 'production';
 }
-process.env.NODE_ENV = 'production-test';
+// process.env.NODE_ENV = 'production-test';
 // Tạo server hapi
 const server = new Hapi.Server();
 
@@ -39,6 +39,9 @@ var connections = config.get("web.connections")
 connections.forEach(function(config) {
     server.connection(config);
 }, this);
+
+console.log("NODE_ENV", process.env.NODE_ENV);
+console.log("caches", process.env.caches);
 
 // Đăng ký các plugin khác
 require("./app/libs/bootstrap.js")(server);
