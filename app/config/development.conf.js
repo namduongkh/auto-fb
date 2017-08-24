@@ -38,6 +38,8 @@ module.exports = {
                         // '/assets/min/app.min.js',
                     ],
                     css: [
+                        '/libs/bootstrap/dist/css/bootstrap.min.css',
+                        '/libs/font-awesome/css/font-awesome.min.css',
                         ...assets.web.css,
                         // '/assets/min/app.min.css',
                     ]

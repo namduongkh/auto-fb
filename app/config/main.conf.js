@@ -3,7 +3,7 @@
 module.exports = {
     web: {
         db: {
-            uri: 'mongodb://auto-publish:phongnguyen.94@ds145010.mlab.com:45010/heroku_827fksjq',
+            uri: 'mongodb://root:phongnguyen.94@ds159033.mlab.com:59033/db_auto_fb',
             options: {
                 user: '',
                 pass: ''
