@@ -8,7 +8,7 @@ let argv = process.argv;
 if (argv.includes("--production")) {
     process.env.NODE_ENV = 'production';
 }
-// process.env.NODE_ENV = 'production-test';
+process.env.NODE_ENV = 'production-test';
 // Tạo server hapi
 const server = new Hapi.Server();
 
@@ -25,13 +25,13 @@ server.register({
 
 const config = server.plugins['hapi-kea-config'];
 
-let caches = config.get('web.caches');
-caches.forEach(function(cache) {
-    cache.engine = require(cache.engine);
-    server.cache.provision(cache, function(err) {
-        // console.log("err", err);
-    });
-});
+// let caches = config.get('web.caches');
+// caches.forEach(function(cache) {
+//     cache.engine = require(cache.engine);
+//     server.cache.provision(cache, function(err) {
+//         // console.log("err", err);
+//     });
+// });
 
 var connections = config.get("web.connections")
 
@@ -39,9 +39,6 @@ var connections = config.get("web.connections")
 connections.forEach(function(config) {
     server.connection(config);
 }, this);
-
-console.log("NODE_ENV", process.env.NODE_ENV);
-console.log("caches", process.env.caches);
 
 // Đăng ký các plugin khác
 require("./app/libs/bootstrap.js")(server);

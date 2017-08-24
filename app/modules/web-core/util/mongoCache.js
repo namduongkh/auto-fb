@@ -53,7 +53,7 @@ module.exports = function(server, options) {
                     options: options,
                     select: selectOpts
                 };
-                cache.get(getOpt, function(err, result) {
+                getData(getOpt, function(err, result) {
                     if (err) {
                         reject(err);
                     } else {
@@ -62,13 +62,13 @@ module.exports = function(server, options) {
                 })
             });
         },
-        directDelete(id) {
-            cache.drop(id, function(err) {});
-        },
-        indirectDelete(model, options) {
-            cache.drop(generateKey(model, options), function(err) {});
-        },
-        cache: cache
+        // directDelete(id) {
+        //     cache.drop(id, function(err) {});
+        // },
+        // indirectDelete(model, options) {
+        //     cache.drop(generateKey(model, options), function(err) {});
+        // },
+        // cache: cache
     };
 };
 
