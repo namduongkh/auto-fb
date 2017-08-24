@@ -9,6 +9,7 @@ global.BASE_PATH = __dirname;
 //     process.env.NODE_ENV = 'production';
 // }
 // process.env.NODE_ENV = 'production-test';
+console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 // Tạo server hapi
 const server = new Hapi.Server();
 
