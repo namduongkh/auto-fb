@@ -27,8 +27,8 @@ module.exports = {
                 '/libs/moment/locale/vi.js',
             ],
             noaction: [
-                '/libs/tinymce/tinymce.min.js',
-                '/libs/angular-ui-tinymce/dist/tinymce.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.6.6/tinymce.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-tinymce/0.0.19/tinymce.min.js',
             ]
         },
         css: [
@@ -58,8 +58,8 @@ module.exports = {
                 '/assets/js/app-admin.js',
             ],
             noaction: [
-                '/libs/tinymce/tinymce.min.js',
-                '/libs/angular-ui-tinymce/dist/tinymce.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.6.6/tinymce.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-tinymce/0.0.19/tinymce.min.js',
             ],
             concat: [
                 '/libs/angular/angular.min.js',
