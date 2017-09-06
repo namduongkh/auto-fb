@@ -298,62 +298,6 @@ angular.module('core').factory("Notice", ["$rootScope", function($rootScope) {
 }]);
 'use strict';
 
-ApplicationConfiguration.registerModule('auth');
-
-angular.module('auth').config(['$stateProvider',
-	function($stateProvider) {
-	}
-]); 
-'use strict';
-
-angular.module('auth').controller('AuthenticationController', ['$scope', '$http', '$location', '$window', 'Authentication', '$cookies',
-    function($scope, $http, $location, $window, Authentication, $cookies) {
-        $scope.authentication = Authentication;
-        $scope.webUrl = $window.settings.services.webUrl;
-
-        $scope.signin = function() {
-            $scope.isSubmit = true;
-            var data = $scope.credentials;
-            data.scope = 'admin';
-            $http.post($window.settings.services.apiUrl + '/api/user/login', data).then(function(response) {
-                if (response.status == 200) {
-                    response = response.data;
-                    if (response.token) {
-                        $window.location.href = '/';
-                    }
-                    $scope.error = response.message;
-                }
-
-            }).catch(function(response) {
-                $scope.error = response.message;
-            });
-        };
-
-        $scope.signout = function() {
-            $http.get($window.settings.services.apiUrl + '/api/user/logout').then(function(response) {
-                if (response.status == 200) {
-                    response = response.data;
-                    $scope.authentication.user = '';
-                    $cookies.remove('token');
-                    $window.location.href = '/';
-                }
-            }).catch(function(response) {
-                $scope.error = response.message;
-            });
-        };
-    }
-]);
-'use strict';
-
-angular.module('auth').factory('Authentication', ['$window', function($window) {
-	var auth = {
-		user: $window.user
-	};
-	return auth;
-}]);
-
-'use strict';
-
 ApplicationConfiguration.registerModule('caches');
 // Configuring the Articles module
 angular.module('caches').run(['Menus',
@@ -523,6 +467,62 @@ angular.module('caches').factory('Caches', ['$resource',
         });
     }
 ]);
+'use strict';
+
+ApplicationConfiguration.registerModule('auth');
+
+angular.module('auth').config(['$stateProvider',
+	function($stateProvider) {
+	}
+]); 
+'use strict';
+
+angular.module('auth').controller('AuthenticationController', ['$scope', '$http', '$location', '$window', 'Authentication', '$cookies',
+    function($scope, $http, $location, $window, Authentication, $cookies) {
+        $scope.authentication = Authentication;
+        $scope.webUrl = $window.settings.services.webUrl;
+
+        $scope.signin = function() {
+            $scope.isSubmit = true;
+            var data = $scope.credentials;
+            data.scope = 'admin';
+            $http.post($window.settings.services.apiUrl + '/api/user/login', data).then(function(response) {
+                if (response.status == 200) {
+                    response = response.data;
+                    if (response.token) {
+                        $window.location.href = '/';
+                    }
+                    $scope.error = response.message;
+                }
+
+            }).catch(function(response) {
+                $scope.error = response.message;
+            });
+        };
+
+        $scope.signout = function() {
+            $http.get($window.settings.services.apiUrl + '/api/user/logout').then(function(response) {
+                if (response.status == 200) {
+                    response = response.data;
+                    $scope.authentication.user = '';
+                    $cookies.remove('token');
+                    $window.location.href = '/';
+                }
+            }).catch(function(response) {
+                $scope.error = response.message;
+            });
+        };
+    }
+]);
+'use strict';
+
+angular.module('auth').factory('Authentication', ['$window', function($window) {
+	var auth = {
+		user: $window.user
+	};
+	return auth;
+}]);
+
 angular.module('core').directive('ckEditor', [function () {
 	return {
 		require: '?ngModel',
@@ -681,10 +681,9 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
         $scope.isCollapsed = false;
         $scope.menu = Menus.getMenu('topbar');
 
-
+        $scope.adminUrl = window.settings.services.adminUrl;
     }
 ]);
-
 'use strict';
 
 

@@ -32,7 +32,7 @@ var UserSchema = new Schema({
     roles: {
         type: [{
             type: String,
-            enum: ['superadmin', 'user', 'admin', 'seller', 'collector']
+            enum: ['user', 'admin', ]
         }],
         default: ['user']
     },

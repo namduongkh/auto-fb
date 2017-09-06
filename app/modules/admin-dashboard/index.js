@@ -7,7 +7,7 @@ exports.register = function(server, options, next) {
 
     server.route({
         method: 'GET',
-        path: '/',
+        path: '/admin',
         config: DashboardController.index,
     });
 

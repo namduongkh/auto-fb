@@ -137,6 +137,8 @@ gulp.task('browser-sync', ['nodemon'], function() {
     let argv = process.argv;
     if (argv.includes("--production")) {
         process.env.NODE_ENV = 'production';
+    } else {
+        process.env.PORT = 3000;
     }
     browserSync.init(null, {
         proxy: "http://localhost:3000",
@@ -150,7 +152,7 @@ gulp.task('browser-sync', ['nodemon'], function() {
 gulp.task('nodemon', function() {
     nodemon({
         script: 'app.js',
-        ext: 'js html',
+        ext: 'js html json',
         env: { 'NODE_ENV': 'development' }
     })
 });

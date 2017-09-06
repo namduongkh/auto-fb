@@ -250,7 +250,22 @@ exports.generateAdmin = {
                             return reply("Success!");
                         });
                 } else {
-                    return reply("User not exist!");
+                    let user = new User({
+                        name: 'Admin',
+                        email: email,
+                        roles: ['admin', 'user'],
+                    });
+                    user.hashPassword('admin', function(err, hash) {
+                        user.password = hash;
+                        const promise = user.save();
+                        promise.then(user => {
+                            return reply(user);
+                        }).catch(err => {
+                            // console.log("Err", err);
+                            return reply(Boom.badRequest(ErrorHandler.getErrorMessage(err)));
+                        });
+                    });
+                    // return reply("User not exist!");
                 }
             });
     }

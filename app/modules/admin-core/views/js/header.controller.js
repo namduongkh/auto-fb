@@ -6,6 +6,6 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
         $scope.isCollapsed = false;
         $scope.menu = Menus.getMenu('topbar');
 
-
+        $scope.adminUrl = window.settings.services.adminUrl;
     }
 ]);

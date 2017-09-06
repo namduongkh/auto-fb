@@ -103,9 +103,7 @@ exports.update = {
         assign: 'page'
     }],
     handler: function(request, reply) {
-        // var {
-        //     mongoCache
-        // } = request.server.plugins['web-core'];
+        // var { mongoCache } = request.server.plugins['web-core'];
         let page = request.pre.page;
         delete request.payload.id;
         delete request.payload._id;
@@ -178,7 +176,5 @@ function getById(request, reply) {
     }).catch(function(err) {
         request.log(['error'], err);
         return reply.continue();
-    })
-
-
+    });
 }

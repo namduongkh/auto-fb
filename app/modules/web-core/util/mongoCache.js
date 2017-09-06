@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 
 const getData = function(data, next) {
-    // console.log(`Get data once time ${generateKey(data.model, data.options)}`);
+    console.log(`Get data once time ${generateKey(data.model, data.options)}`);
     if (data.model) {
         var Model = mongoose.model(data.model);
         if (data.options) {
@@ -53,22 +53,29 @@ module.exports = function(server, options) {
                     options: options,
                     select: selectOpts
                 };
-                getData(getOpt, function(err, result) {
+                // getData(getOpt, function(err, result) {
+                //     if (err) {
+                //         reject(err);
+                //     } else {
+                //         resolve(result);
+                //     }
+                // })
+                cache.get(getOpt, function(err, result) {
                     if (err) {
                         reject(err);
                     } else {
                         resolve(result);
                     }
-                })
+                });
             });
         },
-        // directDelete(id) {
-        //     cache.drop(id, function(err) {});
-        // },
-        // indirectDelete(model, options) {
-        //     cache.drop(generateKey(model, options), function(err) {});
-        // },
-        // cache: cache
+        directDelete(id) {
+            cache.drop(id, function(err) {});
+        },
+        indirectDelete(model, options) {
+            cache.drop(generateKey(model, options), function(err) {});
+        },
+        cache: cache
     };
 };
 

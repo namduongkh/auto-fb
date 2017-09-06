@@ -8,8 +8,8 @@ let argv = process.argv;
 if (argv.includes("--production")) {
     process.env.NODE_ENV = 'production';
 }
-// process.env.NODE_ENV = 'production-test';
-console.log("process.env.NODE_ENV", process.env.NODE_ENV);
+process.env.NODE_ENV = 'production-test';
+// console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 // Tạo server hapi
 const server = new Hapi.Server();
 
@@ -26,13 +26,13 @@ server.register({
 
 const config = server.plugins['hapi-kea-config'];
 
-// let caches = config.get('web.caches');
-// caches.forEach(function(cache) {
-//     cache.engine = require(cache.engine);
-//     server.cache.provision(cache, function(err) {
-//         // console.log("err", err);
-//     });
-// });
+let caches = config.get('web.caches');
+caches.forEach(function(cache) {
+    cache.engine = require(cache.engine);
+    server.cache.provision(cache, function(err) {
+        // console.log("err", err);
+    });
+});
 
 var connections = config.get("web.connections")
 

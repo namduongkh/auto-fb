@@ -6,9 +6,7 @@ exports.getIndentity = {
         let config = request.server.configManager;
         let notFoundUrl = config.get('web.error.notfound.url');
         let indentity = request.params.indentity;
-        // var {
-        //     mongoCache
-        // } = request.server.plugins['web-core'];
+        var { mongoCache } = request.server.plugins['web-core'];
         // mongoCache.get('Page', {
         //         'identity': indentity
         //     })
