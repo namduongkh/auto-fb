@@ -23,8 +23,8 @@ module.exports = {
                         '/assets/min/app.min.js',
                     ],
                     css: [
-                        // '/libs/bootstrap/dist/css/bootstrap.min.css',
-                        // '/libs/font-awesome/css/font-awesome.min.css',
+                        '/libs/bootstrap/dist/css/bootstrap.min.css',
+                        '/libs/font-awesome/css/font-awesome.min.css',
                         '/assets/min/app.min.css',
                     ]
                 },
@@ -35,9 +35,9 @@ module.exports = {
                         '/assets/min/app-admin.min.js',
                     ],
                     css: [
-                        // '/libs/AdminLTE/bootstrap/css/bootstrap.min.css',
-                        // '/libs/Ionicons/css/ionicons.min.css',
-                        // '/libs/font-awesome/css/font-awesome.min.css',
+                        '/libs/AdminLTE/bootstrap/css/bootstrap.min.css',
+                        '/libs/Ionicons/css/ionicons.min.css',
+                        '/libs/font-awesome/css/font-awesome.min.css',
                         '/assets/min/app-admin.min.css',
                     ],
                 }

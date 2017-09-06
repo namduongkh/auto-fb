@@ -52,6 +52,9 @@ module.exports = {
                         // '/assets/min/app.min.js',
                     ],
                     css: [
+                        '/libs/AdminLTE/bootstrap/css/bootstrap.min.css',
+                        '/libs/Ionicons/css/ionicons.min.css',
+                        '/libs/font-awesome/css/font-awesome.min.css',
                         ...assets.admin.css,
                         // '/assets/min/app.min.css',
                     ]
