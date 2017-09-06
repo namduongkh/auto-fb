@@ -32,7 +32,7 @@ module.exports = {
             ]
         },
         css: [
-            '/libs/bootstrap/dist/css/bootstrap.min.css',
+            // '/libs/bootstrap/dist/css/bootstrap.min.css',
             '/libs/bootstrap/dist/css/bootstrap-theme.min.css',
             '/libs/angular-loading-bar/build/loading-bar.min.css',
             '/libs/angular-toastr/dist/angular-toastr.min.css',
@@ -67,7 +67,7 @@ module.exports = {
             ]
         },
         css: [
-            '/libs/AdminLTE/bootstrap/css/bootstrap.min.css',
+            // '/libs/AdminLTE/bootstrap/css/bootstrap.min.css',
             // '/libs/bootstrap/dist/css/bootstrap.min.css',
             // '/libs/font-awesome/css/font-awesome.min.css',
             // '/libs/Ionicons/css/ionicons.min.css',

@@ -25,6 +25,7 @@ module.exports = {
                     ],
                     css: [
                         // '/libs/bootstrap/dist/css/bootstrap.min.css',
+                        'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
                         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
                         '/assets/min/app.min.css',
                     ]
@@ -37,7 +38,8 @@ module.exports = {
                     ],
                     css: [
                         // '/libs/AdminLTE/bootstrap/css/bootstrap.min.css',
-                        'https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css',
+                        // 'https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css',
+                        'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
                         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
                         '/assets/min/app-admin.min.css',
                     ],
