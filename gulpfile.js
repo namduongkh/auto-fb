@@ -21,7 +21,7 @@ const jsDir = './public/assets/js';
 const libDir = './public/libs';
 const publicDir = './public';
 
-const assets = require('./app/views/assets.conf');
+const assets = require('./app/config/assets.config');
 
 gulp.task('minjs', () => {
     gulp

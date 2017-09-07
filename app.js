@@ -8,7 +8,7 @@ let argv = process.argv;
 if (argv.includes("--production")) {
     process.env.NODE_ENV = 'production';
 }
-// process.env.NODE_ENV = 'production-test';
+// process.env.NODE_ENV = 'test';
 // console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 // Tạo server hapi
 const server = new Hapi.Server();

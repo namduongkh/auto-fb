@@ -33,6 +33,7 @@ module.exports = {
         },
         css: [
             // '/libs/bootstrap/dist/css/bootstrap.min.css',
+            // '/libs/font-awesome/css/font-awesome.min.css',
             '/libs/bootstrap/dist/css/bootstrap-theme.min.css',
             '/libs/angular-loading-bar/build/loading-bar.min.css',
             '/libs/angular-toastr/dist/angular-toastr.min.css',
@@ -72,6 +73,7 @@ module.exports = {
             // '/libs/font-awesome/css/font-awesome.min.css',
             // '/libs/Ionicons/css/ionicons.min.css',
             // '/libs/AdminLTE/plugins/datatables/dataTables.bootstrap.css',
+            // '/libs/font-awesome/css/font-awesome.min.css',
             '/libs/AdminLTE/dist/css/skins/skin-blue.min.css',
             // '/libs/AdminLTE/plugins/select2/select2.min.css',
             '/libs/AdminLTE/dist/css/AdminLTE.min.css',

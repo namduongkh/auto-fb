@@ -1,5 +1,5 @@
 'use strict';
-const assets = require('../views/assets.conf');
+const assets = require('./assets.config');
 
 module.exports = {
     web: {
