@@ -33,7 +33,7 @@ angular.module('caches').controller('CachesController', ['$scope', '$window', '$
                     }
                 }
 
-                Notice.setNotice("Delete cache success!", 'SUCCESS');
+                Notice.success("Delete cache success!");
 
                 if ($stateParams.cacheId) {
                     $scope.gotoList();
@@ -118,9 +118,9 @@ angular.module('caches').controller('CachesController', ['$scope', '$window', '$
                 Caches.removeAll(function(res) {
                     if (res.status) {
                         $scope.caches = [];
-                        Notice.setNotice("Delete all cache success!", 'SUCCESS', true);
+                        Notice.success("Delete all cache success!", true);
                     } else {
-                        Notice.setNotice("Delete all cache error!", 'ERROR', true);
+                        Notice.error("Delete all cache error!", true);
                     }
                 });
             }

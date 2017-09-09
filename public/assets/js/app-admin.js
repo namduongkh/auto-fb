@@ -30,22 +30,24 @@ var ApplicationConfiguration = (function() {
 angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies);
 
 // Setting HTML5 Location Mode
-angular.module(ApplicationConfiguration.applicationModuleName).config(['$locationProvider', '$httpProvider',
-    function($locationProvider, $httpProvider) {
-        //$locationProvider.html5Mode(true);
-        $httpProvider.defaults.withCredentials = true;
-        $locationProvider
-            .html5Mode({
-                enabled: window.enabledHtml5Mode,
-                requireBase: false
-            })
-            .hashPrefix('!');
-    }
-]);
+angular.module(ApplicationConfiguration.applicationModuleName)
+    .config(['$locationProvider', '$httpProvider',
+        function($locationProvider, $httpProvider) {
+            //$locationProvider.html5Mode(true);
+            $httpProvider.defaults.withCredentials = true;
+            $locationProvider
+                .html5Mode({
+                    enabled: window.enabledHtml5Mode,
+                    requireBase: false
+                })
+                .hashPrefix('!');
+        }
+    ]);
 
-angular.module(ApplicationConfiguration.applicationModuleName).config(["localStorageServiceProvider", function(localStorageServiceProvider) {
-    localStorageServiceProvider.setPrefix(ApplicationConfiguration.applicationModuleName);
-}]);
+angular.module(ApplicationConfiguration.applicationModuleName)
+    .config(["localStorageServiceProvider", function(localStorageServiceProvider) {
+        localStorageServiceProvider.setPrefix(ApplicationConfiguration.applicationModuleName);
+    }]);
 
 //Then define the init function for starting up the application
 angular.element(document).ready(function() {
@@ -245,16 +247,29 @@ angular.module('core').service('Menus', [
     }
 ]);
 
-angular.module('core').factory("Notice", ["$rootScope", function($rootScope) {
+angular.module('core').factory("Notice", ["$rootScope", "$transitions", function($rootScope, $transitions) {
     var queue = [];
     var oldMessage = "";
     var currentMessage = "";
 
-    $rootScope.$on("$stateChangeStart", function() {
+    $transitions.onStart({}, function(trans) {
         oldMessage = currentMessage;
         currentMessage = queue.shift() || "";
-        // console.log(currentMessage);
+        console.log("onStart")
     });
+
+    $transitions.onError({}, function(trans) {
+        queue.push(oldMessage);
+        currentMessage = "";
+        console.log("onError")
+    });
+
+    // $rootScope.$on("$stateChangeStart", function() {
+    //     console.log("$stateChangeStart");
+    //     oldMessage = currentMessage;
+    //     currentMessage = queue.shift() || "";
+    //     // console.log(currentMessage);
+    // });
 
     $rootScope.$on("requireChange", function() {
         oldMessage = currentMessage;
@@ -262,23 +277,34 @@ angular.module('core').factory("Notice", ["$rootScope", function($rootScope) {
         // console.log(currentMessage);
     });
 
-    $rootScope.$on("$stateChangeError", function() {
-        queue.push(oldMessage);
-        currentMessage = "";
-    });
+    // $rootScope.$on("$stateChangeError", function() {
+    //     queue.push(oldMessage);
+    //     currentMessage = "";
+    // });
+
+    function _setNotice(message, type, require) {
+        var require = typeof require !== 'undefined' ? require : false;
+        queue.push({
+            type: type,
+            message: message
+        });
+        if (require) {
+            $rootScope.$broadcast('requireChange');
+            // console.log('requireChange');
+        }
+        // console.log('Queue',queue);
+    }
 
     return {
-        setNotice: function(message, type, require) {
-            var require = typeof require !== 'undefined' ? require : false;
-            queue.push({
-                type: type,
-                message: message
-            });
-            if (require) {
-                $rootScope.$broadcast('requireChange');
-                // console.log('requireChange');
-            }
-            // console.log('Queue',queue);
+        setNotice: _setNotice,
+        error: function(message, require) {
+            _setNotice(message, 'ERROR', require);
+        },
+        success: function(message, require) {
+            _setNotice(message, 'SUCCESS', require);
+        },
+        info: function(message, require) {
+            _setNotice(message, 'INFO', require);
         },
         getNotice: function() {
             return currentMessage;
@@ -408,7 +434,7 @@ angular.module('caches').controller('CachesController', ['$scope', '$window', '$
                     }
                 }
 
-                Notice.setNotice("Delete cache success!", 'SUCCESS');
+                Notice.success("Delete cache success!");
 
                 if ($stateParams.cacheId) {
                     $scope.gotoList();
@@ -493,9 +519,9 @@ angular.module('caches').controller('CachesController', ['$scope', '$window', '$
                 Caches.removeAll(function(res) {
                     if (res.status) {
                         $scope.caches = [];
-                        Notice.setNotice("Delete all cache success!", 'SUCCESS', true);
+                        Notice.success("Delete all cache success!", true);
                     } else {
-                        Notice.setNotice("Delete all cache error!", 'ERROR', true);
+                        Notice.error("Delete all cache error!", true);
                     }
                 });
             }
@@ -830,7 +856,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
             var gotoList = typeof gotoList !== 'undefined' ? gotoList : null;
             $scope.submitted = true;
             if (!isValid) {
-                Notice.setNotice("Please check your fields and try again!", 'ERROR', true);
+                Notice.error("Please check your fields and try again!", true);
                 return;
             }
             // Create new Page object
@@ -844,9 +870,9 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
             // Redirect after save
             page.$save(function(response) {
                 if (response.error) {
-                    Notice.setNotice(response.message, 'ERROR', true);
+                    Notice.error(response.message, true);
                 } else {
-                    Notice.setNotice("Save page success!", 'SUCCESS');
+                    Notice.success("Save page success!");
                     if (gotoList) {
                         $scope.gotoList();
                     } else {
@@ -863,7 +889,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
                     // });
                 }
             }, function(errorResponse) {
-                Notice.setNotice(errorResponse.data.message, 'ERROR', true);
+                Notice.error(errorResponse.data.message, true);
             });
         };
 
@@ -894,7 +920,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
                     }
                 }
 
-                Notice.setNotice("Delete page success!", 'SUCCESS');
+                Notice.success("Delete page success!");
 
                 if ($stateParams.pageId) {
                     $scope.gotoList();
@@ -908,7 +934,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
         $scope.update = function(isValid, gotoList) {
             $scope.submitted = true;
             if (!isValid) {
-                Notice.setNotice("Please check your fields and try again!", 'ERROR', true);
+                Notice.error("Please check your fields and try again!", true);
                 return;
             }
             var page = $scope.page;
@@ -916,9 +942,9 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
             delete page.created;
             page.$update(function(resp) {
                 if (resp.error) {
-                    Notice.setNotice(resp.message, 'ERROR', true);
+                    Notice.error(resp.message, true);
                 } else {
-                    Notice.setNotice("Update page success!", 'SUCCESS');
+                    Notice.success("Update page success!");
                     if (gotoList) {
                         $scope.gotoList();
                     } else {
@@ -937,7 +963,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
                 }
 
             }, function(errorResponse) {
-                Notice.setNotice(errorResponse.data.message, 'ERROR', true);
+                Notice.error(errorResponse.data.message, true);
             });
         };
 

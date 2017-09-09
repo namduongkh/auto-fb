@@ -30,22 +30,24 @@ var ApplicationConfiguration = (function() {
 angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies);
 
 // Setting HTML5 Location Mode
-angular.module(ApplicationConfiguration.applicationModuleName).config(['$locationProvider', '$httpProvider',
-    function($locationProvider, $httpProvider) {
-        //$locationProvider.html5Mode(true);
-        $httpProvider.defaults.withCredentials = true;
-        $locationProvider
-            .html5Mode({
-                enabled: window.enabledHtml5Mode,
-                requireBase: false
-            })
-            .hashPrefix('!');
-    }
-]);
+angular.module(ApplicationConfiguration.applicationModuleName)
+    .config(['$locationProvider', '$httpProvider',
+        function($locationProvider, $httpProvider) {
+            //$locationProvider.html5Mode(true);
+            $httpProvider.defaults.withCredentials = true;
+            $locationProvider
+                .html5Mode({
+                    enabled: window.enabledHtml5Mode,
+                    requireBase: false
+                })
+                .hashPrefix('!');
+        }
+    ]);
 
-angular.module(ApplicationConfiguration.applicationModuleName).config(function(localStorageServiceProvider) {
-    localStorageServiceProvider.setPrefix(ApplicationConfiguration.applicationModuleName);
-});
+angular.module(ApplicationConfiguration.applicationModuleName)
+    .config(function(localStorageServiceProvider) {
+        localStorageServiceProvider.setPrefix(ApplicationConfiguration.applicationModuleName);
+    });
 
 //Then define the init function for starting up the application
 angular.element(document).ready(function() {

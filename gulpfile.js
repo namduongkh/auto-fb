@@ -1,5 +1,5 @@
 const gulp = require('gulp');
-var babel = require('gulp-babel');
+const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 const pump = require('pump');
 const concat = require('gulp-concat');
@@ -12,7 +12,8 @@ const ngAnnotate = require('gulp-ng-annotate');
 const strip = require('gulp-strip-comments');
 const sass = require('gulp-sass');
 const stripDebug = require('gulp-strip-debug');
-var purgeSourcemaps = require('gulp-purge-sourcemaps');
+const purgeSourcemaps = require('gulp-purge-sourcemaps');
+const filter = require('gulp-filter');
 
 const $ = gulpLoadPlugins();
 const minDir = './public/assets/min';
@@ -110,8 +111,20 @@ gulp.task('minjsAdmin', () => {
 });
 
 gulp.task('mincss', function() {
+    // concat css
     gulp.src([
-            ...assets.web.css.map(function(file) {
+            ...assets.web.css.concat.map(function(file) {
+                return publicDir + file;
+            })
+        ])
+        .pipe(concatCss('app.concat.min.css'))
+        .pipe(gulp.dest(minDir))
+        // .pipe(cleanCSS())
+        // .pipe(gulp.dest(minDir));
+
+    // build css
+    gulp.src([
+            ...assets.web.css.build.map(function(file) {
                 return publicDir + file;
             })
         ])
@@ -122,8 +135,20 @@ gulp.task('mincss', function() {
 });
 
 gulp.task('mincssAdmin', function() {
+    // concat css
     gulp.src([
-            ...assets.admin.css.map(function(file) {
+            ...assets.admin.css.concat.map(function(file) {
+                return publicDir + file;
+            })
+        ])
+        .pipe(concatCss('app-admin.concat.min.css'))
+        .pipe(gulp.dest(minDir))
+        // .pipe(cleanCSS())
+        // .pipe(gulp.dest(minDir));
+
+    // build css
+    gulp.src([
+            ...assets.admin.css.build.map(function(file) {
                 return publicDir + file;
             })
         ])

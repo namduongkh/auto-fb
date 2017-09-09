@@ -26,38 +26,42 @@ exports.login = {
             })
             .then(user => {
                 // console.log("user", user);
-                user.authenticate(password, function(err, result) {
-                    if (err || !result) {
-                        request.log(['error', 'login'], err);
-                        return reply(Boom.unauthorized("Đăng nhập không hợp lệ"));
-                    }
-                    if (result) {
-                        var session = {
-                            valid: true, // this will be set to false when the person logs out
-                            id: user._id, // a random session id,
-                            name: user.name,
-                            email: user.email,
-                            scope: user.roles,
-                            tokenExpire: user.tokenExpire,
-                            exp: new Date().getTime() + 30 * 60 * 1000 // expires in 30 minutes time
-                        };
-                        const secret = request.server.configManager.get('web.jwt.secret');
-                        var token = JWT.sign(session, secret); // synchronous
-                        reply({
-                                token: token,
-                                appId: user.appId,
-                                id: user._id
-                            })
-                            .header("Authorization", token)
-                            .state("appId", user.appId, cookieOptions)
-                            .state("accessToken", user.accessToken, cookieOptions)
-                            // .state("tokenExpire", user.tokenExpire, cookieOptions)
-                            .state("token", token, cookieOptions);
-                    }
-                });
+                if (user) {
+                    user.authenticate(password, function(err, result) {
+                        if (err || !result) {
+                            request.log(['error', 'login'], err);
+                            return reply(Boom.badRequest("Mật khẩu không chính xác."));
+                        }
+                        if (result) {
+                            var session = {
+                                valid: true, // this will be set to false when the person logs out
+                                id: user._id, // a random session id,
+                                name: user.name,
+                                email: user.email,
+                                scope: user.roles,
+                                tokenExpire: user.tokenExpire,
+                                exp: new Date().getTime() + 30 * 60 * 1000 // expires in 30 minutes time
+                            };
+                            const secret = request.server.configManager.get('web.jwt.secret');
+                            var token = JWT.sign(session, secret); // synchronous
+                            reply({
+                                    token: token,
+                                    appId: user.appId,
+                                    id: user._id
+                                })
+                                .header("Authorization", token)
+                                .state("appId", user.appId, cookieOptions)
+                                .state("accessToken", user.accessToken, cookieOptions)
+                                // .state("tokenExpire", user.tokenExpire, cookieOptions)
+                                .state("token", token, cookieOptions);
+                        }
+                    });
+                } else {
+                    return reply(Boom.badRequest("Email không tồn tại."));
+                }
             })
             .catch(err => {
-                return reply(Boom.unauthorized(ErrorHandler.getErrorMessage(err)));
+                return reply(Boom.badRequest(ErrorHandler.getErrorMessage(err)));
             });
     },
 };

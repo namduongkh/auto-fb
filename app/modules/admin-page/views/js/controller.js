@@ -27,7 +27,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
             var gotoList = typeof gotoList !== 'undefined' ? gotoList : null;
             $scope.submitted = true;
             if (!isValid) {
-                Notice.setNotice("Please check your fields and try again!", 'ERROR', true);
+                Notice.error("Please check your fields and try again!", true);
                 return;
             }
             // Create new Page object
@@ -41,9 +41,9 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
             // Redirect after save
             page.$save(function(response) {
                 if (response.error) {
-                    Notice.setNotice(response.message, 'ERROR', true);
+                    Notice.error(response.message, true);
                 } else {
-                    Notice.setNotice("Save page success!", 'SUCCESS');
+                    Notice.success("Save page success!");
                     if (gotoList) {
                         $scope.gotoList();
                     } else {
@@ -60,7 +60,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
                     // });
                 }
             }, function(errorResponse) {
-                Notice.setNotice(errorResponse.data.message, 'ERROR', true);
+                Notice.error(errorResponse.data.message, true);
             });
         };
 
@@ -91,7 +91,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
                     }
                 }
 
-                Notice.setNotice("Delete page success!", 'SUCCESS');
+                Notice.success("Delete page success!");
 
                 if ($stateParams.pageId) {
                     $scope.gotoList();
@@ -105,7 +105,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
         $scope.update = function(isValid, gotoList) {
             $scope.submitted = true;
             if (!isValid) {
-                Notice.setNotice("Please check your fields and try again!", 'ERROR', true);
+                Notice.error("Please check your fields and try again!", true);
                 return;
             }
             var page = $scope.page;
@@ -113,9 +113,9 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
             delete page.created;
             page.$update(function(resp) {
                 if (resp.error) {
-                    Notice.setNotice(resp.message, 'ERROR', true);
+                    Notice.error(resp.message, true);
                 } else {
-                    Notice.setNotice("Update page success!", 'SUCCESS');
+                    Notice.success("Update page success!");
                     if (gotoList) {
                         $scope.gotoList();
                     } else {
@@ -134,7 +134,7 @@ angular.module('pages').controller('PagesController', ['$scope', '$rootScope', '
                 }
 
             }, function(errorResponse) {
-                Notice.setNotice(errorResponse.data.message, 'ERROR', true);
+                Notice.error(errorResponse.data.message, true);
             });
         };
 
