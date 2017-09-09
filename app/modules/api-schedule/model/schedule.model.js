@@ -57,4 +57,21 @@ var ScheduleSchema = new Schema({
     collection: 'schedules'
 });
 
+ScheduleSchema.pre('save', function(next) {
+    const Campaign = mongoose.model('Campaign');
+    let that = this;
+    if (!that.name) {
+        Campaign.findOne({
+                _id: that.campaignId
+            })
+            .lean()
+            .then(function(campaign) {
+                that.name = "Lịch trình chiến dịch " + campaign.title;
+                next();
+            });
+    } else {
+        next();
+    }
+});
+
 module.exports = mongoose.model('Schedule', ScheduleSchema);

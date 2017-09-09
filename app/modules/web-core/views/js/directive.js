@@ -3,7 +3,8 @@
 
     angular.module('Core')
         .directive("errorMessage", errorMessage)
-        .directive("showLoading", showLoading);
+        .directive("showLoading", showLoading)
+        .directive("tooltipInit", tooltipInit);
 
     function errorMessage() {
         return {
@@ -46,6 +47,16 @@
                         $(elem).fadeIn('fast');
                     }
                 });
+            }
+        };
+    }
+
+    function tooltipInit() {
+        return {
+            restrict: "A",
+            link: function(scope, elem, attr) {
+                elem.attr("title", attr.tooltipInit);
+                $(elem).tooltip();
             }
         };
     }

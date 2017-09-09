@@ -163,11 +163,20 @@
                 console.log("getAccessToken", resp);
                 if (resp.authResponse && resp.authResponse.accessToken) {
                     // userCtrl.accountInfo.accessToken = resp.authResponse.accessToken;
-                    userCtrl.accountInfo.timelineId.unshift({
-                        type: 'personal',
-                        id: resp.authResponse.userID,
-                        name: 'Dòng thời gian cá nhân'
-                    });
+                    var existed = false;
+                    for (var i = 0; i < userCtrl.accountInfo.timelineId.length; i++) {
+                        if (userCtrl.accountInfo.timelineId[i].type == 'personal') {
+                            existed = true;
+                            break;
+                        }
+                    }
+                    if (!existed) {
+                        userCtrl.accountInfo.timelineId.unshift({
+                            type: 'personal',
+                            id: resp.authResponse.userID,
+                            name: 'Dòng thời gian cá nhân'
+                        });
+                    }
                     userCtrl.extendToken(resp.authResponse.accessToken);
                 }
             });

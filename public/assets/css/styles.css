@@ -1816,6 +1816,20 @@ ul.alert-dropdown {
   -webkit-box-orient: vertical;
   overflow: hidden; }
 
+.margin-top-10 {
+  margin-top: 10px; }
+
+.margin-bottom-10 {
+  margin-bottom: 10px; }
+
+.guide-tip {
+  background: #eee;
+  border-radius: 4px;
+  padding: 10px; }
+
+a:hover, a:focus, a:active {
+  text-decoration: none; }
+
 #page-content img {
   max-width: 650px;
   width: 100%; }

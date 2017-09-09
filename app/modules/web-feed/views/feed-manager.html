@@ -3,25 +3,34 @@
         <div class="col-md-12" id="feed-top">
             <h2><span class="glyphicon glyphicon-cog"></span> Quản lý trạng thái</h2>
             <hr>
+
+            <div class="margin-top-10 margin-bottom-10">
+                <i class="fa fa-question-circle" aria-hidden="true"></i> <a data-toggle="collapse" data-target="#tip" href="javascript:void(0)">Đây là gì?</a>
+                <div id="tip" class="collapse guide-tip">
+                    <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                    <span ng-bind-html="tips.feed"></span>
+                </div>
+            </div>
+
             <form action="#" role="form" name="FeedForm">
                 <div class="form-group">
                     <label for="_id">ID</label>
-                    <input disabled class="form-control" type="text" name="_id" ng-model="feedCtrl.feed._id" placeholder="ID" />
+                    <input disabled class="form-control" type="text" name="_id" ng-model="feedCtrl.feed._id" placeholder="{[placeholders.feed.id]}" />
                     <div ng-if="!FeedForm._id.$pristine" error-message="FeedForm._id.$error"></div>
                 </div>
                 <div class="form-group">
-                    <label for="title">Tiêu đề</label>
-                    <input class="form-control" type="text" name="title" ng-model="feedCtrl.feed.title" required placeholder="Tiêu đề" />
+                    <label for="title">Tên gợi nhớ</label>
+                    <input class="form-control" type="text" name="title" ng-model="feedCtrl.feed.title" placeholder="{[placeholders.feed.title]}" />
                     <div ng-if="!FeedForm.title.$pristine" error-message="FeedForm.title.$error"></div>
                 </div>
                 <div class="form-group">
                     <label for="message">Thông điệp</label>
-                    <textarea class="form-control" rows="5" name="message" ng-model="feedCtrl.feed.message" required></textarea>
+                    <textarea class="form-control" rows="5" name="message" ng-model="feedCtrl.feed.message" required placeholder="{[placeholders.feed.message]}"></textarea>
                     <div ng-if="!FeedForm.message.$pristine" error-message="FeedForm.message.$error"></div>
                 </div>
                 <div class="form-group">
                     <label for="url">Liên kết</label>
-                    <input class="form-control" type="text" name="url" ng-model="feedCtrl.feed.url" placeholder="Liên kết" />
+                    <input class="form-control" type="text" name="url" ng-model="feedCtrl.feed.url" placeholder="{[placeholders.feed.url]}" />
                     <div ng-if="!FeedForm.url.$pristine" error-message="FeedForm.url.$error"></div>
                 </div>
                 <button ng-disabled="FeedForm.$invalid" class="btn btn-primary" type="button" ng-click="feedCtrl.saveFeed(FeedForm.$valid)">

@@ -31,6 +31,7 @@
     "inert": "^4.1.0",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
+    "moment": "^2.18.1",
     "mongoose": "^4.9.6",
     "mongoose-pagination": "^1.0.0",
     "nunjucks": "^3.0.0",

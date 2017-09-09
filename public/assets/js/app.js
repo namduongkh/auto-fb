@@ -410,7 +410,8 @@ var Common = (function() {
 
     angular.module('Core')
         .directive("errorMessage", errorMessage)
-        .directive("showLoading", showLoading);
+        .directive("showLoading", showLoading)
+        .directive("tooltipInit", tooltipInit);
 
     function errorMessage() {
         return {
@@ -456,6 +457,16 @@ var Common = (function() {
             }
         };
     }
+
+    function tooltipInit() {
+        return {
+            restrict: "A",
+            link: function(scope, elem, attr) {
+                elem.attr("title", attr.tooltipInit);
+                $(elem).tooltip();
+            }
+        };
+    }
 })();
 (function() {
     'use strict';
@@ -473,17 +484,54 @@ var Common = (function() {
         };
     }
 })();
+var tips = {
+    timeline: "Đây là danh sách các dòng thời gian bạn có quyền đăng bài viết trên tường. <br> Nhập tên của dòng thời gian (nhóm, trang) để tìm kiếm và thêm vào danh sách của bạn.",
+    feed: "Dòng trạng thái là một bài viết có thể đăng lên tường dưới dạng một đoạn văn bản đơn thuần. <br> Bạn có thể chia sẻ một đường dẫn liên kết đến website khác kèm theo một dòng trạng thái.",
+    album: "Album ảnh là một bài viết có thể đăng lên tường dưới dạng một đoạn văn bản đơn thuần kèm theo một hoặc nhiều hình ảnh.",
+};
+
+var placeholders = {
+    timeline: {
+        keyword: "VD: Mua bán, Shop online..."
+    },
+    feed: {
+        id: "Tự động sinh",
+        title: "VD: Cần tuyển dụng, Tìm việc làm...",
+        message: "Viết gì đó...",
+        url: "VD: http://www.yourshop.com/abc..."
+    },
+    campaign: {
+        id: "Tự động sinh",
+        title: "VD: Xuất bản trạng thái ABC...",
+        timelineId: "Chọn dòng thời gian"
+    },
+    album: {
+        id: "Tự động sinh",
+        name: "VD: Hình sản phẩm, hình hàng hóa...",
+        message: "Viết gì đó...",
+    },
+    schedule: {
+        id: "Tự động sinh",
+        name: "VD: Lịch chạy chiến dịch ABC...",
+    },
+};
+
 (function() {
     'use strict';
 
-    PreResponse.$inject = ["$rootScope", "$timeout", "$q"];
+    PreResponse.$inject = ["$rootScope", "$timeout", "$q", "$sce"];
     angular.module('Core')
         .factory('PreResponse', PreResponse)
         .config(['$httpProvider', function($httpProvider) {
             $httpProvider.interceptors.push('PreResponse');
         }]);
 
-    function PreResponse($rootScope, $timeout, $q) {
+    function PreResponse($rootScope, $timeout, $q, $sce) {
+        $rootScope.placeholders = placeholders;
+        $rootScope.tips = {};
+        for (var i in tips) {
+            $rootScope.tips[i] = $sce.trustAsHtml(tips[i]);
+        }
         return {
             response: function(response) {
                 // console.log("Chạy vào đây");
@@ -1177,11 +1225,20 @@ var Common = (function() {
                 console.log("getAccessToken", resp);
                 if (resp.authResponse && resp.authResponse.accessToken) {
                     // userCtrl.accountInfo.accessToken = resp.authResponse.accessToken;
-                    userCtrl.accountInfo.timelineId.unshift({
-                        type: 'personal',
-                        id: resp.authResponse.userID,
-                        name: 'Dòng thời gian cá nhân'
-                    });
+                    var existed = false;
+                    for (var i = 0; i < userCtrl.accountInfo.timelineId.length; i++) {
+                        if (userCtrl.accountInfo.timelineId[i].type == 'personal') {
+                            existed = true;
+                            break;
+                        }
+                    }
+                    if (!existed) {
+                        userCtrl.accountInfo.timelineId.unshift({
+                            type: 'personal',
+                            id: resp.authResponse.userID,
+                            name: 'Dòng thời gian cá nhân'
+                        });
+                    }
                     userCtrl.extendToken(resp.authResponse.accessToken);
                 }
             });

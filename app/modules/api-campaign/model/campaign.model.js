@@ -49,4 +49,46 @@ var CampaignSchema = new Schema({
     collection: 'campaigns'
 });
 
+CampaignSchema.pre('save', function(next) {
+    const Feed = mongoose.model('Feed');
+    const Album = mongoose.model('Album');
+    let that = this;
+    if (!that.title) {
+        if (that.feedId) {
+            Feed.findOne({
+                    _id: that.feedId
+                })
+                .lean()
+                .then(function(feed) {
+                    that.title = "Xuất bản trạng thái " + feed.title;
+                    next();
+                });
+        } else {
+            Album.findOne({
+                    _id: that.albumId
+                })
+                .lean()
+                .then(function(album) {
+                    that.title = "Xuất bản album " + album.name;
+                    next();
+                });
+        }
+    } else {
+        next();
+    }
+});
+
+CampaignSchema.pre('remove', function(next) {
+    const Schedule = mongoose.model('Schedule');
+    Schedule.find({
+            campaignId: this._id
+        })
+        .then(function(schedules) {
+            schedules.forEach(function(item) {
+                item.remove();
+            });
+        });
+    next();
+});
+
 module.exports = mongoose.model('Campaign', CampaignSchema);

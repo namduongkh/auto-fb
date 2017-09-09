@@ -7,12 +7,12 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="_id">ID</label>
-                        <input disabled class="form-control" type="text" name="_id" ng-model="scheduleCtrl.schedule._id" placeholder="ID" />
+                        <input disabled class="form-control" type="text" name="_id" ng-model="scheduleCtrl.schedule._id" placeholder="{[placeholders.schedule.id]}" />
                         <div ng-if="!ScheduleForm._id.$pristine" error-message="ScheduleForm._id.$error"></div>
                     </div>
                     <div class="form-group">
                         <label for="name">Tên lịch trình</label>
-                        <input class="form-control" type="text" name="name" ng-model="scheduleCtrl.schedule.name" required placeholder="Tên lịch trình" />
+                        <input class="form-control" type="text" name="name" ng-model="scheduleCtrl.schedule.name" placeholder="{[placeholders.schedule.name]}" />
                         <div ng-if="!ScheduleForm.name.$pristine" error-message="ScheduleForm.name.$error"></div>
                     </div>
                     <div class="form-group">
