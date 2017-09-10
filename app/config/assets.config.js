@@ -12,7 +12,6 @@ module.exports = {
                 '/libs/ng-file-upload/ng-file-upload.min.js',
                 '/libs/ng-facebook/ngFacebook.js',
                 '/libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-                '/libs/angular-eonasdan-datetimepicker/dist/angular-eonasdan-datetimepicker.min.js',
                 '/libs/angular-ui-select/dist/select.min.js',
 
                 '/assets/js/app.js',

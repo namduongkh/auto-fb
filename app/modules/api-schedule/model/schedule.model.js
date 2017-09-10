@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
+    moment = require('moment'),
     Schema = mongoose.Schema;
 
 var ScheduleSchema = new Schema({
@@ -15,7 +16,7 @@ var ScheduleSchema = new Schema({
         enum: ['count', 'time']
     },
     campaignId: {
-        type: Object,
+        type: Schema.ObjectId,
         ref: 'Campaign'
     },
     running: {
@@ -50,7 +51,7 @@ var ScheduleSchema = new Schema({
         default: Date.now
     },
     created_by: {
-        type: Object,
+        type: Schema.ObjectId,
         ref: 'User'
     }
 }, {
@@ -58,20 +59,10 @@ var ScheduleSchema = new Schema({
 });
 
 ScheduleSchema.pre('save', function(next) {
-    const Campaign = mongoose.model('Campaign');
-    let that = this;
-    if (!that.name) {
-        Campaign.findOne({
-                _id: that.campaignId
-            })
-            .lean()
-            .then(function(campaign) {
-                that.name = "Lịch trình chiến dịch " + campaign.title;
-                next();
-            });
-    } else {
-        next();
+    if (!this.name) {
+        this.name = "Schedule " + moment().format("DD/MM/YYYY HH:mm:ss")
     }
+    next();
 });
 
 module.exports = mongoose.model('Schedule', ScheduleSchema);

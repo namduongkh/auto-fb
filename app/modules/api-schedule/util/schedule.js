@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Schedule = mongoose.model('Schedule');
 const Boom = require('boom');
 const async = require('async');
+const moment = require('moment');
 const ErrorHandler = require("../../../utils/error.js");
 const CampaignUtil = require('../../api-campaign/util/campaign.js');
 const CronJob = require('cron').CronJob;
@@ -13,10 +14,7 @@ var scanUserSchedule = {};
 module.exports = function(server) {
     return {
         scanUserSchedule: function() {
-            var second = new Date().getSeconds() + 5;
-            if (second > 59) {
-                second -= 60;
-            }
+            var second = moment().add(5, 's').second();
 
             if (runningJob['SCAN_USER_RUNNING_SCHEDULE']) {
                 runningJob['SCAN_USER_RUNNING_SCHEDULE'].stop();
@@ -65,10 +63,7 @@ module.exports = function(server) {
 
 function scanScheduleByUser(server, user_id) {
     let config = server.configManager;
-    var second = new Date().getSeconds() + 5;
-    if (second > 59) {
-        second -= 60;
-    }
+    var second = moment().add(5, 's').second();
 
     if (runningJob['SCAN_RUNNING_SCHEDULE_' + user_id]) {
         runningJob['SCAN_RUNNING_SCHEDULE_' + user_id].stop();

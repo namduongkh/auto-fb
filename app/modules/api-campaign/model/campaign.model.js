@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose'),
+    moment = require('moment'),
     Schema = mongoose.Schema;
 
 var CampaignSchema = new Schema({
@@ -15,7 +16,7 @@ var CampaignSchema = new Schema({
         default: Date.now
     },
     created_by: {
-        type: Object,
+        type: Schema.ObjectId,
         ref: 'User'
     },
     created: {
@@ -27,11 +28,11 @@ var CampaignSchema = new Schema({
         enum: ['feed', 'album']
     },
     feedId: {
-        type: Object,
+        type: Schema.ObjectId,
         ref: 'Feed'
     },
     albumId: {
-        type: Object,
+        type: Schema.ObjectId,
         ref: 'Album'
     },
     timelineId: [{
@@ -50,45 +51,22 @@ var CampaignSchema = new Schema({
 });
 
 CampaignSchema.pre('save', function(next) {
-    const Feed = mongoose.model('Feed');
-    const Album = mongoose.model('Album');
-    let that = this;
-    if (!that.title) {
-        if (that.feedId) {
-            Feed.findOne({
-                    _id: that.feedId
-                })
-                .lean()
-                .then(function(feed) {
-                    that.title = "Xuất bản trạng thái " + feed.title;
-                    next();
-                });
-        } else {
-            Album.findOne({
-                    _id: that.albumId
-                })
-                .lean()
-                .then(function(album) {
-                    that.title = "Xuất bản album " + album.name;
-                    next();
-                });
-        }
-    } else {
-        next();
+    if (!this.title) {
+        this.title = "Campaign " + moment().format("DD/MM/YYYY HH:mm:ss")
     }
+    next();
 });
 
-CampaignSchema.pre('remove', function(next) {
+CampaignSchema.post('remove', function(doc) {
     const Schedule = mongoose.model('Schedule');
     Schedule.find({
-            campaignId: this._id
+            campaignId: doc._id
         })
         .then(function(schedules) {
             schedules.forEach(function(item) {
                 item.remove();
             });
         });
-    next();
 });
 
 module.exports = mongoose.model('Campaign', CampaignSchema);

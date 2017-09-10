@@ -23,7 +23,7 @@ var albumSchema = new Schema({
         default: Date.now
     },
     created_by: {
-        type: Object,
+        type: Schema.ObjectId,
         ref: 'User'
     }
 }, {
@@ -32,22 +32,23 @@ var albumSchema = new Schema({
 
 albumSchema.pre('save', function(next) {
     if (!this.name) {
-        this.name = "Album " + moment().format("HH:mm:ss DD/MM/YYYY")
+        this.name = "Album " + moment().format("DD/MM/YYYY HH:mm:ss")
     }
     next();
 });
 
-albumSchema.pre('remove', function(next) {
+albumSchema.post('remove', function(doc) {
     const Campaign = mongoose.model('Campaign');
     Campaign.find({
-            albumId: this._id
+            albumId: doc._id
         })
         .then(function(campaigns) {
+            console.log("campaigns", campaigns);
             campaigns.forEach(function(item) {
+                console.log("item", item);
                 item.remove();
             });
         });
-    next();
 });
 
 module.exports = mongoose.model('Album', albumSchema);

@@ -13,7 +13,6 @@ const strip = require('gulp-strip-comments');
 const sass = require('gulp-sass');
 const stripDebug = require('gulp-strip-debug');
 const purgeSourcemaps = require('gulp-purge-sourcemaps');
-const filter = require('gulp-filter');
 
 const $ = gulpLoadPlugins();
 const minDir = './public/assets/min';

@@ -23,7 +23,7 @@ var FeedSchema = new Schema({
         default: Date.now
     },
     created_by: {
-        type: Object,
+        type: Schema.ObjectId,
         ref: 'User'
     }
 }, {
@@ -32,22 +32,21 @@ var FeedSchema = new Schema({
 
 FeedSchema.pre('save', function(next) {
     if (!this.title) {
-        this.title = "Trạng thái " + moment().format("HH:mm:ss DD/MM/YYYY")
+        this.title = "Status " + moment().format("DD/MM/YYYY HH:mm:ss")
     }
     next();
 });
 
-FeedSchema.pre('remove', function(next) {
+FeedSchema.post('remove', function(doc) {
     const Campaign = mongoose.model('Campaign');
     Campaign.find({
-            feedId: this._id
+            feedId: doc._id
         })
         .then(function(campaigns) {
             campaigns.forEach(function(item) {
                 item.remove();
             });
         });
-    next();
 });
 
 module.exports = mongoose.model('Feed', FeedSchema);
