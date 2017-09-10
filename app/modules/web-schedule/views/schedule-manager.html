@@ -3,79 +3,90 @@
         <div class="col-md-12" id="schedule-top">
             <h2><span class="glyphicon glyphicon-cog"></span> Quản lý lịch trình</h2>
             <hr>
-            <form action="#" role="form" name="ScheduleForm">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="_id">ID</label>
-                        <input disabled class="form-control" type="text" name="_id" ng-model="scheduleCtrl.schedule._id" placeholder="{[placeholders.schedule.id]}" />
-                        <div ng-if="!ScheduleForm._id.$pristine" error-message="ScheduleForm._id.$error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Tên lịch trình</label>
-                        <input class="form-control" type="text" name="name" ng-model="scheduleCtrl.schedule.name" placeholder="{[placeholders.schedule.name]}" />
-                        <div ng-if="!ScheduleForm.name.$pristine" error-message="ScheduleForm.name.$error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="group">Chiến dịch</label>
-                        <a href="javascript:void(0)" class="label label-info" ng-if="scheduleCtrl.schedule.campaignId && scheduleCtrl.campaignDescription" data-toggle="modal" data-target="#campaignDescription">
-                            <i class="fa fa-info-circle"></i> Gợi nhớ
-                        </a>
-                        <select name="campaignId" required placeholder="Chọn 1 nhóm" ng-model="scheduleCtrl.schedule.campaignId" class="form-control" ng-options="campaign._id as campaign.title for campaign in scheduleCtrl.listCampaigns" ng-change="scheduleCtrl.changeCampaign()">
+            <div class="margin-top-10 margin-bottom-10">
+                <i class="fa fa-question-circle" aria-hidden="true"></i> <a data-toggle="collapse" data-target="#tip" href="javascript:void(0)">Đây là gì?</a>
+                <div id="tip" class="collapse guide-tip">
+                    <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                    <span ng-bind-html="tips.schedule"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <form novalidate role="form" name="ScheduleForm">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="_id">ID</label>
+                    <input disabled class="form-control" type="text" name="_id" ng-model="scheduleCtrl.schedule._id" placeholder="{[placeholders.schedule.id]}" />
+                    <div ng-if="!ScheduleForm._id.$pristine" error-message="ScheduleForm._id.$error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="name">Tên lịch trình</label>
+                    <input class="form-control" type="text" name="name" ng-model="scheduleCtrl.schedule.name" placeholder="{[placeholders.schedule.name]}" />
+                    <div ng-if="!ScheduleForm.name.$pristine" error-message="ScheduleForm.name.$error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="group">Chiến dịch</label>
+                    <a href="javascript:void(0)" class="label label-info" ng-if="scheduleCtrl.schedule.campaignId && scheduleCtrl.campaignDescription" data-toggle="modal" data-target="#campaignDescription">
+                        <i class="fa fa-info-circle"></i> Gợi nhớ
+                    </a>
+                    <select name="campaignId" required placeholder="Chọn 1 nhóm" ng-model="scheduleCtrl.schedule.campaignId" class="form-control" ng-options="campaign._id as campaign.title for campaign in scheduleCtrl.listCampaigns" ng-change="scheduleCtrl.changeCampaign()">
                             <option value="">-- Chọn 1 chiến dịch</option>
                         </select>
-                        <div error-message="ScheduleForm.campaignId.$error" ng-if="!ScheduleForm.campaignId.$pristine"></div>
-                    </div>
+                    <div error-message="ScheduleForm.campaignId.$error" ng-if="!ScheduleForm.campaignId.$pristine"></div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="cycleMinutes">Chu kỳ <span ng-if="scheduleCtrl.schedule.cycleMinutes">(Mỗi <span ng-bind="scheduleCtrl.schedule.cycleMinutes"></span> phút)</span></label>
-                        <input required class="form-control" type="number" min="{[scheduleCtrl.minCycle]}" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
-                        <div ng-if="!ScheduleForm.cycleMinutes.$pristine" error-message="ScheduleForm.cycleMinutes.$error" step-value="15"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="scheduleType">Kiểu lịch trình</label>
-                        <select name="scheduleType" required placeholder="Chọn 1 kiểu" ng-model="scheduleCtrl.schedule.scheduleType" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="cycleMinutes">Chu kỳ <span ng-if="scheduleCtrl.schedule.cycleMinutes">(Mỗi <span ng-bind="scheduleCtrl.schedule.cycleMinutes"></span> phút)</span></label>
+                    <input required class="form-control" type="number" min="{[scheduleCtrl.minCycle]}" max="90" name="cycleMinutes" ng-model="scheduleCtrl.schedule.cycleMinutes" placeholder="Chu kỳ" />
+                    <div ng-if="!ScheduleForm.cycleMinutes.$pristine" error-message="ScheduleForm.cycleMinutes.$error" step-value="15"></div>
+                </div>
+                <div class="form-group">
+                    <label for="scheduleType">Kiểu lịch trình</label>
+                    <select name="scheduleType" required placeholder="Chọn 1 kiểu" ng-model="scheduleCtrl.schedule.scheduleType" class="form-control">
                             <option value="">-- Chọn 1 kiểu</option>
                             <option value="count">Lặp theo số lần</option>
                             <option value="time">Lặp trong khoảng thời gian</option>
                         </select>
-                        <div ng-if="!ScheduleForm.scheduleType.$pristine" error-message="ScheduleForm.scheduleType.$error"></div>
-                    </div>
-                    <div class="form-group" ng-if="scheduleCtrl.schedule.scheduleType=='count'">
-                        <label for="runCounts">Số lần lặp</label>
-                        <input required class="form-control" type="number" min="1" max="100" name="runCounts" ng-model="scheduleCtrl.schedule.runCounts" placeholder="Số lần lặp" />
-                        <div ng-if="!ScheduleForm.runCounts.$pristine" error-message="ScheduleForm.runCounts.$error"></div>
-                    </div>
-                    <div class="form-group" ng-if="scheduleCtrl.schedule.scheduleType=='time'">
-                        <label for="endTime">Thời điểm kết thúc</label>
-                        <input required class="form-control" name="endTime" datetimepicker ng-model="scheduleCtrl.schedule.endTime" options="scheduleCtrl.dateOptions" />
-                    </div>
-                    <div class="form-group" ng-if="ScheduleForm.$pristine && scheduleCtrl.schedule.description">
-                        <label for="description">Mô tả</label>
-                        <textarea rows="3" disabled class="form-control" type="text" name="description" ng-model="scheduleCtrl.schedule.description" placeholder="Mô tả gợi nhớ"></textarea>
-                        <div ng-if="!ScheduleForm.description.$pristine" error-message="ScheduleForm.description.$error"></div>
-                    </div>
+                    <div ng-if="!ScheduleForm.scheduleType.$pristine" error-message="ScheduleForm.scheduleType.$error"></div>
                 </div>
-                <div class="col-md-12">
-                    <p class="text-danger" ng-if="!ScheduleForm.$pristine"><i>Lịch trình chưa được lưu</i></p>
-                    <button ng-disabled="ScheduleForm.$invalid" class="btn btn-primary" type="button" ng-click="scheduleCtrl.saveSchedule(ScheduleForm.$valid)">
+                <div class="form-group" ng-if="scheduleCtrl.schedule.scheduleType=='count'">
+                    <label for="runCounts">Số lần lặp</label>
+                    <input required class="form-control" type="number" min="1" max="100" name="runCounts" ng-model="scheduleCtrl.schedule.runCounts" placeholder="Số lần lặp" />
+                    <div ng-if="!ScheduleForm.runCounts.$pristine" error-message="ScheduleForm.runCounts.$error"></div>
+                </div>
+                <div class="form-group" ng-if="scheduleCtrl.schedule.scheduleType=='time'">
+                    <label for="endTime">Thời điểm kết thúc</label>
+                    <input required class="form-control" name="endTime" datetimepicker ng-model="scheduleCtrl.schedule.endTime" options="scheduleCtrl.dateOptions" />
+                </div>
+                <div class="form-group" ng-if="ScheduleForm.$pristine && scheduleCtrl.schedule.description">
+                    <label for="description">Mô tả</label>
+                    <textarea rows="3" disabled class="form-control" type="text" name="description" ng-model="scheduleCtrl.schedule.description" placeholder="Mô tả gợi nhớ"></textarea>
+                    <div ng-if="!ScheduleForm.description.$pristine" error-message="ScheduleForm.description.$error"></div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <p class="text-danger" ng-if="!ScheduleForm.$pristine"><i>Lịch trình chưa được lưu</i></p>
+                <button ng-disabled="ScheduleForm.$invalid" class="btn btn-primary" type="button" ng-click="scheduleCtrl.saveSchedule(ScheduleForm.$valid)">
                         <span class="glyphicon glyphicon-floppy-saved"></span> Lưu lịch trình
                     </button>
-                    <button class="btn btn-info" type="button" ng-click="scheduleCtrl.resetSchedule()">
+                <button class="btn btn-info" type="button" ng-click="scheduleCtrl.resetSchedule()">
                         <span class="glyphicon glyphicon-refresh"></span> Làm mới
                     </button>
-                </div>
-                <div class="col-md-12" ng-if="scheduleCtrl.schedule._id">
-                    <div class="spacing-10"></div>
-                    <button ng-disabled="scheduleCtrl.schedule.running || !ScheduleForm.$pristine" class="btn btn-success" type="button" ng-click="scheduleCtrl.runSchedule(scheduleCtrl.schedule._id)">
+            </div>
+            <div class="col-md-12" ng-if="scheduleCtrl.schedule._id">
+                <div class="spacing-10"></div>
+                <button ng-disabled="scheduleCtrl.schedule.running || !ScheduleForm.$pristine" class="btn btn-success" type="button" ng-click="scheduleCtrl.runSchedule(scheduleCtrl.schedule._id)">
                         <span class="fa fa-play"></span> Chạy lịch trình
                     </button>
-                    <button ng-disabled="!scheduleCtrl.schedule.running" class="btn btn-danger" type="button" ng-click="scheduleCtrl.stopSchedule(scheduleCtrl.schedule._id)">
+                <button ng-disabled="!scheduleCtrl.schedule.running" class="btn btn-danger" type="button" ng-click="scheduleCtrl.stopSchedule(scheduleCtrl.schedule._id)">
                         <span class="fa fa-stop"></span> Dừng lịch trình
                     </button>
-                </div>
-            </form>
-        </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
         <div class="col-md-12">
             <h3><span class="glyphicon glyphicon-th-list"></span> Danh sách các lịch trình đã lưu</h3>
             <hr>

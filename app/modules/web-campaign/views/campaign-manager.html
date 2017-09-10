@@ -3,19 +3,29 @@
         <div class="col-md-12" id="campaign-top">
             <h2><span class="glyphicon glyphicon-cog"></span> Quản lý chiến dịch</h2>
             <hr>
-            <form action="#" role="form" name="CampaignForm">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="_id">ID</label>
-                        <input disabled class="form-control" type="text" name="_id" ng-model="campaignCtrl.campaign._id" placeholder="{[placeholders.campaign.id]}" />
-                        <div ng-if="!CampaignForm._id.$pristine" error-message="CampaignForm._id.$error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="title">Tên chiến dịch</label>
-                        <input class="form-control" type="text" name="title" ng-model="campaignCtrl.campaign.title" placeholder="{[placeholders.campaign.title]}" />
-                        <div ng-if="!CampaignForm.title.$pristine" error-message="CampaignForm.title.$error"></div>
-                    </div>
-                    <!--<div class="form-group">
+            <div class="margin-top-10 margin-bottom-10">
+                <i class="fa fa-question-circle" aria-hidden="true"></i> <a data-toggle="collapse" data-target="#tip" href="javascript:void(0)">Đây là gì?</a>
+                <div id="tip" class="collapse guide-tip">
+                    <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                    <span ng-bind-html="tips.campaign"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <form novalidate role="form" name="CampaignForm">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="_id">ID</label>
+                    <input disabled class="form-control" type="text" name="_id" ng-model="campaignCtrl.campaign._id" placeholder="{[placeholders.campaign.id]}" />
+                    <div ng-if="!CampaignForm._id.$pristine" error-message="CampaignForm._id.$error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="title">Tên chiến dịch</label>
+                    <input class="form-control" type="text" name="title" ng-model="campaignCtrl.campaign.title" placeholder="{[placeholders.campaign.title]}" />
+                    <div ng-if="!CampaignForm.title.$pristine" error-message="CampaignForm.title.$error"></div>
+                </div>
+                <!--<div class="form-group">
                         <label for="timeline">Dòng thời gian</label>
                         <select class="form-control" ng-model="campaignCtrl.campaign.timeline" required name="timeline" ng-change="campaignCtrl.filterTimeline()">
                             <option value="">-- Chọn 1 loại</option>
@@ -32,68 +42,69 @@
                         </select>
                         <div error-message="CampaignForm.timelineId.$error" ng-if="!CampaignForm.timelineId.$pristine"></div>
                     </div>-->
-                    <!--<div class="form-group">
+                <!--<div class="form-group">
                         <label for="timelineId">Dòng thời gian</label>
                         <select class="form-control" name="timelineId" id="timelineId" required multiple ng-model="campaignCtrl.campaign.timelineId" ng-options="timeline as timeline.name for timeline in campaignCtrl.accountInfo.timelineId"></select>
                     </div>-->
-                    <div class="form-group">
-                        <label for="timelineId">Dòng thời gian</label>
-                        <ui-select id="timelineId" name="timelineId" required class="form-control" multiple ng-model="campaignCtrl.campaign.timelineId" theme="bootstrap" title="Chọn dòng thời gian">
-                            <ui-select-match placeholder="{[placeholders.campaign.timelineId]}">{[$item.name]}</ui-select-match>
-                            <ui-select-choices group-by="campaignCtrl.groupTimeline" repeat="timeline in campaignCtrl.accountInfo.timelineId">
-                                <div ng-bind="timeline.name"></div>
-                            </ui-select-choices>
-                        </ui-select>
-                        <div error-message="CampaignForm.timelineId.$error" ng-if="!CampaignForm.timelineId.$pristine"></div>
-                    </div>
+                <div class="form-group">
+                    <label for="timelineId">Dòng thời gian</label>
+                    <ui-select id="timelineId" name="timelineId" required class="form-control" multiple ng-model="campaignCtrl.campaign.timelineId" theme="bootstrap" title="Chọn dòng thời gian">
+                        <ui-select-match placeholder="{[placeholders.campaign.timelineId]}">{[$item.name]}</ui-select-match>
+                        <ui-select-choices group-by="campaignCtrl.groupTimeline" repeat="timeline in campaignCtrl.accountInfo.timelineId">
+                            <div ng-bind="timeline.name"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                    <div error-message="CampaignForm.timelineId.$error" ng-if="!CampaignForm.timelineId.$pristine"></div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="postType">Loại bài đăng</label>
-                        <select class="form-control" ng-model="campaignCtrl.campaign.postType" required name="postType" ng-change="campaignCtrl.postTypeChange()">
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="postType">Loại bài đăng</label>
+                    <select class="form-control" ng-model="campaignCtrl.campaign.postType" required name="postType" ng-change="campaignCtrl.postTypeChange()">
                             <option value="">-- Chọn 1 loại</option>
                             <option value="feed">Trạng thái</option>
                             <option value="album">Album ảnh</option>
                         </select>
-                        <div ng-if="!CampaignForm.postType.$pristine" error-message="CampaignForm.postType.$error"></div>
-                    </div>
-                    <div class="form-group" ng-if="campaignCtrl.campaign.postType=='feed'">
-                        <label for="group">Trạng thái</label>
-                        <select name="feedId" required placeholder="Chọn 1 nhóm" ng-model="campaignCtrl.campaign.feedId" class="form-control" ng-options="feed._id as feed.title for feed in campaignCtrl.listFeeds">
+                    <div ng-if="!CampaignForm.postType.$pristine" error-message="CampaignForm.postType.$error"></div>
+                </div>
+                <div class="form-group" ng-if="campaignCtrl.campaign.postType=='feed'">
+                    <label for="group">Trạng thái</label>
+                    <select name="feedId" required placeholder="Chọn 1 nhóm" ng-model="campaignCtrl.campaign.feedId" class="form-control" ng-options="feed._id as feed.title for feed in campaignCtrl.listFeeds">
                             <option value="">-- Chọn 1 trạng thái</option>
                         </select>
-                        <div error-message="CampaignForm.feedId.$error" ng-if="!CampaignForm.feedId.$pristine"></div>
-                    </div>
-                    <div class="form-group" ng-if="campaignCtrl.campaign.postType=='album'">
-                        <label for="albumId">Album</label>
-                        <select name="albumId" required placeholder="Chọn 1 nhóm" ng-model="campaignCtrl.campaign.albumId" class="form-control" ng-options="album._id as album.name for album in campaignCtrl.listAlbums">
+                    <div error-message="CampaignForm.feedId.$error" ng-if="!CampaignForm.feedId.$pristine"></div>
+                </div>
+                <div class="form-group" ng-if="campaignCtrl.campaign.postType=='album'">
+                    <label for="albumId">Album</label>
+                    <select name="albumId" required placeholder="Chọn 1 nhóm" ng-model="campaignCtrl.campaign.albumId" class="form-control" ng-options="album._id as album.name for album in campaignCtrl.listAlbums">
                             <option value="">-- Chọn 1 album</option>
                         </select>
-                        <div error-message="CampaignForm.albumId.$error" ng-if="!CampaignForm.albumId.$pristine"></div>
-                    </div>
-                    <div class="form-group" ng-if="CampaignForm.$pristine && campaignCtrl.campaign.description">
-                        <label for="description">Mô tả</label>
-                        <textarea disabled class="form-control" type="text" name="description" ng-model="campaignCtrl.campaign.description" placeholder="Mô tả gợi nhớ chiến dịch"></textarea>
-                        <div ng-if="!CampaignForm.description.$pristine" error-message="CampaignForm.description.$error"></div>
-                    </div>
+                    <div error-message="CampaignForm.albumId.$error" ng-if="!CampaignForm.albumId.$pristine"></div>
                 </div>
-                <div class="col-md-12">
-                    <p class="text-danger" ng-if="!CampaignForm.$pristine"><i>Chiến dịch chưa được lưu</i></p>
-                    <button ng-disabled="CampaignForm.$invalid" class="btn btn-primary" type="button" ng-click="campaignCtrl.saveCampaign(CampaignForm.$valid)">
+                <div class="form-group" ng-if="CampaignForm.$pristine && campaignCtrl.campaign.description">
+                    <label for="description">Mô tả</label>
+                    <textarea disabled class="form-control" type="text" name="description" ng-model="campaignCtrl.campaign.description" placeholder="Mô tả gợi nhớ chiến dịch"></textarea>
+                    <div ng-if="!CampaignForm.description.$pristine" error-message="CampaignForm.description.$error"></div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <p class="text-danger" ng-if="!CampaignForm.$pristine"><i>Chiến dịch chưa được lưu</i></p>
+                <button ng-disabled="CampaignForm.$invalid" class="btn btn-primary" type="button" ng-click="campaignCtrl.saveCampaign(CampaignForm.$valid)">
                         <span class="glyphicon glyphicon-floppy-saved"></span> Lưu chiến dịch
                     </button>
-                    <button class="btn btn-info" type="button" ng-click="campaignCtrl.resetCampaign()">
+                <button class="btn btn-info" type="button" ng-click="campaignCtrl.resetCampaign()">
                         <span class="glyphicon glyphicon-refresh"></span> Làm mới
                     </button>
-                </div>
-                <div class="col-md-12" ng-if="campaignCtrl.campaign._id">
-                    <div class="spacing-10"></div>
-                    <button ng-disabled="CampaignForm.$invalid" class="btn btn-success" type="button" ng-click="campaignCtrl.runCampaign(campaignCtrl.campaign._id)">
+            </div>
+            <div class="col-md-12" ng-if="campaignCtrl.campaign._id">
+                <div class="spacing-10"></div>
+                <button ng-disabled="CampaignForm.$invalid" class="btn btn-success" type="button" ng-click="campaignCtrl.runCampaign(campaignCtrl.campaign._id)">
                         <span class="glyphicon glyphicon-play"></span> Chạy chiến dịch
                     </button>
-                </div>
-            </form>
-        </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
         <div class="col-md-12">
             <h3><span class="glyphicon glyphicon-th-list"></span> Danh sách các bài đăng đã lưu</h3>
             <hr>
