@@ -2,7 +2,8 @@
     'use strict';
 
     angular.module("User")
-        .service("UserService", UserService);
+        .service("UserService", UserService)
+        .service("LogService", LogService);
 
     function UserService($http) {
         var account;
@@ -47,6 +48,19 @@
                 return $http({
                     method: "POST",
                     url: apiPath + "/api/user/extendAccessToken",
+                    data: data
+                });
+            },
+        }
+    }
+
+    function LogService($http) {
+        var account;
+        return {
+            getCampaignLogs: function(data) {
+                return $http({
+                    method: "POST",
+                    url: apiPath + "/api/log/getCampaignLogs",
                     data: data
                 });
             },

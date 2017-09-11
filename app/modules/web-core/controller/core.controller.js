@@ -298,11 +298,14 @@ exports.notFound = {
 };
 
 exports.getAppId = function(request, reply) {
-    let { appId } = request.state;
-    if (appId) {
-        let response = request.response;
-        if (response.variety === 'view') {
-            response.source.context.appId = appId;
+    let response = request.response;
+    if (response.variety === 'view') {
+        let { appId } = request.state;
+        if (appId) {
+            let response = request.response;
+            if (response.variety === 'view') {
+                response.source.context.appId = appId;
+            }
         }
     }
     return reply.continue();

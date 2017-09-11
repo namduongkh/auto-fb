@@ -10,8 +10,24 @@ const async = require('async');
 module.exports = function(server) {
     return {
         changeLastTimelineRun: changeLastTimelineRun,
-        runCampaign: function(campaignId, options, callback) {
-            callback = callback ? callback : function() {};
+        runCampaign: function(campaignId, options, returnFunc) {
+            returnFunc = returnFunc ? returnFunc : function() {};
+
+            function callback(err, resp) {
+                // console.log({ err, resp });
+                let { saveLog } = server.plugins['api-log'];
+                let status = true;
+                let result = resp;
+                let errResp;
+                if (err) {
+                    status = false;
+                    result = err;
+                    errResp = { msg: "Chạy chiến dịch không thành công." };
+                }
+                saveLog(campaignId, status, result);
+                returnFunc(errResp, resp);
+            };
+
             Campaign.findOne({
                     _id: campaignId
                 })
@@ -81,8 +97,11 @@ module.exports = function(server) {
                                         let parallel = [];
                                         _.map(campaign.albumId.photos, function(photo) {
                                             parallel.push(function(cb) {
-                                                // let imageUrl = "https://image.ibb.co/fSEL0v/tao_dep.jpg";
-                                                let imageUrl = server.configManager.get("web.context.settings.services.webUrl") + "/files/albums/" + campaign.albumId._id + "/" + photo;
+                                                // if (process.env.NODE_ENV == 'development') {
+                                                //     var imageUrl = "https://image.ibb.co/fSEL0v/tao_dep.jpg";
+                                                // } else {
+                                                var imageUrl = server.configManager.get("web.context.settings.services.webUrl") + "/files/albums/" + campaign.albumId._id + "/" + photo;
+                                                // }
                                                 sendGraphApi(user.accessToken, 'post', `/${albumId}/photos`, {
                                                     url: imageUrl,
                                                 }, function(err, result) {
@@ -90,11 +109,12 @@ module.exports = function(server) {
                                                 });
                                             });
                                         });
-                                        async.parallel(parallel, function(err, result) {
+                                        async.parallel(parallel, function(err, photos) {
                                             if (err) {
-                                                callback({ msg: "Chạy chiến dịch không thành công" });
+                                                callback(err);
                                             } else {
-                                                callback(null, true);
+                                                result.photos = photos;
+                                                callback(null, result);
                                             }
                                         });
                                     }
@@ -126,7 +146,8 @@ function sendGraphApi(accessToken, method, url, payload, callback) {
     function handleResponse(err, resp) {
         console.log("Graph resp", err, resp);
         if (err) {
-            callback({ msg: "Chạy chiến dịch không thành công." });
+            // callback({ msg: "Chạy chiến dịch không thành công." });
+            callback(err);
         } else {
             callback(null, resp);
         }
@@ -168,7 +189,7 @@ function changeLastTimelineRun(campaignId, callback) {
             callback(null, campaign);
             return null;
         })
-        .catch(function() {
+        .catch(function(err) {
             callback(err);
             return null;
         });

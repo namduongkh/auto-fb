@@ -50,3 +50,15 @@ exports.timelineManager = {
         });
     },
 };
+
+exports.campaignLog = {
+    auth: 'jwt',
+    handler: function(request, reply) {
+        return reply.view('web-user/views/campaign-log', {
+            meta: {
+                title: "Lịch sử xuất bản"
+            },
+            // activeMenu: "timelineManager"
+        });
+    },
+};

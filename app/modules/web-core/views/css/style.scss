@@ -59,3 +59,30 @@ a {
         text-decoration: none;
     }
 }
+
+.log-result {
+    cursor: pointer;
+    &:hover {
+        background: #eee;
+    }
+    .log-result-icon {
+        font-size: 60px;
+        line-height: 0;
+        .success-log-icon {
+            color: #3e8f3e;
+        }
+        .failure-log-icon {
+            color: #b92c28;
+        }
+    }
+    .log-result-body {
+        vertical-align: middle;
+    }
+    pre {
+        font-size: 0.8em;
+    }
+}
+
+.dropdown-menu {
+    min-width: 200px;
+}

@@ -5,6 +5,7 @@
         .directive("errorMessage", errorMessage)
         .directive("showLoading", showLoading)
         .directive("tooltipInit", tooltipInit)
+        .directive("collapseInit", collapseInit)
         .directive("datetimepicker", datetimepicker);
 
     function errorMessage() {
@@ -58,6 +59,16 @@
             link: function(scope, elem, attr) {
                 elem.attr("title", attr.tooltipInit);
                 $(elem).tooltip();
+            }
+        };
+    }
+
+    function collapseInit() {
+        return {
+            restrict: "A",
+            link: function(scope, elem, attr) {
+                // elem.attr("title", attr.tooltipInit);
+                $(elem).collapse();
             }
         };
     }

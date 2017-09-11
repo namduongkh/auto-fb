@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-md-12">
+        <h2><span class="glyphicon glyphicon-cog"></span> Lịch sử xuất bản</h2>
+        <hr>
+        <div ng-init="userCtrl.getCampaignLogs()">
+            <div class="list-group">
+                <div class="list-group-item log-result" ng-repeat="log in userCtrl.campaignLog.list">
+                    <div class="media">
+                        <div class="media-left log-result-icon">
+                            <i ng-if="log.status==true" class="success-log-icon fa fa-check-circle-o" aria-hidden="true"></i>
+                            <i ng-if="log.status==false" class="failure-log-icon fa fa-times-circle-o" aria-hidden="true"></i>
+                        </div>
+                        <div class="media-body log-result-body">
+                            <h4 class="media-heading"><small><i class="fa fa-clock-o" aria-hidden="true"></i> <i ng-bind="log.created | date:'\'lúc \' HH:mm \' ngày \' dd/MM/yyyy'">Posted on February 19, 2016</i></small>
+                            </h4>
+                            <div><i class="fa fa-info-circle" aria-hidden="true"></i> Xuất bản chiến dịch <strong>{[log.campaignId.title]}</strong></div>
+                            <div ng-if="log.status">
+                                <i class="fa fa-link" aria-hidden="true"></i> Kết quả: <a ng-href="https://www.facebook.com/{[log.result.id]}" target="_blank">https://www.facebook.com/{[log.result.id]}</a>
+                            </div>
+                            <div>
+                                <a href="javascript:void(0)" collapse-init data-toggle="collapse" data-target="#result{[$index]}"><i class="fa fa-eye" aria-hidden="true"></i> Chi tiết</a>
+                                <div id="result{[$index]}" class="collapse">
+                                    <pre>{[log.result|angularJson]}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

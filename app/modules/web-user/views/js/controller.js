@@ -4,7 +4,7 @@
     angular.module("User")
         .controller("UserController", UserController);
 
-    function UserController(UserService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
+    function UserController(UserService, $cookies, $rootScope, toastr, $timeout, $facebook, $http, LogService) {
         var userCtrl = this;
         userCtrl.accountInfo = {};
         userCtrl.showLoading = false;
@@ -290,6 +290,24 @@
             updateProfile({
                 timelineId: userCtrl.accountInfo.timelineId,
             }, false, "Đã cập nhật danh sách nhóm thành công.");
+        };
+
+        userCtrl.campaignLog = {
+            list: [],
+            page: 1
+        };
+
+        userCtrl.getCampaignLogs = function() {
+            LogService.getCampaignLogs({
+                    page: userCtrl.campaignLog.page
+                })
+                .then(function(resp) {
+                    userCtrl.campaignLog.list = userCtrl.campaignLog.list.concat(resp.data.items);
+                    userCtrl.campaignLog.page++;
+                })
+                .catch(function(err) {
+                    console.log("err", err);
+                });
         };
     }
 })();

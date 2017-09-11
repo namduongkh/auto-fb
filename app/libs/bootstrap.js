@@ -2,12 +2,22 @@
 
 const Path = require('path');
 const Glob = require("glob");
+const HapiSwagger = require('hapi-swagger');
+const Pack = require(global.BASE_PATH + '/package');
 
 module.exports = function(server) {
     server.register([{
         register: require('vision')
     }, {
         register: require('inert')
+    }, {
+        register: HapiSwagger,
+        options: {
+            info: {
+                'title': 'Documentation',
+                'version': Pack.version,
+            }
+        }
     }, {
         register: require('hapi-context-credentials')
     }, {
@@ -19,7 +29,7 @@ module.exports = function(server) {
     }, {
         // Plugin xử lý xác thực user
         register: require('./auth.js')
-    }], (err) => {
+    }, ], (err) => {
         if (err) {
             server.log(['error', 'server'], err);
         }

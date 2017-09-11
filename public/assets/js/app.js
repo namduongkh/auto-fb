@@ -413,6 +413,7 @@ var Common = (function() {
         .directive("errorMessage", errorMessage)
         .directive("showLoading", showLoading)
         .directive("tooltipInit", tooltipInit)
+        .directive("collapseInit", collapseInit)
         .directive("datetimepicker", datetimepicker);
 
     function errorMessage() {
@@ -466,6 +467,16 @@ var Common = (function() {
             link: function(scope, elem, attr) {
                 elem.attr("title", attr.tooltipInit);
                 $(elem).tooltip();
+            }
+        };
+    }
+
+    function collapseInit() {
+        return {
+            restrict: "A",
+            link: function(scope, elem, attr) {
+                // elem.attr("title", attr.tooltipInit);
+                $(elem).collapse();
             }
         };
     }
@@ -538,7 +549,8 @@ var Common = (function() {
     'use strict';
 
     angular.module("Core")
-        .filter('shortString', shortString);
+        .filter('shortString', shortString)
+        .filter('angularJson', angularJson);
 
     function shortString() {
         return function(input, length) {
@@ -547,6 +559,12 @@ var Common = (function() {
                 return input.substr(0, length) + "...";
             }
             return input;
+        };
+    }
+
+    function angularJson() {
+        return function(input) {
+            return angular.toJson(input, true);
         };
     }
 })();
@@ -1130,11 +1148,11 @@ var placeholders = {
 (function() {
     'use strict';
 
-    UserController.$inject = ["UserService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http"];
+    UserController.$inject = ["UserService", "$cookies", "$rootScope", "toastr", "$timeout", "$facebook", "$http", "LogService"];
     angular.module("User")
         .controller("UserController", UserController);
 
-    function UserController(UserService, $cookies, $rootScope, toastr, $timeout, $facebook, $http) {
+    function UserController(UserService, $cookies, $rootScope, toastr, $timeout, $facebook, $http, LogService) {
         var userCtrl = this;
         userCtrl.accountInfo = {};
         userCtrl.showLoading = false;
@@ -1421,14 +1439,34 @@ var placeholders = {
                 timelineId: userCtrl.accountInfo.timelineId,
             }, false, "Đã cập nhật danh sách nhóm thành công.");
         };
+
+        userCtrl.campaignLog = {
+            list: [],
+            page: 1
+        };
+
+        userCtrl.getCampaignLogs = function() {
+            LogService.getCampaignLogs({
+                    page: userCtrl.campaignLog.page
+                })
+                .then(function(resp) {
+                    userCtrl.campaignLog.list = userCtrl.campaignLog.list.concat(resp.data.items);
+                    userCtrl.campaignLog.page++;
+                })
+                .catch(function(err) {
+                    console.log("err", err);
+                });
+        };
     }
 })();
 (function() {
     'use strict';
 
     UserService.$inject = ["$http"];
+    LogService.$inject = ["$http"];
     angular.module("User")
-        .service("UserService", UserService);
+        .service("UserService", UserService)
+        .service("LogService", LogService);
 
     function UserService($http) {
         var account;
@@ -1473,6 +1511,19 @@ var placeholders = {
                 return $http({
                     method: "POST",
                     url: apiPath + "/api/user/extendAccessToken",
+                    data: data
+                });
+            },
+        }
+    }
+
+    function LogService($http) {
+        var account;
+        return {
+            getCampaignLogs: function(data) {
+                return $http({
+                    method: "POST",
+                    url: apiPath + "/api/log/getCampaignLogs",
                     data: data
                 });
             },

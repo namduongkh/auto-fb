@@ -29,6 +29,12 @@ exports.register = function(server, options, next) {
         config: Controller.timelineManager
     });
 
+    server.route({
+        method: 'GET',
+        path: '/lich-su-xuat-ban',
+        config: Controller.campaignLog
+    });
+
     next();
 };
 

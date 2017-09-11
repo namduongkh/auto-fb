@@ -43,9 +43,9 @@ albumSchema.post('remove', function(doc) {
             albumId: doc._id
         })
         .then(function(campaigns) {
-            console.log("campaigns", campaigns);
+            // console.log("campaigns", campaigns);
             campaigns.forEach(function(item) {
-                console.log("item", item);
+                // console.log("item", item);
                 item.remove();
             });
         });

@@ -28,6 +28,7 @@
     "hapi-auth-jwt2": "^7.2.4",
     "hapi-context-credentials": "^2.0.0",
     "hapi-kea-config": "^0.1.5",
+    "hapi-swagger": "^7.7.1",
     "inert": "^4.1.0",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",

@@ -1830,6 +1830,25 @@ ul.alert-dropdown {
 a:hover, a:focus, a:active {
   text-decoration: none; }
 
+.log-result {
+  cursor: pointer; }
+  .log-result:hover {
+    background: #eee; }
+  .log-result .log-result-icon {
+    font-size: 60px;
+    line-height: 0; }
+    .log-result .log-result-icon .success-log-icon {
+      color: #3e8f3e; }
+    .log-result .log-result-icon .failure-log-icon {
+      color: #b92c28; }
+  .log-result .log-result-body {
+    vertical-align: middle; }
+  .log-result pre {
+    font-size: 0.8em; }
+
+.dropdown-menu {
+  min-width: 200px; }
+
 #page-content img {
   max-width: 650px;
   width: 100%; }
