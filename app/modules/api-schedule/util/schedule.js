@@ -11,13 +11,6 @@ const CronJob = require('cron').CronJob;
 var runningJob = {};
 var scanUserSchedule = {};
 
-function stopSchedule(created_by) {
-    if (scanUserSchedule[created_by]) {
-        delete scanUserSchedule[created_by];
-        runningJob["SCAN_RUNNING_SCHEDULE_" + created_by].stop();
-    }
-}
-
 module.exports = function(server) {
     return {
         scanUserSchedule: function() {
@@ -41,27 +34,26 @@ module.exports = function(server) {
                             schedules.map(function(schedule) {
                                 if (!scanUserSchedule[schedule.created_by]) {
                                     scanUserSchedule[schedule.created_by] = schedule.created_by;
-                                    userRunning.push(schedule.created_by);
+                                    userRunning.push(mongoose.Types.ObjectId(schedule.created_by));
                                     scanScheduleByUser(server, schedule.created_by);
                                 }
                             });
-                            // console.log("zô2", userRunning);
-                            // return Schedule.find({
-                            //         running: { $ne: true },
-                            //         created_by: { $nin: userRunning }
-                            //     })
-                            //     .select("created_by")
-                            //     .lean();
+                            return Schedule.find({
+                                    running: { $ne: true },
+                                    created_by: { $in: userRunning }
+                                })
+                                .select("created_by")
+                                .lean();
+                        })
+                        .then(function(schedules) {
+                            console.log("schedules", schedules);
+                            schedules.map(function(schedule) {
+                                if (scanUserSchedule[schedule.created_by]) {
+                                    delete scanUserSchedule[schedule.created_by];
+                                    runningJob["SCAN_RUNNING_SCHEDULE_" + schedule.created_by].stop();
+                                }
+                            });
                         });
-                    // .then(function(schedules) {
-                    //     console.log("schedules", schedules);
-                    //     schedules.map(function(schedule) {
-                    //         if (scanUserSchedule[schedule.created_by]) {
-                    //             delete scanUserSchedule[schedule.created_by];
-                    //             runningJob["SCAN_RUNNING_SCHEDULE_" + schedule.created_by].stop();
-                    //         }
-                    //     });
-                    // });
                 },
                 start: false,
             });
@@ -73,8 +65,6 @@ module.exports = function(server) {
 function scanScheduleByUser(server, user_id) {
     let config = server.configManager;
     var second = moment().add(5, 's').second();
-
-    console.log("second", second);
 
     if (runningJob['SCAN_RUNNING_SCHEDULE_' + user_id]) {
         runningJob['SCAN_RUNNING_SCHEDULE_' + user_id].stop();
@@ -124,7 +114,6 @@ function scanScheduleByUser(server, user_id) {
                                     if (err) {
                                         console.log("err", err);
                                         selectSchedule.running = false;
-                                        stopSchedule(selectSchedule.created_by);
                                     } else {
                                         selectSchedule.lastRun = new Date();
                                         if (!selectSchedule.runTimes) {
@@ -136,7 +125,6 @@ function scanScheduleByUser(server, user_id) {
                                         (selectSchedule.scheduleType == 'time' && new Date(selectSchedule.endTime) <= new Date())) {
 
                                         selectSchedule.running = false;
-                                        stopSchedule(selectSchedule.created_by);
                                     }
                                     selectSchedule.save();
                                 });
