@@ -46,7 +46,7 @@ module.exports = function(server) {
                                 .lean();
                         })
                         .then(function(schedules) {
-                            console.log("schedules", schedules);
+                            console.log("Stopped schedules", schedules);
                             schedules.map(function(schedule) {
                                 if (scanUserSchedule[schedule.created_by]) {
                                     delete scanUserSchedule[schedule.created_by];
@@ -81,6 +81,7 @@ function scanScheduleByUser(server, user_id) {
                 })
                 .sort("-lastRun")
                 .then(function(schedules) {
+                    console.log("Running schedules", schedules);
                     if (schedules && schedules.length) {
                         let selectSchedule;
                         let lastScheduleRun = new Date(schedules[0].lastRun);
