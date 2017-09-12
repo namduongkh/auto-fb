@@ -97,7 +97,7 @@ function scanScheduleByUser(server, user_id) {
                 })
                 .sort("-lastRun")
                 .then(function(schedules) {
-                    console.log("Running schedules", schedules);
+                    // console.log("Running schedules", schedules);
                     if (schedules && schedules.length) {
                         let selectSchedule;
                         let lastScheduleRun = new Date(schedules[0].lastRun);
