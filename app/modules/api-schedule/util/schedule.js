@@ -36,10 +36,11 @@ module.exports = function(server) {
                                 if (!scanUserSchedule[schedule.created_by]) {
                                     scanUserSchedule[schedule.created_by] = schedule.created_by;
                                     userRunning.push(schedule.created_by);
-                                    console.log("zô", userRunning);
+                                    console.log("zô1", userRunning);
                                     scanScheduleByUser(server, schedule.created_by);
                                 }
                             });
+                            console.log("zô2", userRunning);
                             return Schedule.find({
                                     running: { $ne: true },
                                     created_by: { $nin: userRunning }
