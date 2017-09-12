@@ -11,6 +11,22 @@ const CronJob = require('cron').CronJob;
 var runningJob = {};
 var scanUserSchedule = {};
 
+function removeUserSchedule(userId) {
+    Schedule.find({
+            running: true,
+            created_by: userId
+        })
+        .count()
+        .then(function(count) {
+            if (!count) {
+                if (scanUserSchedule[userId]) {
+                    delete scanUserSchedule[userId];
+                    runningJob["SCAN_RUNNING_SCHEDULE_" + userId].stop();
+                }
+            }
+        });
+}
+
 module.exports = function(server) {
     return {
         scanUserSchedule: function() {
@@ -38,22 +54,22 @@ module.exports = function(server) {
                                     scanScheduleByUser(server, schedule.created_by);
                                 }
                             });
-                            return Schedule.find({
-                                    running: { $ne: true },
-                                    created_by: { $in: userRunning }
-                                })
-                                .select("created_by")
-                                .lean();
-                        })
-                        .then(function(schedules) {
-                            console.log("Stopped schedules", schedules);
-                            schedules.map(function(schedule) {
-                                if (scanUserSchedule[schedule.created_by]) {
-                                    delete scanUserSchedule[schedule.created_by];
-                                    runningJob["SCAN_RUNNING_SCHEDULE_" + schedule.created_by].stop();
-                                }
-                            });
+                            // return Schedule.find({
+                            //         running: { $ne: true },
+                            //         created_by: { $in: userRunning }
+                            //     })
+                            //     .select("created_by")
+                            //     .lean();
                         });
+                    // .then(function(schedules) {
+                    //     console.log("Stopped schedules", schedules);
+                    //     schedules.map(function(schedule) {
+                    //         if (scanUserSchedule[schedule.created_by]) {
+                    //             delete scanUserSchedule[schedule.created_by];
+                    //             runningJob["SCAN_RUNNING_SCHEDULE_" + schedule.created_by].stop();
+                    //         }
+                    //     });
+                    // });
                 },
                 start: false,
             });
@@ -127,7 +143,9 @@ function scanScheduleByUser(server, user_id) {
 
                                         selectSchedule.running = false;
                                     }
-                                    selectSchedule.save();
+                                    selectSchedule.save().then(function() {
+                                        removeUserSchedule(user_id);
+                                    });
                                 });
                             }
                         } else {
