@@ -32,7 +32,6 @@ module.exports = function(server) {
                         .lean()
                         .then(function(schedules) {
                             schedules.map(function(schedule) {
-                                console.log("Schedules", scanUserSchedule, schedule);
                                 if (!scanUserSchedule[schedule.created_by]) {
                                     scanUserSchedule[schedule.created_by] = schedule.created_by;
                                     userRunning.push(schedule.created_by);
@@ -47,6 +46,7 @@ module.exports = function(server) {
                                 .lean();
                         })
                         .then(function(schedules) {
+                            console.log("Schedules", schedules);
                             schedules.map(function(schedule) {
                                 if (scanUserSchedule[schedule.created_by]) {
                                     delete scanUserSchedule[schedule.created_by];
