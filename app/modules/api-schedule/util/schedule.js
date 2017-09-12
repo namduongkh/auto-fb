@@ -35,6 +35,7 @@ module.exports = function(server) {
                                 if (!scanUserSchedule[schedule.created_by]) {
                                     scanUserSchedule[schedule.created_by] = schedule.created_by;
                                     userRunning.push(schedule.created_by);
+                                    console.log("zô");
                                     scanScheduleByUser(server, schedule.created_by);
                                 }
                             });
@@ -46,7 +47,7 @@ module.exports = function(server) {
                                 .lean();
                         })
                         .then(function(schedules) {
-                            console.log("Schedules", schedules);
+                            console.log("schedules", schedules);
                             schedules.map(function(schedule) {
                                 if (scanUserSchedule[schedule.created_by]) {
                                     delete scanUserSchedule[schedule.created_by];
@@ -65,6 +66,8 @@ module.exports = function(server) {
 function scanScheduleByUser(server, user_id) {
     let config = server.configManager;
     var second = moment().add(5, 's').second();
+
+    console.log("second", second);
 
     if (runningJob['SCAN_RUNNING_SCHEDULE_' + user_id]) {
         runningJob['SCAN_RUNNING_SCHEDULE_' + user_id].stop();
