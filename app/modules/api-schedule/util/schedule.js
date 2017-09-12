@@ -31,6 +31,7 @@ module.exports = function(server) {
                         .select("created_by")
                         .lean()
                         .then(function(schedules) {
+                            console.log("Schedules", schedules);
                             schedules.map(function(schedule) {
                                 if (!scanUserSchedule[schedule.created_by]) {
                                     scanUserSchedule[schedule.created_by] = schedule.created_by;

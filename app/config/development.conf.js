@@ -20,8 +20,8 @@ module.exports = {
             minCycle: 1,
             userSchedule: {
                 stopMinutes: 0.25,
-                // debug: true,
-                debug: false,
+                debug: true,
+                // debug: false,
             },
             settings: {
                 services: {
