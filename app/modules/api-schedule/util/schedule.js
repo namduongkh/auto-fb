@@ -120,7 +120,7 @@ function scanScheduleByUser(server, user_id) {
                                         schedule.save();
                                     }
                                 } else {
-                                    console.log("Không chạy schedule vì: ", {
+                                    console.log("Không chạy schedule " + schedule.name + " vì: ", {
                                         lastRun: schedule.lastRun,
                                         diff,
                                         cycleMinutes
