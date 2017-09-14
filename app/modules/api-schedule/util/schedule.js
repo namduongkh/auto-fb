@@ -11,7 +11,6 @@ const Wreck = require('wreck');
 
 var runningJob = {};
 var scanUserSchedule = {};
-var holdOnPending;
 
 function removeUserSchedule(userId) {
     Schedule.find({
@@ -81,28 +80,25 @@ module.exports = function(server) {
             let config = server.configManager;
             let webUrl = config.get("web.context.settings.services.webUrl");
 
-            clearTimeout(holdOnPending);
-            holdOnPending = setTimeout(function() {
-                if (runningJob['HOLD_ON_WEBSITE_RUNNING']) {
-                    runningJob['HOLD_ON_WEBSITE_RUNNING'].stop();
-                }
-                runningJob['HOLD_ON_WEBSITE_RUNNING'] = new CronJob({
-                    cronTime: `* */15 * * * *`,
-                    // cronTime: `*/3 * * * * *`,
-                    onTick: function() {
-                        // console.log("webUrl", webUrl);
-                        Wreck.get(webUrl, {}, function(err, resp) {
-                            if (err) {
-                                console.log("Hold on failure");
-                            } else {
-                                console.log("Hold on successful");
-                            }
-                        });
-                    },
-                    start: false,
-                });
-                runningJob['HOLD_ON_WEBSITE_RUNNING'].start();
-            }, 5000);
+            if (runningJob['HOLD_ON_WEBSITE_RUNNING']) {
+                runningJob['HOLD_ON_WEBSITE_RUNNING'].stop();
+            }
+            runningJob['HOLD_ON_WEBSITE_RUNNING'] = new CronJob({
+                cronTime: `* */15 * * * *`,
+                // cronTime: `*/3 * * * * *`,
+                onTick: function() {
+                    // console.log("webUrl", webUrl);
+                    Wreck.get(webUrl, {}, function(err, resp) {
+                        if (err) {
+                            console.log("Hold on failure");
+                        } else {
+                            console.log("Hold on successful");
+                        }
+                    });
+                },
+                start: false,
+            });
+            runningJob['HOLD_ON_WEBSITE_RUNNING'].start();
         }
     };
 };
