@@ -88,7 +88,13 @@ module.exports = function(server) {
                 cronTime: `*/3 * * * * *`,
                 onTick: function() {
                     console.log("webUrl", webUrl);
-                    // Wreck.get()
+                    Wreck.get(webUrl, {}, function(err, resp) {
+                        if (err) {
+                            console.log("Hold on failure");
+                        } else {
+                            console.log("Hold on successful");
+                        }
+                    });
                 },
                 start: false,
             });
