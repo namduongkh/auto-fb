@@ -84,10 +84,10 @@ module.exports = function(server) {
                 runningJob['HOLD_ON_WEBSITE_RUNNING'].stop();
             }
             runningJob['HOLD_ON_WEBSITE_RUNNING'] = new CronJob({
-                // cronTime: `* */15 * * * *`,
-                cronTime: `*/3 * * * * *`,
+                cronTime: `* */15 * * * *`,
+                // cronTime: `*/3 * * * * *`,
                 onTick: function() {
-                    console.log("webUrl", webUrl);
+                    // console.log("webUrl", webUrl);
                     Wreck.get(webUrl, {}, function(err, resp) {
                         if (err) {
                             console.log("Hold on failure");
