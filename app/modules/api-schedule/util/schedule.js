@@ -146,7 +146,7 @@ function scanScheduleByUser(server, user_id) {
                                     }
                                 } else {
                                     console.log("Không chạy schedule " + schedule.name + " vì: ", {
-                                        lastRun: schedule.lastRun,
+                                        lastRun: moment(schedule.lastRun).format("DD/MM/YYYY HH:mm"),
                                         diff,
                                         cycleMinutes
                                     });
