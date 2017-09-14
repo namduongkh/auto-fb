@@ -119,6 +119,12 @@ function scanScheduleByUser(server, user_id) {
                                         schedule.running = false;
                                         schedule.save();
                                     }
+                                } else {
+                                    console.log("Không chạy schedule vì: ", {
+                                        lastRun: schedule.lastRun,
+                                        diff,
+                                        cycleMinutes
+                                    });
                                 }
                             }
                             if (selectSchedule) {
