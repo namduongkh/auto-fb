@@ -7,6 +7,7 @@ const moment = require('moment');
 const ErrorHandler = require("../../../utils/error.js");
 const CampaignUtil = require('../../api-campaign/util/campaign.js');
 const CronJob = require('cron').CronJob;
+const Wreck = require('wreck');
 
 var runningJob = {};
 var scanUserSchedule = {};
@@ -75,6 +76,24 @@ module.exports = function(server) {
             });
             runningJob['SCAN_USER_RUNNING_SCHEDULE'].start();
         },
+        holdOnRunning: function() {
+            let config = server.configManager;
+            let webUrl = config.get("web.context.settings.services.webUrl");
+
+            if (runningJob['HOLD_ON_WEBSITE_RUNNING']) {
+                runningJob['HOLD_ON_WEBSITE_RUNNING'].stop();
+            }
+            runningJob['HOLD_ON_WEBSITE_RUNNING'] = new CronJob({
+                // cronTime: `* */15 * * * *`,
+                cronTime: `*/3 * * * * *`,
+                onTick: function() {
+                    console.log("webUrl", webUrl);
+                    // Wreck.get()
+                },
+                start: false,
+            });
+            runningJob['HOLD_ON_WEBSITE_RUNNING'].start();
+        }
     };
 };
 
