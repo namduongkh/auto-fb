@@ -32,13 +32,14 @@ exports.register = function(server, options, next) {
         path: '/{param*}',
         handler: {
             directory: {
-                path: './public'
+                path: 'public'
             }
         },
         config: {
             auth: false
         }
     });
+    
     return next();
 };
 
