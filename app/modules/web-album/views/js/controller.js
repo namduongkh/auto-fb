@@ -45,36 +45,45 @@
             if (albumCtrl.tmpPhotoNames) {
                 albumCtrl.album.photos = albumCtrl.album.photos.concat(albumCtrl.tmpPhotoNames);
             }
-            AlbumService.saveAlbum(albumCtrl.album)
-                .then(function(resp) {
-                    if (resp.status == 200) {
-                        var parallel = [];
-                        console.log("image", albumCtrl.tmpPhotos, albumCtrl.tmpPhotoNames);
-                        albumCtrl.tmpPhotos.map(function(file, key) {
-                            var filename = albumCtrl.tmpPhotoNames[key];
-                            parallel.push(function(cb) {
-                                Upload.upload({
-                                        url: apiPath + "/api/upload/image",
-                                        data: {
-                                            file: file,
-                                            filename: filename.replace(/.[^.]+$/g, ""),
-                                            type: "albums/" + resp.data._id
-                                        }
-                                    })
-                                    .then(function(response) {
-                                        console.log("success", response);
-                                        cb(null);
-                                    }, function(response) {
-                                        console.log("err", response);
-                                        cb(true)
-                                    }, function(evt) {
-                                        // file.progress = Math.min(100, parseInt(100.0 *
-                                        //     evt.loaded / evt.total));
-                                    });
-                            });
+            var parallel = [];
+            // console.log("image", albumCtrl.tmpPhotos, albumCtrl.tmpPhotoNames);
+            albumCtrl.tmpPhotos.map(function(file, key) {
+                var filename = albumCtrl.tmpPhotoNames[key];
+                parallel.push(function(cb) {
+                    Upload.upload({
+                            // url: apiPath + "/api/upload/image",
+                            url: apiPath + "/api/upload/cloud",
+                            data: {
+                                file: file,
+                                filename: filename.replace(/.[^.]+$/g, ""),
+                                fileExt: filename.split(".").pop(),
+                                // type: "albums/" + resp.data._id
+                            }
+                        })
+                        .then(function(response) {
+                            // console.log("success", response);
+                            cb(null, response.data.imageUrl);
+                        }, function(response) {
+                            // console.log("err", response);
+                            cb(true);
+                        }, function(evt) {
+                            // file.progress = Math.min(100, parseInt(100.0 *
+                            //     evt.loaded / evt.total));
                         });
+                });
+            });
 
-                        async.parallel(parallel, function(err, results) {
+            async.parallel(parallel, function(err, results) {
+                // console.log("albumCtrl.album", albumCtrl.album);
+                // console.log("results", results);
+                albumCtrl.album.photos = results.filter(function(item) {
+                    if (item) {
+                        return item;
+                    }
+                });
+                AlbumService.saveAlbum(albumCtrl.album)
+                    .then(function(resp) {
+                        if (resp.status == 200) {
                             albumCtrl.defaultPhotos();
                             if (!albumCtrl.album._id) {
                                 if (!albumCtrl.listAlbums) {
@@ -91,14 +100,14 @@
                             }
                             albumCtrl.album = resp.data;
                             toastr.success("Lưu album thành công.", "Thành công!");
-                        });
-                    } else {
+                        } else {
+                            toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
+                        }
+                    })
+                    .catch(function(err) {
                         toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                    }
-                })
-                .catch(function(err) {
-                    toastr.error("Có lỗi xảy ra, thử lại sau.", "Lỗi!");
-                });
+                    });
+            });
         };
 
         albumCtrl.removeAlbum = function(albumId, index) {

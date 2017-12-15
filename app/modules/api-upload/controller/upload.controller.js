@@ -168,29 +168,68 @@ exports.uploadImageToCloud = {
     handler: function(request, reply) {
         var configManager = request.server.configManager;
         var data = request.payload;
-        console.log("data", data);
-        let base64Image = 'data:' + data.filetype + ";base64," + data.file.toString('base64');
-        console.log("base64Image", base64Image);
+        // console.log("data", data);
+        // let base64Image = 'data:' + data.filetype + ";base64," + data.file.toString('base64');
+        // console.log("base64Image", base64Image);
 
-        // cloudinary.config({
-        //     cloud_name: 'phongnguyen',
-        //     api_key: '436381725774579',
-        //     api_secret: 'K86C4k-eYfiwBVld_l9ShS-cYKY'
-        // });
+        cloudinary.config({
+            cloud_name: 'phongnguyen',
+            api_key: '436381725774579',
+            api_secret: 'K86C4k-eYfiwBVld_l9ShS-cYKY'
+        });
+
         // cloudinary.uploader.upload(data, function(result) {
         //     console.log("result", result);
         // });
 
-        // cloudinary.v2.uploader.upload(base64Image, function(err, result) {
-        //     console.log({ err, result });
-        // });
+
 
         // blobToBase64(blob, function(error, base64) {
         //     if (!error) {
         //         document.querySelector('.result').innerHTML = base64
         //     }
         // });
-        return reply();
+        // console.log("data", data);
+        function saveTempFile(folderPath) {
+            let filePath = path.join(folderPath, "temp_upload_image." + data.fileExt);
+            var file = fs.createWriteStream(filePath);
+            file.on('error', function(err) {
+                // request.log(['error', 'upload'], err);
+                // request.log(['error'], err);
+                // console.log("Err1", err);
+                return reply({
+                    status: 0
+                });
+            });
+            data.file.pipe(file);
+            data.file.on('end', function(err) {
+                if (err) {
+                    // request.log(['error', 'upload'], err);
+                    return reply(err);
+                }
+                // console.log("filePath", filePath);
+                cloudinary.v2.uploader.upload(filePath, function(err, result) {
+                    // console.log({ err, result });
+                    if (err) {
+                        return reply({
+                            status: 0
+                        });
+                    }
+                    return reply({
+                        status: 1,
+                        imageUrl: result.url
+                    });
+                });
+            });
+        }
+        let folderPath = path.join(configManager.get('web.upload.path'), "temp");
+        if (!fs.existsSync(folderPath)) {
+            mkdirp(folderPath, function(err, result) {
+                saveTempFile(folderPath);
+            });
+        } else {
+            saveTempFile(folderPath);
+        }
     },
     // validate: {
     //     payload: {
@@ -206,8 +245,8 @@ exports.uploadImageToCloud = {
         maxBytes: 200048576,
         parse: true,
         allow: 'multipart/form-data',
-        // output: 'stream',
-        output: 'data',
+        output: 'stream',
+        // output: 'data',
         // output: 'file',
     },
     description: 'Handle Upload File',

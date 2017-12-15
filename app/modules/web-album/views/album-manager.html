@@ -48,7 +48,7 @@
                         </p>
                     </div>
                     <div ng-if="albumCtrl.album.photos && albumCtrl.album.photos.length" class="preview-photo" ng-repeat="image in albumCtrl.album.photos track by $index">
-                        <img class="img-responsive img-thumbnail" ng-src="/files/albums/{[albumCtrl.album._id]}/{[image]}" alt="Hình ảnh" />
+                        <img class="img-responsive img-thumbnail" ng-src="{[image]}" alt="Hình ảnh" />
                         <p class="text-center" ng-click="albumCtrl.removeSavedPhoto($index)">
                             <button type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Xóa</button>
                         </p>
