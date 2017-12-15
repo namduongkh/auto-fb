@@ -10,6 +10,8 @@ const requestF = require('request');
 // const easyimg = require('easyimage');
 // const probe = require('probe-image-size');
 const rimraf = require('rimraf');
+const cloudinary = require('cloudinary');
+
 //get file extension
 var getFileExt = function(fileName) {
     var fileExt = fileName.split(".");
@@ -146,6 +148,67 @@ exports.uploadImage = {
         parse: true,
         allow: 'multipart/form-data',
         output: 'stream'
+    },
+    description: 'Handle Upload File',
+    tags: ['api'],
+    plugins: {
+        'hapi-swagger': {
+            responses: {
+                '400': {
+                    'description': 'Bad Request'
+                }
+            },
+            payloadType: 'form'
+        }
+    },
+}
+
+exports.uploadImageToCloud = {
+    auth: false,
+    handler: function(request, reply) {
+        var configManager = request.server.configManager;
+        var data = request.payload;
+        console.log("data", data);
+        let base64Image = 'data:' + data.filetype + ";base64," + data.file.toString('base64');
+        console.log("base64Image", base64Image);
+
+        // cloudinary.config({
+        //     cloud_name: 'phongnguyen',
+        //     api_key: '436381725774579',
+        //     api_secret: 'K86C4k-eYfiwBVld_l9ShS-cYKY'
+        // });
+        // cloudinary.uploader.upload(data, function(result) {
+        //     console.log("result", result);
+        // });
+
+        // cloudinary.v2.uploader.upload(base64Image, function(err, result) {
+        //     console.log({ err, result });
+        // });
+
+        // blobToBase64(blob, function(error, base64) {
+        //     if (!error) {
+        //         document.querySelector('.result').innerHTML = base64
+        //     }
+        // });
+        return reply();
+    },
+    // validate: {
+    //     payload: {
+    //         file: Joi.any().required().meta({ swaggerType: 'file' }).description('File'),
+    //         type: Joi.string().description('Type'),
+    //         filename: Joi.string().description('File name'),
+    //         old_filename: Joi.any().description('Older file name'),
+    //         //extension: Joi.string().description('Extension')
+
+    //     }
+    // },
+    payload: {
+        maxBytes: 200048576,
+        parse: true,
+        allow: 'multipart/form-data',
+        // output: 'stream',
+        output: 'data',
+        // output: 'file',
     },
     description: 'Handle Upload File',
     tags: ['api'],

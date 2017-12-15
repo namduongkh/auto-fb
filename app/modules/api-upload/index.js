@@ -20,6 +20,12 @@ exports.register = function(server, options, next) {
 
     server.route({
         method: 'POST',
+        path: '/api/upload/cloud',
+        config: UploadController.uploadImageToCloud
+    });
+
+    server.route({
+        method: 'POST',
         path: '/api/upload/removeFolder',
         config: UploadController.removeFolder
     });
