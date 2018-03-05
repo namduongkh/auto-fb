@@ -8,8 +8,7 @@ module.exports = {
         db: {
             uri: `mongodb://${host}/${dbName}`,
             options: {
-                user: '',
-                pass: ''
+                useMongoClient: true
             }
         },
         caches: [{

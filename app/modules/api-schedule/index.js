@@ -38,7 +38,7 @@ exports.register = function(server, options, next) {
     let helper = require('./util/schedule')(server, options);
 
     helper.scanUserSchedule();
-    helper.holdOnRunning();
+    // helper.holdOnRunning();
 
     next();
 };
